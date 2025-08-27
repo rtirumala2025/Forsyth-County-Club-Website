@@ -724,6 +724,7 @@ const ClubsWebsite = () => {
         allClubData={allClubData} 
         isOpen={chatbotOpen}
         onClose={() => setChatbotOpen(false)}
+        selectedSchool={selectedSchool}
       />
       
       {/* Welcome Notification for AI Assistant */}
