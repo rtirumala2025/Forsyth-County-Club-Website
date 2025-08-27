@@ -1,13 +1,18 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { Search, Menu, X, Users, ChevronRight, BarChart3, Calendar as CalendarIcon, ChevronDown, BookOpen } from 'lucide-react';
+import { Search, Menu, X, Users, ChevronRight, BarChart3, Calendar as CalendarIcon, ChevronDown, BookOpen, MessageCircle } from 'lucide-react';
 import { useAuth } from '../config/firebase';
 import UserMenu from '../components/auth/userMenu';
 import { useNavigate } from 'react-router-dom';
 import { useClubFilter } from '../hooks/useClubFilter';
 import { allClubData, CategoryColors, getClubsBySchool, getAvailableSchools } from '../data/clubData';
+import ChatbotUI from '../components/chatbot/ChatbotUI';
 
 const ClubsWebsite = () => {
+  // Add debugging logs
+  console.log('ClubsWebsite component rendering...');
+  console.log('allClubData length:', allClubData?.length);
+  
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedClub, setSelectedClub] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -15,22 +20,36 @@ const ClubsWebsite = () => {
   const [selectedSchool, setSelectedSchool] = useState('West Forsyth High School');
   const [schoolDropdownOpen, setSchoolDropdownOpen] = useState(false);
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
-  const { user } = useAuth();  
+  const [chatbotOpen, setChatbotOpen] = useState(false);
+  const [hasSeenChatbot, setHasSeenChatbot] = useState(false);
+  const { user, loading } = useAuth();  
   const navigate = useNavigate();
+  
+  console.log('Auth state:', { user, loading });
+  
   const availableSchools = useMemo(
     () => allClubData.map(school => school.school),
     [allClubData]
   );
 
+  console.log('Available schools:', availableSchools);
+
   // Filter clubs by selected school
   const filteredClubsData = useMemo(() => {
     const schoolData = allClubData.find(school => school.school === selectedSchool);
+    console.log('School data for', selectedSchool, ':', schoolData);
     if (!schoolData) return [];
     // Handle both 'clubs' and 'club' property names
-    return schoolData.clubs || schoolData.club || [];
+    const clubs = schoolData.clubs || schoolData.club || [];
+    console.log('Filtered clubs data length:', clubs.length);
+    return clubs;
   }, [selectedSchool, allClubData]);
 
+  console.log('Filtered clubs data:', filteredClubsData);
 
+  // Call all hooks before any conditional returns
+  const { clubsByCategory, filteredClubs, categories, stats } = useClubFilter(filteredClubsData || [], searchTerm, selectedCategory);
+  const selectedClubData = (filteredClubsData || []).find(club => club.id === selectedClub);
 
   const handleHomeClick = () => {
     setSelectedCategory(null);
@@ -56,8 +75,37 @@ const ClubsWebsite = () => {
     navigate('/calendar');
   };
 
-  const { clubsByCategory, filteredClubs, categories, stats } = useClubFilter(filteredClubsData || [], searchTerm, selectedCategory);
-  const selectedClubData = (filteredClubsData || []).find(club => club.id === selectedClub);
+  // Add loading state check
+  if (loading) {
+    console.log('Auth is loading, showing loading screen...');
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-blue-50 to-slate-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading authentication...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Add error state for missing data
+  if (!allClubData || allClubData.length === 0) {
+    console.error('No club data available');
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-blue-50 to-slate-50 flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-red-600 mb-4">Data Loading Error</h1>
+          <p className="text-gray-600">Unable to load club data. Please refresh the page.</p>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          >
+            Refresh Page
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   const CategoryColors = {
     'Academic': 'bg-blue-100 text-blue-800 border-blue-200',
@@ -477,6 +525,28 @@ const ClubsWebsite = () => {
             >
               <CalendarIcon size={18} className="mr-1 text-black" /> Calendar
             </button>
+            
+            {/* AI Chatbot Button */}
+            <button
+              onClick={() => {
+                setChatbotOpen(!chatbotOpen);
+                if (!hasSeenChatbot) {
+                  setHasSeenChatbot(true);
+                }
+              }}
+              className={`flex items-center px-3 py-2 rounded-lg border-2 transition-all duration-200 text-sm font-medium ${
+                chatbotOpen 
+                  ? 'bg-blue-50 border-blue-600 text-blue-800' 
+                  : 'bg-transparent border-black hover:bg-gray-50 hover:border-gray-600 text-black'
+              }`}
+              title="Get AI-powered club recommendations"
+            >
+              <MessageCircle size={18} className="mr-1" />
+              Club Quiz
+              {!hasSeenChatbot && (
+                <div className="ml-2 w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+              )}
+            </button>
             {/* School Selector Dropdown */}
             <div className="relative">
               <button
@@ -558,6 +628,46 @@ const ClubsWebsite = () => {
         <div className="p-6">
           {!selectedCategory && !selectedClub ? (
             <>
+              {/* Welcome Section with AI Assistant Info */}
+              <div className="mb-8 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200">
+                <div className="flex items-center justify-between">
+                  <div className="flex-1">
+                    <h2 className="text-2xl font-bold text-blue-900 mb-2">
+                      Welcome to The Club Network! 🎉
+                    </h2>
+                    <p className="text-blue-800 mb-4">
+                      Discover amazing clubs and organizations at {selectedSchool}. Browse by category or take a quiz to find clubs that match your interests!
+                    </p>
+                    <div className="flex items-center space-x-4">
+                      <div className="flex items-center text-blue-700">
+                        <MessageCircle size={16} className="mr-2" />
+                        <span className="text-sm font-medium">Club Quiz Ready</span>
+                      </div>
+                      <div className="flex items-center text-blue-700">
+                        <Users size={16} className="mr-2" />
+                        <span className="text-sm font-medium">{filteredClubsData.length} Clubs Available</span>
+                      </div>
+                      <div className="flex items-center text-blue-700">
+                        <BarChart3 size={16} className="mr-2" />
+                        <span className="text-sm font-medium">{categories.length} Categories</span>
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setChatbotOpen(true);
+                      if (!hasSeenChatbot) {
+                        setHasSeenChatbot(true);
+                      }
+                    }}
+                    className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 hover:scale-105 shadow-lg"
+                  >
+                    <MessageCircle size={18} className="mr-2 inline" />
+                    Take Club Quiz
+                  </button>
+                </div>
+              </div>
+              
               <LocalCategoryGrid 
                 categories={categories}
                 categoryColors={CategoryColors}
@@ -608,6 +718,65 @@ const ClubsWebsite = () => {
           ) : null}
         </div>
       </div>
+      
+      {/* AI Club Chatbot */}
+      <ChatbotUI 
+        allClubData={allClubData} 
+        isOpen={chatbotOpen}
+        onClose={() => setChatbotOpen(false)}
+      />
+      
+      {/* Welcome Notification for AI Assistant */}
+      {chatbotOpen && !hasSeenChatbot && (
+        <div className="fixed top-20 right-6 bg-white border border-blue-200 rounded-lg shadow-lg p-4 max-w-sm z-50 animate-slideIn">
+          <div className="flex items-start space-x-3">
+            <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+              <MessageCircle size={16} className="text-blue-600" />
+            </div>
+            <div className="flex-1">
+              <h4 className="font-semibold text-gray-900 mb-1">Club Quiz Ready! 🎯</h4>
+              <p className="text-sm text-gray-600 mb-3">
+                Take a quick quiz to discover clubs that match your interests and personality!
+              </p>
+              <button
+                onClick={() => setHasSeenChatbot(true)}
+                className="text-xs text-blue-600 hover:text-blue-800 underline"
+              >
+                Got it, thanks!
+              </button>
+            </div>
+            <button
+              onClick={() => setHasSeenChatbot(true)}
+              className="text-gray-400 hover:text-gray-600"
+            >
+              <X size={16} />
+            </button>
+          </div>
+        </div>
+      )}
+      
+      {/* Simple Credit */}
+      <div className="fixed bottom-0 left-0 right-0 text-center py-2 text-gray-600 text-sm bg-white border-t border-gray-200">
+        Designed & Created by Ritvik Tirumala
+      </div>
+      
+      {/* Custom CSS for animations */}
+      <style jsx>{`
+        @keyframes slideIn {
+          from {
+            opacity: 0;
+            transform: translateY(-10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        
+        .animate-slideIn {
+          animation: slideIn 0.3s ease-out;
+        }
+      `}</style>
     </div>
   );
 };

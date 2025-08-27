@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import AIClubChatbot from './AIClubChatbot';
+import AIClubChatbotFixed from './AIClubChatbotFixed';
 
 // Mock fetch globally
 global.fetch = jest.fn();
@@ -27,7 +27,7 @@ const mockRecommendationsResponse = {
   "source": "ai"
 };
 
-describe('AIClubChatbot', () => {
+describe('AIClubChatbotFixed', () => {
   beforeEach(() => {
     // Clear all mocks before each test
     jest.clearAllMocks();
@@ -43,7 +43,7 @@ describe('AIClubChatbot', () => {
 
   describe('Test 1: Renders welcome message and school selection buttons', () => {
     test('should render welcome message and school selection buttons when chat opens', () => {
-      render(<AIClubChatbot allClubData={fakeClubData} />);
+      render(<AIClubChatbotFixed allClubData={fakeClubData} />);
       
       // Click the chat button to open the chat
       const chatButton = screen.getByLabelText('Open AI Club Chatbot');
@@ -66,7 +66,7 @@ describe('AIClubChatbot', () => {
 
   describe('Test 2: User selects "Lambert High School" and bot asks the first question', () => {
     test('should handle school selection and ask first question', async () => {
-      render(<AIClubChatbot allClubData={fakeClubData} />);
+      render(<AIClubChatbotFixed allClubData={fakeClubData} />);
       
       // Open chat
       const chatButton = screen.getByLabelText('Open AI Club Chatbot');
@@ -98,7 +98,7 @@ describe('AIClubChatbot', () => {
         json: async () => mockRecommendationsResponse
       });
 
-      render(<AIClubChatbot allClubData={fakeClubData} />);
+      render(<AIClubChatbotFixed allClubData={fakeClubData} />);
       
       // Open chat
       const chatButton = screen.getByLabelText('Open AI Club Chatbot');
@@ -181,7 +181,7 @@ describe('AIClubChatbot', () => {
         json: async () => ({ error: 'API temporarily unavailable' })
       });
 
-      render(<AIClubChatbot allClubData={fakeClubData} />);
+      render(<AIClubChatbotFixed allClubData={fakeClubData} />);
       
       // Open chat and complete flow
       const chatButton = screen.getByLabelText('Open AI Club Chatbot');
@@ -216,7 +216,7 @@ describe('AIClubChatbot', () => {
     });
 
     test('should handle empty club data', () => {
-      render(<AIClubChatbot allClubData={[]} />);
+      render(<AIClubChatbotFixed allClubData={[]} />);
       
       const chatButton = screen.getByLabelText('Open AI Club Chatbot');
       fireEvent.click(chatButton);
@@ -227,7 +227,7 @@ describe('AIClubChatbot', () => {
     });
 
     test('should close chat when X button is clicked', () => {
-      render(<AIClubChatbot allClubData={fakeClubData} />);
+      render(<AIClubChatbotFixed allClubData={fakeClubData} />);
       
       // Open chat
       const chatButton = screen.getByLabelText('Open AI Club Chatbot');
@@ -252,7 +252,7 @@ describe('AIClubChatbot', () => {
         json: async () => mockRecommendationsResponse
       });
 
-      render(<AIClubChatbot allClubData={fakeClubData} />);
+      render(<AIClubChatbotFixed allClubData={fakeClubData} />);
       
       // Complete full conversation to get recommendations
       const chatButton = screen.getByLabelText('Open AI Club Chatbot');

@@ -183,6 +183,12 @@ const CreateAccount = () => {
           <Link to="/login" className="ml-2 text-blue-600 hover:underline font-semibold">Login</Link>
         </div>
       </div>
+
+      {/* Footer */}
+      <footer className="absolute bottom-0 left-0 right-0 bg-gray-800 text-white py-2 px-8 text-center">
+        <p className="text-xs">🚀 Crafted with passion by Ritvik Tirumala • Established 2025</p>
+      </footer>
+
       {/* Add custom CSS for animations */}
       <style jsx>{`
         @keyframes blob {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import AIClubChatbot from '../chatbot/AIClubChatbot';
+import AIClubChatbotFixed from '../chatbot/AIClubChatbotFixed';
 
 // Mock fetch for API calls
 global.fetch = jest.fn();
@@ -108,7 +108,7 @@ const sendMessage = async (user, message) => {
   fireEvent.submit(input.closest('form'));
 };
 
-describe('AIClubChatbot', () => {
+describe('AIClubChatbotFixed', () => {
   let user;
 
   beforeEach(() => {
@@ -118,13 +118,13 @@ describe('AIClubChatbot', () => {
 
   describe('Initial Rendering', () => {
     test('renders floating chat button when closed', () => {
-      render(<AIClubChatbot allClubData={sampleClubData} />);
+      render(<AIClubChatbotFixed allClubData={sampleClubData} />);
       const chatButton = screen.getByLabelText('Open AI Club Chatbot');
       expect(chatButton).toBeInTheDocument();
     });
 
     test('opens chat window and shows greeting', async () => {
-      render(<AIClubChatbot allClubData={sampleClubData} />);
+      render(<AIClubChatbotFixed allClubData={sampleClubData} />);
       const chatButton = screen.getByLabelText('Open AI Club Chatbot');
       await user.click(chatButton);
       
@@ -135,7 +135,7 @@ describe('AIClubChatbot', () => {
 
   describe('School Selection', () => {
     test('displays school selection buttons', async () => {
-      render(<AIClubChatbot allClubData={sampleClubData} />);
+      render(<AIClubChatbotFixed allClubData={sampleClubData} />);
       const chatButton = screen.getByLabelText('Open AI Club Chatbot');
       await user.click(chatButton);
       
@@ -144,7 +144,7 @@ describe('AIClubChatbot', () => {
     });
 
     test('allows school selection via button', async () => {
-      render(<AIClubChatbot allClubData={sampleClubData} />);
+      render(<AIClubChatbotFixed allClubData={sampleClubData} />);
       const chatButton = screen.getByLabelText('Open AI Club Chatbot');
       await user.click(chatButton);
       
@@ -158,7 +158,7 @@ describe('AIClubChatbot', () => {
 
   describe('Question Flow', () => {
     beforeEach(async () => {
-      render(<AIClubChatbot allClubData={sampleClubData} />);
+      render(<AIClubChatbotFixed allClubData={sampleClubData} />);
       const chatButton = screen.getByLabelText('Open AI Club Chatbot');
       await user.click(chatButton);
       
@@ -190,7 +190,7 @@ describe('AIClubChatbot', () => {
 
   describe('Case A: STEM Student', () => {
     beforeEach(async () => {
-      render(<AIClubChatbot allClubData={sampleClubData} />);
+      render(<AIClubChatbotFixed allClubData={sampleClubData} />);
       const chatButton = screen.getByLabelText('Open AI Club Chatbot');
       await user.click(chatButton);
       
@@ -250,7 +250,7 @@ describe('AIClubChatbot', () => {
 
   describe('Case B: Arts Student', () => {
     beforeEach(async () => {
-      render(<AIClubChatbot allClubData={sampleClubData} />);
+      render(<AIClubChatbotFixed allClubData={sampleClubData} />);
       const chatButton = screen.getByLabelText('Open AI Club Chatbot');
       await user.click(chatButton);
       
@@ -311,7 +311,7 @@ describe('AIClubChatbot', () => {
 
   describe('Case C: Community Service Student', () => {
     beforeEach(async () => {
-      render(<AIClubChatbot allClubData={sampleClubData} />);
+      render(<AIClubChatbotFixed allClubData={sampleClubData} />);
       const chatButton = screen.getByLabelText('Open AI Club Chatbot');
       await user.click(chatButton);
       
@@ -370,7 +370,7 @@ describe('AIClubChatbot', () => {
 
   describe('Recommendation Structure', () => {
     beforeEach(async () => {
-      render(<AIClubChatbot allClubData={sampleClubData} />);
+      render(<AIClubChatbotFixed allClubData={sampleClubData} />);
       const chatButton = screen.getByLabelText('Open AI Club Chatbot');
       await user.click(chatButton);
       
@@ -477,7 +477,7 @@ describe('AIClubChatbot', () => {
 
   describe('Error Handling', () => {
     beforeEach(async () => {
-      render(<AIClubChatbot allClubData={sampleClubData} />);
+      render(<AIClubChatbotFixed allClubData={sampleClubData} />);
       const chatButton = screen.getByLabelText('Open AI Club Chatbot');
       await user.click(chatButton);
       

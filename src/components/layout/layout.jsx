@@ -38,10 +38,30 @@ const Layout = ({
       </div>
 
       {/* Main Content */}
-      <div className="lg:ml-80 min-h-screen">
-        <div className="p-8 lg:p-12">
+      <div className="lg:ml-80 min-h-screen flex flex-col">
+        <div className="flex-1 p-8 lg:p-12">
           {children}
         </div>
+        
+        {/* Footer */}
+        <footer className="bg-gradient-to-r from-slate-800 via-blue-900 to-indigo-900 text-white py-6 px-8 lg:px-12">
+          <div className="max-w-7xl mx-auto">
+            <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+              <div className="text-center md:text-left">
+                <p className="text-lg font-semibold bg-gradient-to-r from-blue-300 to-purple-300 bg-clip-text text-transparent">
+                  🚀 Crafted with passion by Ritvik Tirumala
+                </p>
+                <p className="text-sm text-gray-300 mt-1">
+                  Established 2025 • Building the future of student connections
+                </p>
+              </div>
+              <div className="flex items-center space-x-2 text-gray-300">
+                <span className="text-2xl">⚡</span>
+                <span className="text-sm font-medium">Powered by React & AI</span>
+              </div>
+            </div>
+          </div>
+        </footer>
       </div>
 
       {/* Mobile Overlay */}

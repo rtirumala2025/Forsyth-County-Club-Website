@@ -1,5 +1,5 @@
 import React from 'react';
-import AIClubChatbot from './AIClubChatbot';
+import AIClubChatbotFixed from './AIClubChatbotFixed';
 import { sampleClubs } from '../data/sampleClubs';
 
 // Example component showing how to use the AI Club Chatbot
@@ -48,7 +48,7 @@ const AIClubChatbotExample = () => {
       </div>
 
       {/* The AI Chatbot Component */}
-      <AIClubChatbot clubs={sampleClubs} />
+      <AIClubChatbotFixed allClubData={sampleClubs} />
     </div>
   );
 };

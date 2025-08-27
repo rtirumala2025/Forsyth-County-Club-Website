@@ -10,6 +10,39 @@ import About from './pages/About';
 import Profile from './pages/Profile';
 import Calendar from './pages/Calendar';
 
+// Test component to debug routing
+const TestComponent = () => {
+  return (
+    <div className="min-h-screen bg-blue-100 flex items-center justify-center">
+      <div className="text-center">
+        <h1 className="text-4xl font-bold text-blue-800 mb-4">App is Loading!</h1>
+        <p className="text-blue-600">If you can see this, the React app is working.</p>
+      </div>
+    </div>
+  );
+};
+
+// Simple test component without any dependencies
+const SimpleTestComponent = () => {
+  return (
+    <div className="min-h-screen bg-green-100 flex items-center justify-center">
+      <div className="text-center">
+        <h1 className="text-4xl font-bold text-green-800 mb-4">Simple Test Component</h1>
+        <p className="text-green-600 mb-4">This component has no dependencies and should always render.</p>
+        <div className="bg-white p-4 rounded-lg shadow">
+          <p className="text-gray-800">If you can see this, React is working properly.</p>
+          <p className="text-gray-600 text-sm mt-2">Check the browser console for any errors.</p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Temporary bypass component for testing
+const BypassAuth = ({ children }) => {
+  return children;
+};
+
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
@@ -20,9 +53,9 @@ const ProtectedRoute = ({ children }) => {
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Loading...</p>
+        </div>
       </div>
-    </div>
-  );
+    );
   }
 
   return user ? children : <Navigate to="/login" replace />;
@@ -38,9 +71,9 @@ const PublicRoute = ({ children }) => {
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Loading...</p>
+        </div>
       </div>
-    </div>
-  );
+    );
   }
 
   return user ? <Navigate to="/" replace /> : children;
@@ -50,6 +83,10 @@ const AppRoutes = () => {
   return (
     <Router>
       <Routes>
+        <Route path="/test" element={<TestComponent />} />
+        <Route path="/simple" element={<SimpleTestComponent />} />
+        <Route path="/bypass" element={<ClubsWebsite />} />
+        <Route path="/debug" element={<ClubsWebsite />} />
         <Route 
           path="/login" 
           element={
@@ -121,11 +158,7 @@ const AppRoutes = () => {
 };
 
 const App = () => {
-  return (
-    <AuthProvider>
-      <AppRoutes />
-    </AuthProvider>
-  );
+  return <AppRoutes />;
 };
 
 export default App;
