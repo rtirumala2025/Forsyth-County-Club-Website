@@ -76,13 +76,10 @@ const Login = () => {
           <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-400 to-blue-500 rounded-full mb-4 shadow-lg">
             <Users size={32} className="text-white" />
           </div>
-          <h1 className="text-4xl font-bold text-yellow-800 mb-2 drop-shadow-sm">
-            Welcome to the
-          </h1>
-          <div className="bg-gradient-to-r from-blue-500 via-blue-400 to-blue-300 bg-clip-text text-transparent">
-            <h2 className="text-3xl font-bold">Forsyth County Club Website</h2>
-          </div>
-          <p className="text-yellow-600 mt-2 text-lg">Join the community!</p>
+          <h2 className="text-3xl font-bold mb-2 welcome-text">
+          Welcome to the Forsyth County Club Website
+          </h2>
+          <p className="mt-2 text-lg font-medium welcome-text">Join the community!</p>
         </div>
 
         {/* Login Form with school colors */}
@@ -209,11 +206,11 @@ const Login = () => {
       </div>
 
       {/* Footer */}
-      <footer className="absolute bottom-0 left-0 right-0 bg-gray-800 text-white py-2 px-8 text-center">
-        <p className="text-xs">🚀 Crafted with passion by Ritvik Tirumala • Established 2025</p>
-      </footer>
+      <div className="fixed bottom-0 left-0 right-0 text-center py-2 text-gray-600 text-sm bg-white border-t border-gray-200">
+        Designed & Created by Ritvik Tirumala
+      </div>
 
-      {/* Add custom CSS for animations */}
+      {/* Add custom CSS for animations and text colors */}
       <style jsx>{`
         @keyframes blob {
           0% {
@@ -237,6 +234,13 @@ const Login = () => {
         }
         .animation-delay-4000 {
           animation-delay: 4s;
+        }
+        /* Force welcome text to be dark blue */
+        .welcome-text {
+          color: #1e3a8a !important;
+        }
+        .welcome-subtitle {
+          color: #1e40af !important;
         }
       `}</style>
     </div>

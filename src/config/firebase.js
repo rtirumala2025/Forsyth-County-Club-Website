@@ -22,6 +22,11 @@ export const AuthProvider = ({ children }) => {
     try {
       const unsubscribe = auth.onAuthStateChanged((firebaseUser) => {
         console.log("Auth state changed:", firebaseUser); // Debug log
+        if (firebaseUser) {
+          console.log("User is authenticated:", firebaseUser.email);
+        } else {
+          console.log("User is not authenticated");
+        }
         setUser(firebaseUser);
         setLoading(false);
       });

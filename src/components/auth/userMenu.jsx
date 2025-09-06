@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../config/firebase';
-import { User, LogOut } from 'lucide-react';
+import { User, LogOut, AlertCircle } from 'lucide-react';
 import ReactDOM from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 
@@ -12,6 +12,8 @@ const UserMenu = ({ user }) => {
   const handleLogout = async () => {
     try {
       await logout();
+      setIsOpen(false);
+      navigate('/login');
     } catch (error) {
       console.error('Logout error:', error);
     }

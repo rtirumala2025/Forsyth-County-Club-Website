@@ -617,10 +617,25 @@ const ClubsWebsite = () => {
             </button>
           </div>
 
-          {/* Right side - User menu */}
-          {user && (
+          {/* Right side - User menu or Sign In button */}
+          {user ? (
             <div className="flex items-center relative z-[9999]">
               <UserMenu user={user} />
+            </div>
+          ) : (
+            <div className="flex items-center space-x-3">
+              <button
+                onClick={() => navigate('/login')}
+                className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium transition-all duration-200 hover:scale-105"
+              >
+                Sign In
+              </button>
+              <button
+                onClick={() => navigate('/create-account')}
+                className="px-4 py-2 rounded-lg bg-transparent border-2 border-blue-600 hover:bg-blue-50 text-blue-600 font-medium transition-all duration-200 hover:scale-105"
+              >
+                Create Account
+              </button>
             </div>
           )}
         </div>
