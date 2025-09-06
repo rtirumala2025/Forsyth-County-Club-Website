@@ -6,7 +6,7 @@ import UserMenu from '../components/auth/userMenu';
 import { useNavigate } from 'react-router-dom';
 import { useClubFilter } from '../hooks/useClubFilter';
 import { allClubData, CategoryColors, getClubsBySchool, getAvailableSchools } from '../data/clubData';
-import ChatbotUI from '../components/chatbot/ChatbotUI';
+import AIClubChatbotFixed from '../components/chatbot/AIClubChatbotFixed';
 
 const ClubsWebsite = () => {
   // Add debugging logs
@@ -720,7 +720,7 @@ const ClubsWebsite = () => {
       </div>
       
       {/* AI Club Chatbot */}
-      <ChatbotUI 
+      <AIClubChatbotFixed 
         allClubData={allClubData} 
         isOpen={chatbotOpen}
         onClose={() => setChatbotOpen(false)}

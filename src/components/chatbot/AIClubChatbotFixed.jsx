@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Bot, User, Send, X } from 'lucide-react';
+import { Bot, User, Send, X, Sparkles } from 'lucide-react';
 import { 
-  processUserInput, 
-  generateBotResponse 
-} from '../../services/clubRecommendationService';
+  processUserInputEnhanced, 
+  generateBotResponse,
+  enhancedConversationState,
+  getPersonalizedRecommendations
+} from '../../services/enhancedClubRecommendationService';
 
 const AIClubChatbotFixed = ({ allClubData, isOpen: externalIsOpen, onClose, selectedSchool = null }) => {
   // Core state management
@@ -18,13 +20,8 @@ const AIClubChatbotFixed = ({ allClubData, isOpen: externalIsOpen, onClose, sele
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   
-  // Conversation state management
-  const [conversationState, setConversationState] = useState({
-    step: 'greeting',
-    mainInterest: null,
-    subcategory: null,
-    recommendations: []
-  });
+  // Enhanced conversation state management
+  const [conversationState, setConversationState] = useState(enhancedConversationState);
   
   // Refs for UI interactions
   const messagesEndRef = useRef(null);
@@ -32,7 +29,9 @@ const AIClubChatbotFixed = ({ allClubData, isOpen: externalIsOpen, onClose, sele
 
   // Scroll to bottom when new messages are added
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (messagesEndRef.current && typeof messagesEndRef.current.scrollIntoView === 'function') {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   useEffect(() => {
@@ -50,7 +49,8 @@ const AIClubChatbotFixed = ({ allClubData, isOpen: externalIsOpen, onClose, sele
           text: botResponse.text,
           timestamp: new Date(),
           quickReplies: botResponse.quickReplies,
-          recommendations: botResponse.recommendations
+          recommendations: botResponse.recommendations,
+          aiRecommendations: botResponse.aiRecommendations
         };
         setMessages([greetingMessage]);
       }, 500);
@@ -69,14 +69,15 @@ const AIClubChatbotFixed = ({ allClubData, isOpen: externalIsOpen, onClose, sele
   };
 
   // Add bot message to chat
-  const addBotMessage = (text, quickReplies = null, recommendations = null) => {
+  const addBotMessage = (text, quickReplies = null, recommendations = null, aiRecommendations = null) => {
     const botMessage = {
       id: Date.now(),
       type: 'bot',
       text: text,
       timestamp: new Date(),
       quickReplies: quickReplies,
-      recommendations: recommendations
+      recommendations: recommendations,
+      aiRecommendations: aiRecommendations
     };
     setMessages(prev => [...prev, botMessage]);
   };
@@ -84,7 +85,7 @@ const AIClubChatbotFixed = ({ allClubData, isOpen: externalIsOpen, onClose, sele
   // Process user input and update conversation state
   const handleUserInput = async (userInput) => {
     // Update conversation state based on user input
-    const newState = processUserInput(userInput, conversationState, allClubData, selectedSchool);
+    const newState = await processUserInputEnhanced(userInput, conversationState, allClubData, selectedSchool);
     setConversationState(newState);
     
     // Generate bot response based on new state
@@ -96,7 +97,8 @@ const AIClubChatbotFixed = ({ allClubData, isOpen: externalIsOpen, onClose, sele
       addBotMessage(
         botResponse.text, 
         botResponse.quickReplies, 
-        botResponse.recommendations
+        botResponse.recommendations,
+        botResponse.aiRecommendations
       );
       setIsLoading(false);
     }, 1000);
@@ -128,17 +130,32 @@ const AIClubChatbotFixed = ({ allClubData, isOpen: externalIsOpen, onClose, sele
   };
 
   // Render club recommendation card
-  const renderClubCard = (club) => (
-    <div key={club.id} className="bg-white border border-gray-200 rounded-lg p-4 mb-3 shadow-sm hover:shadow-md transition-shadow">
+  const renderClubCard = (club, isAI = false) => (
+    <div key={club.id || club.clubName} className="bg-white border border-gray-200 rounded-lg p-4 mb-3 shadow-sm hover:shadow-md transition-shadow">
       <div className="flex justify-between items-start mb-2">
-        <h4 className="font-semibold text-gray-900 text-sm">{club.name}</h4>
+        <div className="flex items-center gap-2">
+          <h4 className="font-semibold text-gray-900 text-sm">
+            {club.name || club.clubName}
+          </h4>
+          {isAI && (
+            <div className="flex items-center gap-1">
+              <Sparkles size={12} className="text-blue-500" />
+              <span className="text-xs text-blue-600">AI</span>
+            </div>
+          )}
+        </div>
         <span className="text-xs px-2 py-1 bg-blue-100 text-blue-800 rounded-full">
           {club.category}
         </span>
       </div>
       <p className="text-xs text-gray-600 mb-3 line-clamp-2">
-        {club.description.substring(0, 120)}...
+        {club.description || club.reason || 'No description available'}
       </p>
+      {club.fit && (
+        <p className="text-xs text-gray-500 mb-3 italic">
+          "{club.fit}"
+        </p>
+      )}
       <div className="flex justify-between items-center">
         <span className="text-xs text-gray-500">
           Sponsor: {club.sponsor ? club.sponsor.split(' ')[0] + '...' : 'TBD'}
@@ -221,7 +238,16 @@ const AIClubChatbotFixed = ({ allClubData, isOpen: externalIsOpen, onClose, sele
               {message.type === 'bot' && message.recommendations && message.recommendations.length > 0 && (
                 <div className="ml-11 mt-3">
                   <div className="space-y-2">
-                    {message.recommendations.map(club => renderClubCard(club))}
+                    {message.recommendations.map(club => renderClubCard(club, false))}
+                  </div>
+                </div>
+              )}
+              
+              {/* AI recommendations */}
+              {message.type === 'bot' && message.aiRecommendations && message.aiRecommendations.length > 0 && (
+                <div className="ml-11 mt-3">
+                  <div className="space-y-2">
+                    {message.aiRecommendations.map(club => renderClubCard(club, true))}
                   </div>
                 </div>
               )}
@@ -258,7 +284,7 @@ const AIClubChatbotFixed = ({ allClubData, isOpen: externalIsOpen, onClose, sele
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder="Tell me about your interests..."
+              placeholder="Tell me about your interests or ask a question..."
               className="flex-1 px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
               disabled={isLoading}
             />
