@@ -62,7 +62,7 @@ const Login = () => {
   };  
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-100 via-blue-50 to-white flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-blue-100 via-blue-50 to-white flex items-center justify-center p-2 relative overflow-hidden">
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-40 animate-blob"></div>
@@ -70,35 +70,35 @@ const Login = () => {
         <div className="absolute top-40 left-40 w-80 h-80 bg-blue-100 rounded-full mix-blend-multiply filter blur-xl opacity-35 animate-blob animation-delay-4000"></div>
       </div>
 
-      <div className="max-w-md w-full relative z-10">
+      <div className="max-w-lg w-full relative z-10">
         {/* Header with school colors */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-400 to-blue-500 rounded-full mb-4 shadow-lg">
-            <Users size={32} className="text-white" />
+        <div className="text-center mb-4">
+          <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-r from-blue-400 to-blue-500 rounded-full mb-3 shadow-lg">
+            <Users size={24} className="text-white" />
           </div>
-          <h2 className="text-3xl font-bold mb-2 welcome-text">
+          <h2 className="text-2xl font-bold mb-1 welcome-text">
           Welcome to the Forsyth County Club Website
           </h2>
-          <p className="mt-2 text-lg font-medium welcome-text">Join the community!</p>
+          <p className="text-base font-medium welcome-text">Join the community!</p>
         </div>
 
         {/* Login Form with school colors */}
-        <div className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-2xl border border-white/50 p-8">
-          <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-2xl border border-white/50 p-6">
+          <form onSubmit={handleSubmit} className="space-y-4">
             {/* Email Field */}
             <div>
-              <label htmlFor="email" className="block text-sm font-semibold text-yellow-800 mb-2">
+              <label htmlFor="email" className="block text-sm font-semibold text-yellow-800 mb-1">
                 Email Address
               </label>
               <div className="relative">
-                <Mail size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+                <Mail size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
                 <input
                   id="email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="w-full pl-10 pr-4 py-4 bg-white border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 placeholder-gray-500 text-black"
+                  className="w-full pl-9 pr-4 py-3 bg-white border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 placeholder-gray-500 text-black"
                   placeholder="Enter your email"
                 />
               </div>
@@ -106,7 +106,7 @@ const Login = () => {
 
             {/* Password Field */}
             <div>
-              <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center justify-between mb-1">
                 <label htmlFor="password" className="block text-sm font-semibold text-yellow-800">
                   Password
                 </label>
@@ -119,14 +119,14 @@ const Login = () => {
                 </button>
               </div>
               <div className="relative">
-                <Lock size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+                <Lock size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
                 <input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="w-full pl-10 pr-12 py-4 bg-white border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 placeholder-gray-500 text-black"
+                  className="w-full pl-9 pr-10 py-3 bg-white border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 placeholder-gray-500 text-black"
                   placeholder="Enter your password"
                 />
                 <button
@@ -134,20 +134,20 @@ const Login = () => {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
                 >
-                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
             </div>
 
             {/* Error Message */}
             {error && (
-              <div className="bg-red-50 border border-red-200 rounded-xl p-4">
+              <div className="bg-red-50 border border-red-200 rounded-xl p-3">
                 <p className="text-red-600 text-sm font-medium">{error}</p>
               </div>
             )}
             {/* Reset Message */}
             {resetMessage && (
-              <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mt-2">
+              <div className="bg-blue-50 border border-blue-200 rounded-xl p-3 mt-2">
                 <p className="text-blue-700 text-sm font-medium">{resetMessage}</p>
               </div>
             )}
@@ -156,7 +156,7 @@ const Login = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-blue-400 to-blue-500 text-white py-4 px-6 rounded-xl font-bold text-lg hover:from-blue-500 hover:to-blue-600 focus:ring-4 focus:ring-blue-300 focus:ring-offset-2 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+              className="w-full bg-gradient-to-r from-blue-400 to-blue-500 text-white py-3 px-6 rounded-xl font-bold text-base hover:from-blue-500 hover:to-blue-600 focus:ring-4 focus:ring-blue-300 focus:ring-offset-2 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:-translate-y-1"
             >
               {loading ? (
                 <div className="flex items-center justify-center">
@@ -165,7 +165,7 @@ const Login = () => {
                 </div>
               ) : (
                 <div className="flex items-center justify-center">
-                  <Sparkles size={20} className="mr-2" />
+                  <Sparkles size={18} className="mr-2" />
                   Sign In
                 </div>
               )}
@@ -173,12 +173,12 @@ const Login = () => {
           </form>
 
           {/* Google Sign-In Button */}
-          <div className="mt-6">
+          <div className="mt-4">
             <button
               type="button"
               onClick={handleGoogleSignIn}
               disabled={loading}
-              className="w-full flex items-center justify-center bg-white border-2 border-blue-400 text-blue-700 font-semibold py-3 px-6 rounded-xl shadow hover:bg-blue-50 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full flex items-center justify-center bg-white border-2 border-blue-400 text-blue-700 font-semibold py-2.5 px-6 rounded-xl shadow hover:bg-blue-50 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <svg className="w-5 h-5 mr-2" viewBox="0 0 48 48"><g><path fill="#4285F4" d="M24 9.5c3.54 0 6.7 1.22 9.19 3.23l6.85-6.85C36.68 2.7 30.74 0 24 0 14.82 0 6.73 5.1 2.69 12.55l7.98 6.2C12.13 13.13 17.62 9.5 24 9.5z"/><path fill="#34A853" d="M46.1 24.55c0-1.64-.15-3.22-.42-4.74H24v9.01h12.42c-.54 2.9-2.18 5.36-4.65 7.01l7.19 5.6C43.93 37.13 46.1 31.3 46.1 24.55z"/><path fill="#FBBC05" d="M10.67 28.13c-1.13-3.36-1.13-6.9 0-10.26l-7.98-6.2C.99 15.1 0 19.41 0 24c0 4.59.99 8.9 2.69 12.33l7.98-6.2z"/><path fill="#EA4335" d="M24 48c6.74 0 12.68-2.22 16.85-6.05l-7.19-5.6c-2.01 1.35-4.59 2.15-7.66 2.15-6.38 0-11.87-3.63-14.33-8.88l-7.98 6.2C6.73 42.9 14.82 48 24 48z"/><path fill="none" d="M0 0h48v48H0z"/></g></svg>
               Sign in with Google
@@ -186,16 +186,16 @@ const Login = () => {
           </div>
 
           {/* Create Account Button */}
-          <div className="mt-4">
+          <div className="mt-3">
             <button
               type="button"
               onClick={() => navigate('/create-account')}
               disabled={loading}
-              className="w-full flex items-center justify-center bg-white border-2 border-blue-400 text-blue-700 font-semibold py-3 px-6 rounded-xl shadow hover:bg-blue-50 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full flex items-center justify-center bg-white border-2 border-blue-400 text-blue-700 font-semibold py-2.5 px-6 rounded-xl shadow hover:bg-blue-50 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <span className="w-5 h-5 mr-2 flex items-center justify-center">
+              <span className="w-4 h-4 mr-2 flex items-center justify-center">
                 {/* You can use a user icon or plus icon here if desired */}
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                 </svg>
               </span>

@@ -1,0 +1,25 @@
+{
+  "name": "firebase-user-sync",
+  "version": "1.0.0",
+  "description": "Script to sync Firebase Auth users to Firestore",
+  "main": "sync-users-to-firestore.js",
+  "scripts": {
+    "sync": "node sync-users-to-firestore.js",
+    "verify": "node sync-users-to-firestore.js --verify"
+  },
+  "dependencies": {
+    "firebase-admin": "^12.0.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "keywords": [
+    "firebase",
+    "firestore",
+    "auth",
+    "sync",
+    "migration"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
+}
