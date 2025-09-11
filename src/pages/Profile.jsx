@@ -25,6 +25,9 @@ const createUserProfile = async (user) => {
 
   try {
     const docRef = doc(db, "users", user.uid);
+    console.log("📝 Document reference for creation:", docRef);
+    console.log("📝 Database instance for creation:", db);
+    
     const defaultProfile = {
       name: user.displayName || user.email?.split('@')[0] || "New User",
       email: user.email,
@@ -36,6 +39,8 @@ const createUserProfile = async (user) => {
     };
 
     console.log("💾 Writing default profile to Firestore:", defaultProfile);
+    console.log("💾 About to call setDoc...");
+    
     await setDoc(docRef, defaultProfile);
     console.log("✅ Profile created successfully for UID:", user.uid);
     console.log("📊 Profile data written:", defaultProfile);
@@ -47,6 +52,8 @@ const createUserProfile = async (user) => {
       message: error.message,
       stack: error.stack
     });
+    console.error("🔍 User object:", user);
+    console.error("🔍 Database object:", db);
     throw error;
   }
 };
@@ -70,7 +77,12 @@ const fetchUserProfile = async (user) => {
   try {
     const docRef = doc(db, "users", user.uid);
     console.log("📄 Executing getDoc for path:", firestorePath);
+    console.log("📄 Document reference:", docRef);
+    console.log("📄 Database instance:", db);
+    
     const docSnap = await getDoc(docRef);
+    console.log("📄 Document snapshot received:", docSnap);
+    console.log("📄 Document exists:", docSnap.exists());
 
     if (docSnap.exists()) {
       const profileData = docSnap.data();
@@ -89,6 +101,8 @@ const fetchUserProfile = async (user) => {
       message: error.message,
       stack: error.stack
     });
+    console.error("🔍 User object:", user);
+    console.error("🔍 Database object:", db);
     throw error;
   }
 };
@@ -158,6 +172,9 @@ const Profile = () => {
 
   useEffect(() => {
     const loadProfile = async () => {
+      console.log("🚀 Profile useEffect triggered");
+      console.log("📊 Current state:", { authLoading, user: user?.uid, loading });
+      
       if (authLoading) {
         console.log("⏳ Auth is still loading, waiting...");
         return;
@@ -190,10 +207,23 @@ const Profile = () => {
       
       try {
         console.log("📋 Starting profile fetch/creation process...");
+        console.log("🔧 Testing Firestore connection...");
+        
+        // Test Firestore connection first
+        try {
+          const testDoc = doc(db, "test", "connection");
+          console.log("🔧 Firestore test doc created:", testDoc);
+          console.log("🔧 Firestore database instance:", db);
+          console.log("🔧 Firestore app:", db.app);
+        } catch (connectionError) {
+          console.error("❌ Firestore connection test failed:", connectionError);
+          throw new Error(`Firestore connection failed: ${connectionError.message}`);
+        }
         
         // First, try to fetch existing profile
         console.log("🔍 Step 1: Attempting to fetch existing profile...");
         let profileData = await fetchUserProfile(user);
+        console.log("🔍 Step 1 result:", profileData ? "Profile found" : "No profile found");
         
         // If no profile exists, create one
         if (!profileData) {
@@ -235,7 +265,7 @@ const Profile = () => {
           errorMessage: error.message,
           errorStack: error.stack
         });
-        setProfileError("Failed to load profile. Please try refreshing the page.");
+        setProfileError(`Failed to load profile: ${error.message}`);
         setProfile(null);
       }
       setLoading(false);
