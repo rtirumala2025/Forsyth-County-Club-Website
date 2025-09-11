@@ -222,14 +222,45 @@ const Profile = () => {
         
         // First, try to fetch existing profile
         console.log("🔍 Step 1: Attempting to fetch existing profile...");
-        let profileData = await fetchUserProfile(user);
-        console.log("🔍 Step 1 result:", profileData ? "Profile found" : "No profile found");
+        let profileData = null;
+        let profileCreationError = null;
         
-        // If no profile exists, create one
+        try {
+          profileData = await fetchUserProfile(user);
+          console.log("🔍 Step 1 result:", profileData ? "Profile found" : "No profile found");
+        } catch (fetchError) {
+          console.warn("⚠️ Step 1 failed (likely due to security rules):", fetchError.message);
+          console.log("🔄 Will attempt to create profile directly...");
+        }
+        
+        // If no profile exists or fetch failed, try to create one
         if (!profileData) {
-          console.log("📝 Step 2: No existing profile found, creating new one...");
-          profileData = await createUserProfile(user);
-          console.log("✅ Step 2 Complete: New profile created successfully");
+          console.log("📝 Step 2: No existing profile found or fetch failed, creating new one...");
+          try {
+            profileData = await createUserProfile(user);
+            console.log("✅ Step 2 Complete: New profile created successfully");
+          } catch (createError) {
+            console.error("❌ Step 2 failed:", createError.message);
+            profileCreationError = createError;
+            
+            // If creation also fails due to permissions, create a local profile
+            if (createError.message.includes("permissions")) {
+              console.log("🔄 Creating local profile as fallback...");
+              profileData = {
+                name: user.displayName || user.email?.split('@')[0] || "New User",
+                email: user.email,
+                bio: "",
+                grade: "",
+                clubs: [],
+                profilePic: "",
+                createdAt: new Date().toISOString(),
+                isLocalProfile: true // Flag to indicate this is a local profile
+              };
+              console.log("✅ Local profile created as fallback");
+            } else {
+              throw createError;
+            }
+          }
         } else {
           console.log("✅ Step 1 Complete: Existing profile found and loaded");
         }
@@ -292,9 +323,20 @@ const Profile = () => {
     console.log("💾 Starting profile save process...");
     console.log("👤 User:", { uid: user.uid, email: user.email });
     console.log("📝 Data to save:", { bio, grade, clubs });
+    console.log("🔍 Profile type:", profile?.isLocalProfile ? "Local" : "Firestore");
     
     setSaving(true);
     try {
+      // If this is a local profile, just update local state
+      if (profile?.isLocalProfile) {
+        console.log("🔄 Updating local profile (Firestore not available)");
+        setProfile(prev => ({ ...prev, bio, grade, clubs }));
+        console.log("✅ Local profile updated successfully");
+        alert("Profile updated locally! (Note: Changes are not saved to server due to permissions)");
+        return;
+      }
+      
+      // Try to save to Firestore
       const docRef = doc(db, "users", user.uid);
       const updateData = { bio, grade, clubs };
       
@@ -318,7 +360,15 @@ const Profile = () => {
         uid: user.uid,
         updateData: { bio, grade, clubs }
       });
-      alert("Failed to update profile. Please try again.");
+      
+      // If it's a permissions error, update locally as fallback
+      if (error.message.includes("permissions")) {
+        console.log("🔄 Firestore save failed due to permissions, updating locally as fallback");
+        setProfile(prev => ({ ...prev, bio, grade, clubs, isLocalProfile: true }));
+        alert("Profile updated locally! (Note: Changes are not saved to server due to permissions)");
+      } else {
+        alert("Failed to update profile. Please try again.");
+      }
     } finally {
       setSaving(false);
       console.log("🏁 Profile save process complete");
@@ -664,6 +714,14 @@ const Profile = () => {
             <p className="text-gray-600 mb-4">Email: {profile.email}</p>
             {profile.grade && (
               <p className="text-blue-600 font-medium">Grade: {profile.grade}</p>
+            )}
+            {profile.isLocalProfile && (
+              <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-2 rounded-lg mb-4">
+                <p className="text-sm">
+                  <strong>⚠️ Local Mode:</strong> Profile data is stored locally only. 
+                  To enable cloud storage, please configure Firestore security rules.
+                </p>
+              </div>
             )}
           </div>
 
