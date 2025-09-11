@@ -114,6 +114,7 @@ const fetchUserProfile = async (user) => {
 const Profile = () => {
   const { user, loading: authLoading, logout } = useAuth();
   const [profile, setProfile] = useState(null);
+  const [name, setName] = useState("");
   const [bio, setBio] = useState("");
   const [grade, setGrade] = useState("");
   const [school, setSchool] = useState("");
@@ -241,7 +242,7 @@ const Profile = () => {
     if (!profileData) return 0;
     
     const fields = [
-      profileData.name && profileData.name.trim() !== "",
+      (name || profileData.name) && (name || profileData.name).trim() !== "",
       profileData.email && profileData.email.trim() !== "",
       bio && bio.trim() !== "",
       grade && grade.trim() !== "",
@@ -406,6 +407,7 @@ const Profile = () => {
         if (profileData) {
           console.log("🔄 Step 3: Updating component state with profile data...");
           setProfile(profileData);
+          setName(profileData.name || "");
           setBio(profileData.bio || "");
           setGrade(profileData.grade || "");
           setSchool(profileData.school || "");
@@ -455,7 +457,7 @@ const Profile = () => {
       const completion = calculateProfileCompletion(profile);
       setProfileCompletion(completion);
     }
-  }, [profile, bio, grade, profilePic, clubs]);
+  }, [profile, name, bio, grade, school, profilePic, clubs, skills, interests, socialLinks]);
 
   async function handleSave() {
     if (!user) {
@@ -465,7 +467,7 @@ const Profile = () => {
     
     console.log("💾 Starting profile save process...");
     console.log("👤 User:", { uid: user.uid, email: user.email });
-    console.log("📝 Data to save:", { bio, grade, clubs });
+    console.log("📝 Data to save:", { name, bio, grade, school, clubs, skills, interests, socialLinks, achievements, quizResults });
     console.log("🔍 Profile type:", profile?.isLocalProfile ? "Local" : "Firestore");
     
     setSaving(true);
@@ -473,7 +475,7 @@ const Profile = () => {
       // If this is a local profile, just update local state
       if (profile?.isLocalProfile) {
         console.log("🔄 Updating local profile (Firestore not available)");
-        setProfile(prev => ({ ...prev, bio, grade, clubs }));
+        setProfile(prev => ({ ...prev, name, bio, grade, school, clubs, skills, interests, socialLinks, achievements, quizResults }));
         console.log("✅ Local profile updated successfully");
         alert("Profile updated locally! (Note: Changes are not saved to server due to permissions)");
         return;
@@ -482,6 +484,7 @@ const Profile = () => {
       // Try to save to Firestore
       const docRef = doc(db, "users", user.uid);
       const updateData = { 
+        name,
         bio, 
         grade, 
         school,
@@ -501,6 +504,7 @@ const Profile = () => {
       // Update local state
       setProfile(prev => ({ 
         ...prev, 
+        name,
         bio, 
         grade, 
         school,
@@ -522,7 +526,7 @@ const Profile = () => {
         code: error.code,
         message: error.message,
         uid: user.uid,
-        updateData: { bio, grade, clubs }
+        updateData: { name, bio, grade, school, clubs, skills, interests, socialLinks, achievements, quizResults }
       });
       
       // If it's a permissions error, update locally as fallback
@@ -530,6 +534,7 @@ const Profile = () => {
         console.log("🔄 Firestore save failed due to permissions, updating locally as fallback");
         setProfile(prev => ({ 
           ...prev, 
+          name,
           bio, 
           grade, 
           school,
@@ -791,8 +796,8 @@ const Profile = () => {
                 
                 {/* Field Completion Indicators */}
                 <div className="mt-4 grid grid-cols-3 gap-2 text-xs">
-                  <div className={`flex items-center space-x-1 ${profile?.name ? 'text-green-600' : 'text-gray-400'}`}>
-                    <div className={`w-2 h-2 rounded-full ${profile?.name ? 'bg-green-500' : 'bg-gray-300'}`} />
+                  <div className={`flex items-center space-x-1 ${(name || profile?.name) ? 'text-green-600' : 'text-gray-400'}`}>
+                    <div className={`w-2 h-2 rounded-full ${(name || profile?.name) ? 'bg-green-500' : 'bg-gray-300'}`} />
                     <span>Name</span>
                   </div>
                   <div className={`flex items-center space-x-1 ${profile?.email ? 'text-green-600' : 'text-gray-400'}`}>
@@ -907,7 +912,7 @@ const Profile = () => {
                 </div>
 
                 <h1 className="text-3xl font-bold text-yellow-800 mb-2">
-                  Welcome, {profile.name}
+                  Welcome, {name || profile.name}
                 </h1>
                 <p className="text-gray-600 mb-4">Email: {profile.email}</p>
                 {profile.grade && (
@@ -921,6 +926,21 @@ const Profile = () => {
                     </p>
                   </div>
                 )}
+              </div>
+
+              {/* Name Section */}
+              <div className="mb-6">
+                <label className="block text-sm font-semibold text-yellow-800 mb-2">
+                  <Edit3 size={16} className="inline mr-1" />
+                  Name
+                </label>
+                <input
+                  type="text"
+                  className="w-full p-4 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 placeholder-gray-500 text-black"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Enter your name..."
+                />
               </div>
 
               {/* Bio Section */}
