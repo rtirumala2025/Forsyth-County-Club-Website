@@ -116,6 +116,7 @@ const Profile = () => {
   const [profile, setProfile] = useState(null);
   const [bio, setBio] = useState("");
   const [grade, setGrade] = useState("");
+  const [school, setSchool] = useState("");
   const [profilePic, setProfilePic] = useState("");
   const [clubs, setClubs] = useState([]);
   const [skills, setSkills] = useState([]);
@@ -127,6 +128,7 @@ const Profile = () => {
     phone: ""
   });
   const [achievements, setAchievements] = useState([]);
+  const [quizResults, setQuizResults] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -138,6 +140,18 @@ const Profile = () => {
   const [newInterest, setNewInterest] = useState("");
   const [newAchievement, setNewAchievement] = useState("");
   const navigate = useNavigate();
+
+  // Available schools
+  const availableSchools = [
+    "West Forsyth High School",
+    "North Forsyth High School", 
+    "South Forsyth High School",
+    "East Forsyth High School",
+    "Forsyth Central High School",
+    "Lambert High School",
+    "Denmark High School",
+    "Alliance Academy for Innovation"
+  ];
 
   // Available clubs for selection
   const availableClubs = [
@@ -178,20 +192,49 @@ const Profile = () => {
     "Acting", "Volunteering", "Environment", "Politics", "History", "Languages"
   ];
 
-  // Mock club activities data
-  const clubActivities = [
-    { id: 1, club: "Robotics Club", activity: "New meeting scheduled for next Friday", time: "2 hours ago", type: "meeting" },
-    { id: 2, club: "Debate Team", activity: "Tournament registration is now open", time: "1 day ago", type: "event" },
-    { id: 3, club: "Art Club", activity: "Gallery exhibition next month", time: "3 days ago", type: "event" },
-    { id: 4, club: "Computer Science Club", activity: "Coding competition results posted", time: "1 week ago", type: "achievement" }
-  ];
+  // Generate personalized club recommendations based on quiz results
+  const getClubRecommendations = () => {
+    if (!quizResults || !quizResults.recommendations) {
+      return [];
+    }
+    return quizResults.recommendations.map(rec => ({
+      name: rec.name,
+      description: rec.description,
+      members: rec.members || Math.floor(Math.random() * 50) + 20,
+      match: rec.matchScore || Math.floor(Math.random() * 30) + 70
+    }));
+  };
 
-  // Mock club recommendations
-  const clubRecommendations = [
-    { name: "Math Club", description: "Perfect for students interested in mathematics and problem-solving", members: 45, match: 95 },
-    { name: "Science Olympiad", description: "Competitive science team for students passionate about STEM", members: 32, match: 88 },
-    { name: "Model UN", description: "Simulate United Nations debates and global diplomacy", members: 28, match: 82 }
-  ];
+  // Generate contextual club activities based on selected clubs and school
+  const getClubActivities = () => {
+    if (clubs.length === 0) {
+      return [];
+    }
+    
+    // Generate activities for selected clubs
+    const activities = [];
+    clubs.forEach((club, index) => {
+      const activityTypes = [
+        { type: "meeting", message: "New meeting scheduled for next week" },
+        { type: "event", message: "Upcoming event registration is open" },
+        { type: "achievement", message: "Recent competition results posted" },
+        { type: "announcement", message: "Important club announcement" }
+      ];
+      
+      const randomActivity = activityTypes[Math.floor(Math.random() * activityTypes.length)];
+      const timeOptions = ["2 hours ago", "1 day ago", "3 days ago", "1 week ago"];
+      
+      activities.push({
+        id: Date.now() + index,
+        club: club,
+        activity: randomActivity.message,
+        time: timeOptions[Math.floor(Math.random() * timeOptions.length)],
+        type: randomActivity.type
+      });
+    });
+    
+    return activities.slice(0, 4); // Limit to 4 activities
+  };
 
   // Helper function to calculate profile completion percentage
   const calculateProfileCompletion = (profileData) => {
@@ -202,6 +245,7 @@ const Profile = () => {
       profileData.email && profileData.email.trim() !== "",
       bio && bio.trim() !== "",
       grade && grade.trim() !== "",
+      school && school.trim() !== "",
       profilePic && profilePic.trim() !== "",
       clubs && clubs.length > 0,
       skills && skills.length > 0,
@@ -364,12 +408,14 @@ const Profile = () => {
           setProfile(profileData);
           setBio(profileData.bio || "");
           setGrade(profileData.grade || "");
+          setSchool(profileData.school || "");
           setProfilePic(profileData.profilePic || "");
           setClubs(profileData.clubs || []);
           setSkills(profileData.skills || []);
           setInterests(profileData.interests || []);
           setSocialLinks(profileData.socialLinks || { github: "", linkedin: "", website: "", phone: "" });
           setAchievements(profileData.achievements || []);
+          setQuizResults(profileData.quizResults || null);
           console.log("✅ Step 3 Complete: Component state updated successfully");
           console.log("🎉 Profile loaded successfully for user:", user.uid);
           console.log("📊 Final profile state:", {
@@ -438,11 +484,13 @@ const Profile = () => {
       const updateData = { 
         bio, 
         grade, 
+        school,
         clubs, 
         skills, 
         interests, 
         socialLinks, 
-        achievements 
+        achievements,
+        quizResults
       };
       
       console.log("🔄 Updating Firestore document at path:", `users/${user.uid}`);
@@ -455,11 +503,13 @@ const Profile = () => {
         ...prev, 
         bio, 
         grade, 
+        school,
         clubs, 
         skills, 
         interests, 
         socialLinks, 
-        achievements 
+        achievements,
+        quizResults
       }));
       
       console.log("✅ Profile updated successfully in Firestore");
@@ -482,11 +532,13 @@ const Profile = () => {
           ...prev, 
           bio, 
           grade, 
+          school,
           clubs, 
           skills, 
           interests, 
           socialLinks, 
-          achievements, 
+          achievements,
+          quizResults,
           isLocalProfile: true 
         }));
         alert("Profile updated locally! (Note: Changes are not saved to server due to permissions)");
@@ -755,6 +807,10 @@ const Profile = () => {
                     <div className={`w-2 h-2 rounded-full ${grade ? 'bg-green-500' : 'bg-gray-300'}`} />
                     <span>Grade</span>
                   </div>
+                  <div className={`flex items-center space-x-1 ${school ? 'text-green-600' : 'text-gray-400'}`}>
+                    <div className={`w-2 h-2 rounded-full ${school ? 'bg-green-500' : 'bg-gray-300'}`} />
+                    <span>School</span>
+                  </div>
                   <div className={`flex items-center space-x-1 ${profilePic ? 'text-green-600' : 'text-gray-400'}`}>
                     <div className={`w-2 h-2 rounded-full ${profilePic ? 'bg-green-500' : 'bg-gray-300'}`} />
                     <span>Photo</span>
@@ -900,6 +956,23 @@ const Profile = () => {
                 </select>
               </div>
 
+              {/* School Section */}
+              <div className="mb-6">
+                <label className="block text-sm font-semibold text-yellow-800 mb-2">
+                  School
+                </label>
+                <select
+                  className="w-full p-4 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-black"
+                  value={school}
+                  onChange={(e) => setSchool(e.target.value)}
+                >
+                  <option value="">Select your school</option>
+                  {availableSchools.map((schoolName) => (
+                    <option key={schoolName} value={schoolName}>{schoolName}</option>
+                  ))}
+                </select>
+              </div>
+
               {/* Skills Section */}
               <div className="mb-6">
                 <label className="block text-sm font-semibold text-yellow-800 mb-2">
@@ -1028,7 +1101,7 @@ const Profile = () => {
               </div>
 
               {/* Clubs Section */}
-              <div className="mb-6">
+              <div className="mb-6" data-clubs-section>
                 <label className="block text-sm font-semibold text-yellow-800 mb-3">
                   Select Your Clubs
                 </label>
@@ -1106,21 +1179,42 @@ const Profile = () => {
                 <h3 className="text-lg font-semibold text-gray-800">Club Activity</h3>
               </div>
               <div className="space-y-3">
-                {clubActivities.map((activity) => (
-                  <div key={activity.id} className="p-3 bg-gray-50 rounded-lg">
-                    <div className="flex items-start gap-2">
-                      <div className={`w-2 h-2 rounded-full mt-2 ${
-                        activity.type === 'meeting' ? 'bg-blue-500' :
-                        activity.type === 'event' ? 'bg-green-500' : 'bg-yellow-500'
-                      }`} />
-                      <div className="flex-1">
-                        <p className="text-sm font-medium text-gray-800">{activity.club}</p>
-                        <p className="text-xs text-gray-600">{activity.activity}</p>
-                        <p className="text-xs text-gray-400 mt-1">{activity.time}</p>
+                {clubs.length === 0 ? (
+                  <div className="text-center py-6">
+                    <Users size={48} className="mx-auto text-gray-400 mb-3" />
+                    <p className="text-sm text-gray-600 mb-3">No clubs selected yet</p>
+                    <p className="text-xs text-gray-500 mb-4">Select clubs to see personalized activity updates</p>
+                    <button 
+                      onClick={() => {
+                        // Scroll to clubs section
+                        const clubsSection = document.querySelector('[data-clubs-section]');
+                        if (clubsSection) {
+                          clubsSection.scrollIntoView({ behavior: 'smooth' });
+                        }
+                      }}
+                      className="bg-blue-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-600 transition-colors"
+                    >
+                      Select Clubs
+                    </button>
+                  </div>
+                ) : (
+                  getClubActivities().map((activity) => (
+                    <div key={activity.id} className="p-3 bg-gray-50 rounded-lg">
+                      <div className="flex items-start gap-2">
+                        <div className={`w-2 h-2 rounded-full mt-2 ${
+                          activity.type === 'meeting' ? 'bg-blue-500' :
+                          activity.type === 'event' ? 'bg-green-500' : 
+                          activity.type === 'achievement' ? 'bg-yellow-500' : 'bg-purple-500'
+                        }`} />
+                        <div className="flex-1">
+                          <p className="text-sm font-medium text-gray-800">{activity.club}</p>
+                          <p className="text-xs text-gray-600">{activity.activity}</p>
+                          <p className="text-xs text-gray-400 mt-1">{activity.time}</p>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
             </motion.div>
 
@@ -1136,23 +1230,37 @@ const Profile = () => {
                 <h3 className="text-lg font-semibold text-gray-800">Recommended Clubs</h3>
               </div>
               <div className="space-y-3">
-                {clubRecommendations.map((club, index) => (
-                  <div key={index} className="p-3 bg-gray-50 rounded-lg">
-                    <div className="flex items-center justify-between mb-2">
-                      <h4 className="font-medium text-gray-800">{club.name}</h4>
-                      <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
-                        {club.match}% match
-                      </span>
-                    </div>
-                    <p className="text-xs text-gray-600 mb-2">{club.description}</p>
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs text-gray-500">{club.members} members</span>
-                      <button className="text-xs bg-blue-500 text-white px-3 py-1 rounded-full hover:bg-blue-600 transition-colors">
-                        Learn More
-                      </button>
-                    </div>
+                {getClubRecommendations().length === 0 ? (
+                  <div className="text-center py-6">
+                    <Award size={48} className="mx-auto text-gray-400 mb-3" />
+                    <p className="text-sm text-gray-600 mb-3">No recommendations yet</p>
+                    <p className="text-xs text-gray-500 mb-4">Take the club quiz to get personalized recommendations</p>
+                    <button 
+                      onClick={() => navigate('/club-quiz')}
+                      className="bg-green-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-600 transition-colors"
+                    >
+                      Take Club Quiz
+                    </button>
                   </div>
-                ))}
+                ) : (
+                  getClubRecommendations().map((club, index) => (
+                    <div key={index} className="p-3 bg-gray-50 rounded-lg">
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="font-medium text-gray-800">{club.name}</h4>
+                        <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
+                          {club.match}% match
+                        </span>
+                      </div>
+                      <p className="text-xs text-gray-600 mb-2">{club.description}</p>
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-gray-500">{club.members} members</span>
+                        <button className="text-xs bg-blue-500 text-white px-3 py-1 rounded-full hover:bg-blue-600 transition-colors">
+                          Learn More
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                )}
               </div>
             </motion.div>
 

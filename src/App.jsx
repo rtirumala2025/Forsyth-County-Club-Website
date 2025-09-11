@@ -9,6 +9,7 @@ import CreateAccount from './pages/CreateAccount';
 import About from './pages/About';
 import Profile from './pages/Profile';
 import Calendar from './pages/Calendar';
+import ClubQuiz from './pages/ClubQuiz';
 import FirestoreTest from './components/FirestoreTest';
 
 // Test component to debug routing
@@ -149,6 +150,14 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute>
               <Calendar />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/club-quiz" 
+          element={
+            <ProtectedRoute>
+              <ClubQuiz />
             </ProtectedRoute>
           } 
         />
