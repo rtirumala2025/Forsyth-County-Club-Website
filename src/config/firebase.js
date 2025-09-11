@@ -12,7 +12,7 @@ export const useAuth = () => {
   return context;
 };
 
-export { db, storage };
+export { auth, db, storage };
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);

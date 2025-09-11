@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { Mail, Lock, Eye, EyeOff, Users, Sparkles } from 'lucide-react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
-import { auth, db } from '../config/firebaseConfig';
+import { auth, db } from '../config/firebase';
 import { useAuth } from '../config/firebase';
 
 const CreateAccount = () => {
@@ -286,26 +286,30 @@ const CreateAccount = () => {
 };
 
 const syncUser = async () => {
-  const user = auth.currentUser;
-  if (!user) {
-    console.warn("No current user to sync.");
-    return;
-  }
+  try {
+    const user = auth.currentUser;
+    if (!user) {
+      console.warn("No current user to sync.");
+      return;
+    }
 
-  const token = await user.getIdToken();
-  console.log("Syncing user to backend with token:", token);
+    const token = await user.getIdToken();
+    console.log("Syncing user to backend with token:", token);
 
-  const res = await fetch('http://localhost:3001/api/sync-user', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+    const res = await fetch('http://localhost:3001/api/sync-user', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-  if (!res.ok) {
-    console.error("Failed to sync user:", await res.json());
-  } else {
-    console.log("User synced successfully");
+    if (!res.ok) {
+      console.warn("Backend sync failed, but continuing with account creation:", await res.json());
+    } else {
+      console.log("User synced successfully");
+    }
+  } catch (error) {
+    console.warn("Backend sync failed, but continuing with account creation:", error);
   }
 };
 

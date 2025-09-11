@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { auth, db, storage } from "../config/firebaseConfig";
-import { onAuthStateChanged } from "firebase/auth";
+import { useAuth } from "../config/firebase";
+import { db, storage } from "../config/firebase";
 import { doc, getDoc, setDoc, updateDoc, serverTimestamp } from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from "firebase/storage";
 import { motion } from "framer-motion";
@@ -94,7 +94,7 @@ const fetchUserProfile = async (user) => {
 };
 
 const Profile = () => {
-  const [user, setUser] = useState(null);
+  const { user, loading: authLoading, logout } = useAuth();
   const [profile, setProfile] = useState(null);
   const [bio, setBio] = useState("");
   const [grade, setGrade] = useState("");
@@ -157,75 +157,14 @@ const Profile = () => {
   };
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      console.log("🔄 Auth state changed. User:", firebaseUser ? firebaseUser.uid : "null");
-      console.log("🔍 Auth state change details:", {
-        hasUser: !!firebaseUser,
-        uid: firebaseUser?.uid,
-        email: firebaseUser?.email,
-        displayName: firebaseUser?.displayName
-      });
-      
-      if (firebaseUser) {
-        console.log("👤 User is authenticated, processing profile...");
-        setUser(firebaseUser);
-        setProfileError(null);
-        setLoading(true);
-        
-        try {
-          console.log("📋 Starting profile fetch/creation process...");
-          
-          // First, try to fetch existing profile
-          console.log("🔍 Step 1: Attempting to fetch existing profile...");
-          let profileData = await fetchUserProfile(firebaseUser);
-          
-          // If no profile exists, create one
-          if (!profileData) {
-            console.log("📝 Step 2: No existing profile found, creating new one...");
-            profileData = await createUserProfile(firebaseUser);
-            console.log("✅ Step 2 Complete: New profile created successfully");
-          } else {
-            console.log("✅ Step 1 Complete: Existing profile found and loaded");
-          }
-          
-          // Set profile data in state
-          if (profileData) {
-            console.log("🔄 Step 3: Updating component state with profile data...");
-            setProfile(profileData);
-            setBio(profileData.bio || "");
-            setGrade(profileData.grade || "");
-            setProfilePic(profileData.profilePic || "");
-            setClubs(profileData.clubs || []);
-            console.log("✅ Step 3 Complete: Component state updated successfully");
-            console.log("🎉 Profile loaded successfully for user:", firebaseUser.uid);
-            console.log("📊 Final profile state:", {
-              name: profileData.name,
-              email: profileData.email,
-              bio: profileData.bio,
-              grade: profileData.grade,
-              clubsCount: profileData.clubs?.length || 0,
-              hasProfilePic: !!profileData.profilePic,
-              createdAt: profileData.createdAt
-            });
-          } else {
-            throw new Error("Failed to create or fetch profile - no data returned");
-          }
-        } catch (error) {
-          console.error("❌ Error handling profile for user:", firebaseUser.uid, error);
-          console.error("🔍 Error context:", {
-            uid: firebaseUser.uid,
-            email: firebaseUser.email,
-            errorCode: error.code,
-            errorMessage: error.message,
-            errorStack: error.stack
-          });
-          setProfileError("Failed to load profile. Please try refreshing the page.");
-          setProfile(null);
-        }
-      } else {
-        console.log("👤 User signed out, clearing profile data");
-        console.log("🧹 Clearing all profile-related state...");
-        setUser(null);
+    const loadProfile = async () => {
+      if (authLoading) {
+        console.log("⏳ Auth is still loading, waiting...");
+        return;
+      }
+
+      if (!user) {
+        console.log("👤 No user authenticated, clearing profile data");
         setProfile(null);
         setProfileError(null);
         setBio("");
@@ -233,17 +172,78 @@ const Profile = () => {
         setProfilePic("");
         setClubs([]);
         setProfileCompletion(0);
-        console.log("✅ Profile state cleared successfully");
+        setLoading(false);
+        return;
+      }
+
+      console.log("🔄 Auth state changed. User:", user ? user.uid : "null");
+      console.log("🔍 Auth state change details:", {
+        hasUser: !!user,
+        uid: user?.uid,
+        email: user?.email,
+        displayName: user?.displayName
+      });
+      
+      console.log("👤 User is authenticated, processing profile...");
+      setProfileError(null);
+      setLoading(true);
+      
+      try {
+        console.log("📋 Starting profile fetch/creation process...");
+        
+        // First, try to fetch existing profile
+        console.log("🔍 Step 1: Attempting to fetch existing profile...");
+        let profileData = await fetchUserProfile(user);
+        
+        // If no profile exists, create one
+        if (!profileData) {
+          console.log("📝 Step 2: No existing profile found, creating new one...");
+          profileData = await createUserProfile(user);
+          console.log("✅ Step 2 Complete: New profile created successfully");
+        } else {
+          console.log("✅ Step 1 Complete: Existing profile found and loaded");
+        }
+        
+        // Set profile data in state
+        if (profileData) {
+          console.log("🔄 Step 3: Updating component state with profile data...");
+          setProfile(profileData);
+          setBio(profileData.bio || "");
+          setGrade(profileData.grade || "");
+          setProfilePic(profileData.profilePic || "");
+          setClubs(profileData.clubs || []);
+          console.log("✅ Step 3 Complete: Component state updated successfully");
+          console.log("🎉 Profile loaded successfully for user:", user.uid);
+          console.log("📊 Final profile state:", {
+            name: profileData.name,
+            email: profileData.email,
+            bio: profileData.bio,
+            grade: profileData.grade,
+            clubsCount: profileData.clubs?.length || 0,
+            hasProfilePic: !!profileData.profilePic,
+            createdAt: profileData.createdAt
+          });
+        } else {
+          throw new Error("Failed to create or fetch profile - no data returned");
+        }
+      } catch (error) {
+        console.error("❌ Error handling profile for user:", user.uid, error);
+        console.error("🔍 Error context:", {
+          uid: user.uid,
+          email: user.email,
+          errorCode: error.code,
+          errorMessage: error.message,
+          errorStack: error.stack
+        });
+        setProfileError("Failed to load profile. Please try refreshing the page.");
+        setProfile(null);
       }
       setLoading(false);
       console.log("🏁 Profile processing complete, loading state set to false");
-    });
-
-    return () => {
-      console.log("🔌 Unsubscribing from auth state changes");
-      unsubscribe();
     };
-  }, []);
+
+    loadProfile();
+  }, [user, authLoading]);
 
   // Update profile completion whenever profile data changes
   useEffect(() => {
@@ -369,14 +369,14 @@ const Profile = () => {
 
   const handleSignOut = async () => {
     try {
-      await auth.signOut();
-    navigate('/');
+      await logout();
+      navigate('/');
     } catch (error) {
       console.error("Error signing out:", error);
     }
   };
 
-  if (loading) {
+  if (authLoading || loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 via-blue-50 to-white">
         <motion.div 

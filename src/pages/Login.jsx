@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../config/firebase';
 import { sendPasswordResetEmail } from 'firebase/auth';
-import { auth } from '../config/firebaseConfig';
+import { auth } from '../config/firebase';
 import { Mail, Lock, Eye, EyeOff, Users, Sparkles } from 'lucide-react';
 
 const Login = () => {
@@ -248,26 +248,30 @@ const Login = () => {
 };
 
 const syncUser = async () => {
-  const user = auth.currentUser;
-  if (!user) {
-    console.warn("No current user to sync.");
-    return;
-  }
+  try {
+    const user = auth.currentUser;
+    if (!user) {
+      console.warn("No current user to sync.");
+      return;
+    }
 
-  const token = await user.getIdToken();
-  console.log("Syncing user to backend with token:", token);
+    const token = await user.getIdToken();
+    console.log("Syncing user to backend with token:", token);
 
-  const res = await fetch('http://localhost:3001/api/sync-user', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+    const res = await fetch('http://localhost:3001/api/sync-user', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-  if (!res.ok) {
-    console.error("Failed to sync user:", await res.json());
-  } else {
-    console.log("User synced successfully");
+    if (!res.ok) {
+      console.warn("Backend sync failed, but continuing with login:", await res.json());
+    } else {
+      console.log("User synced successfully");
+    }
+  } catch (error) {
+    console.warn("Backend sync failed, but continuing with login:", error);
   }
 };
 
