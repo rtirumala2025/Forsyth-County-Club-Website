@@ -9,6 +9,7 @@ import CreateAccount from './pages/CreateAccount';
 import About from './pages/About';
 import Profile from './pages/Profile';
 import Calendar from './pages/Calendar';
+import FirestoreTest from './components/FirestoreTest';
 
 // Test component to debug routing
 const TestComponent = () => {
@@ -148,6 +149,14 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute>
               <Calendar />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/firestore-test" 
+          element={
+            <ProtectedRoute>
+              <FirestoreTest />
             </ProtectedRoute>
           } 
         />
