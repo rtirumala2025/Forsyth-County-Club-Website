@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../config/firebase';
 import { User, LogOut, AlertCircle } from 'lucide-react';
 import ReactDOM from 'react-dom';
@@ -6,8 +6,14 @@ import { useNavigate } from 'react-router-dom';
 
 const UserMenu = ({ user }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [displayName, setDisplayName] = useState(user?.displayName || user?.email || 'User');
   const { logout } = useAuth();
   const navigate = useNavigate();
+
+  // Update display name when user changes
+  useEffect(() => {
+    setDisplayName(user?.displayName || user?.email || 'User');
+  }, [user?.displayName, user?.email]);
 
   const handleLogout = async () => {
     try {
@@ -28,7 +34,7 @@ const UserMenu = ({ user }) => {
       >
         <User size={20} className="text-black" />
         <span className="text-black text-sm font-medium">
-          {user?.displayName || user?.email || 'User'}
+          {displayName}
         </span>
       </button>
 
@@ -36,7 +42,7 @@ const UserMenu = ({ user }) => {
         <div style={{position: 'fixed', right: '2.5rem', top: '6.5rem', zIndex: 99999, minWidth: '12rem'}} className="w-48 bg-white rounded-lg shadow-xl border-2 border-black py-2">
           <div className="px-4 py-2 border-b border-gray-200">
             <p className="text-sm font-medium text-gray-900">
-              {user?.displayName || 'User'}
+              {displayName}
             </p>
             <p className="text-xs text-gray-500">{user?.email}</p>
           </div>

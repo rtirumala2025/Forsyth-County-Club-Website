@@ -39,11 +39,29 @@ rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
     // Profile pictures - users can only upload/delete their own profile pictures
-    match /profilePics/{userId}.jpg {
+    // Support multiple file extensions and patterns
+    match /profilePics/{filename} {
       // Allow read access to anyone (for displaying profile pictures)
       allow read: if true;
-      // Allow write/delete only if the user is authenticated and matches the file path
-      allow write, delete: if request.auth != null && request.auth.uid == userId;
+      
+      // Allow write/delete only if the user is authenticated and filename matches their pattern
+      allow write, delete: if request.auth != null && 
+        (filename.matches('profile_.*_' + request.auth.uid + '\\..*') ||
+         filename.matches(request.auth.uid + '\\..*')) &&
+        resource.contentType.matches('image/.*') &&
+        resource.size < 10 * 1024 * 1024; // 10MB limit for compressed images
+    }
+    
+    // Test files for permission testing
+    match /profilePics/test_{userId}.txt {
+      // Allow authenticated users to create/delete test files
+      allow read, write, delete: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Connectivity test files
+    match /profilePics/connectivity_test_{userId}.txt {
+      // Allow authenticated users to create/delete connectivity test files
+      allow read, write, delete: if request.auth != null && request.auth.uid == userId;
     }
     
     // Add other storage paths as needed
@@ -69,6 +87,24 @@ service firebase.storage {
    - Navigate to **Storage** → **Rules** tab
    - Replace the existing rules with the Storage rules above
    - Click **Publish**
+
+## Quick Fix for Testing (Temporary)
+
+If you need to test quickly, you can use these more permissive rules temporarily:
+
+```javascript
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Allow authenticated users to upload to profilePics folder
+    match /profilePics/{allPaths=**} {
+      allow read, write, delete: if request.auth != null;
+    }
+  }
+}
+```
+
+**⚠️ WARNING: These rules are less secure and should only be used for testing!**
 
 ## Security Features
 
