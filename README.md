@@ -1,170 +1,209 @@
 # Forsyth County Club Website
 
-A modern web application for discovering and joining high school clubs in Forsyth County, featuring an AI-powered recommendation system.
+A modern web application for discovering and exploring clubs in Forsyth County schools, featuring an AI-powered chatbot for personalized club recommendations.
 
-## 🚀 Quick Start
+## Project Structure
 
-### Prerequisites
-- Node.js (v18 or higher)
-- npm or yarn
+This project is split into two separate services:
 
-### Installation
+- **`frontend/`** - React-based web application
+- **`backend/`** - FastAPI-based AI service
+
+## Prerequisites
+
+- Node.js (v16 or higher)
+- Python (v3.8 or higher)
+- OpenAI API key
+
+## Quick Start
+
+### 1. Backend Setup (AI Service)
+
 ```bash
+# Navigate to backend directory
+cd backend
+
+# Create virtual environment (recommended)
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Set up environment variables
+cp .env.example .env
+# Edit .env and add your OpenAI API key:
+# OPENAI_API_KEY=your_openai_api_key_here
+
+# Start the backend server
+uvicorn main:app --reload --port 8000
+```
+
+The backend will be available at `http://localhost:8000`
+
+### 2. Frontend Setup (React App)
+
+```bash
+# Navigate to frontend directory
+cd frontend
+
 # Install dependencies
 npm install
 
 # Start the development server
 npm start
-
-# Start the backend server (in a separate terminal)
-npm run server
 ```
 
-## 📁 Project Structure
+The frontend will be available at `http://localhost:3000`
 
-```
-forsyth-county-club-website/
-├── 📁 docs/                          # Documentation files
-│   ├── AI_CHATBOT_SETUP.md
-│   ├── ENHANCED_CHATBOT_USAGE.md
-│   ├── ENHANCED_INTENT_ANALYSIS_DOCUMENTATION.md
-│   ├── FOLLOW_UP_CHATBOT_DOCUMENTATION.md
-│   ├── REAL_CLUB_DATA_USAGE.md
-│   ├── REVAMPED_SYSTEM_SUMMARY.md
-│   └── SECURITY_SETUP.md
-│
-├── 📁 public/                        # Static assets
-│   ├── default-avatar.svg
-│   ├── favicon.ico
-│   └── index.html
-│
-├── 📁 src/                           # Frontend React application
-│   ├── 📁 components/                # React components
-│   │   ├── 📁 auth/                  # Authentication components
-│   │   ├── 📁 chatbot/               # AI chatbot components
-│   │   │   ├── AIClubChatbot.jsx
-│   │   │   ├── AIClubChatbotExample.jsx
-│   │   │   └── AIClubChatbot.test.jsx
-│   │   ├── 📁 club/                  # Club-related components
-│   │   ├── 📁 common/                # Shared/common components
-│   │   ├── 📁 layout/                # Layout components
-│   │   ├── 📁 profile/               # User profile components
-│   │   └── 📁 ui/                    # UI utility components
-│   │       └── CategoryColors.js
-│   ├── 📁 config/                    # Configuration files
-│   │   ├── api.js
-│   │   ├── firebase.js
-│   │   └── firebaseConfig.js
-│   ├── 📁 data/                      # Static data files
-│   ├── 📁 hooks/                     # Custom React hooks
-│   ├── 📁 pages/                     # Page components
-│   ├── 📁 utils/                     # Utility functions
-│   ├── App.jsx                       # Main App component
-│   ├── App.css                       # App styles
-│   └── index.js                      # Entry point
-│
-├── 📁 server/                        # Backend server
-│   ├── 📁 backups/                   # Backup server files
-│   │   ├── simple-server.js
-│   │   ├── working-server.js
-│   │   └── node-v18.20.2.pkg
-│   ├── 📁 config/                    # Server configuration
-│   ├── 📁 controllers/               # Route controllers
-│   ├── 📁 data/                      # Server data files
-│   ├── 📁 routes/                    # API routes
-│   ├── 📁 services/                  # Business logic services
-│   ├── 📁 utils/                     # Server utilities
-│   └── server.js                     # Main server file
-│
-├── 📁 backend/                       # Legacy backend (if any)
-├── 📁 club-website/                  # Legacy frontend (if any)
-├── package.json                      # Project dependencies
-├── package-lock.json                 # Locked dependencies
-├── postcss.config.js                 # PostCSS configuration
-└── README.md                         # This file
-```
+## How They Connect
 
-## 🛠️ Available Scripts
+The frontend communicates with the backend through HTTP API calls:
 
-- `npm start` - Start the React development server
-- `npm run build` - Build the production version
-- `npm test` - Run tests
-- `npm run server` - Start the backend server
-- `npm run dev` - Start both frontend and backend concurrently
-- `npm run server:dev` - Start backend with nodemon for development
+- **AI Chatbot**: The React chatbot component sends user messages to `http://localhost:8000/api/ai`
+- **Health Check**: The frontend checks backend availability via `http://localhost:8000/api/health`
+- **CORS**: The backend is configured to allow requests from `http://localhost:3000`
 
-## 🔧 Configuration
+## API Endpoints
 
-### Environment Variables
-Create a `.env` file in the root directory:
+### Backend (FastAPI)
 
-```env
-# OpenAI API (for AI recommendations)
-OPENAI_API_KEY=your_openai_api_key_here
-
-# Firebase (for authentication)
-REACT_APP_FIREBASE_API_KEY=your_firebase_api_key
-REACT_APP_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
-REACT_APP_FIREBASE_PROJECT_ID=your_project_id
-REACT_APP_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
-REACT_APP_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
-REACT_APP_FIREBASE_APP_ID=your_app_id
-
-# Server configuration
-PORT=5001
-NODE_ENV=development
-```
-
-## 🎯 Features
-
-- **AI-Powered Recommendations**: Intelligent club matching based on user preferences
-- **Real-time Chatbot**: Interactive AI assistant for club discovery
-- **User Authentication**: Secure login and registration
-- **Club Management**: Browse, search, and join clubs
-- **Responsive Design**: Works on desktop and mobile devices
-- **Follow-up Recommendations**: Context-aware follow-up suggestions
-
-## 🤖 AI Recommendation System
-
-The application uses a sophisticated recommendation algorithm that considers:
-- User interests and preferences
-- Time commitment availability
-- Club type preferences (competitive, social, academic, etc.)
-- Grade level appropriateness
-- Previous recommendations and follow-up requests
-
-## 📚 Documentation
-
-Detailed documentation is available in the `docs/` folder:
-- AI Chatbot Setup and Usage
-- Enhanced Intent Analysis
-- Follow-up Recommendation System
-- Security Setup Guidelines
-- Real Club Data Integration
-
-## 🚀 Deployment
+- `GET /api/health` - Health check and AI configuration status
+- `POST /api/ai` - Main AI endpoint for chat responses
+- `POST /api/recommend` - **Hybrid recommendation endpoint** (recommended)
+- `GET /api/rules` - Club rules and guidelines (placeholder)
+- `POST /api/ai-recommendations` - Legacy endpoint for compatibility
 
 ### Frontend (React)
-```bash
-npm run build
-# Deploy the build/ folder to your hosting service
+
+- `http://localhost:3000` - Main application
+- All React routes are handled client-side
+
+## Development Workflow
+
+1. **Start Backend**: Run `uvicorn main:app --reload --port 8000` in the `backend/` directory
+2. **Start Frontend**: Run `npm start` in the `frontend/` directory
+3. **Access Application**: Open `http://localhost:3000` in your browser
+
+## Environment Variables
+
+### Backend (.env)
+
+```env
+OPENAI_API_KEY=your_openai_api_key_here
 ```
 
-### Backend (Node.js)
-```bash
-# Set NODE_ENV=production
-npm start
-# Deploy to your server or cloud platform
+### Frontend
+
+No environment variables required for basic functionality.
+
+## Features
+
+- **Club Discovery**: Browse and search through clubs by category and interest
+- **Hybrid Recommendation System**: Combines rule-based matching with AI-powered suggestions
+- **AI-Powered Chatbot**: Get personalized club recommendations using OpenAI
+- **Responsive Design**: Works on desktop and mobile devices
+- **Real-time Search**: Fast, client-side search and filtering
+- **School Selection**: Filter clubs by specific schools
+
+## Hybrid Recommendation System
+
+The `/api/recommend` endpoint implements a two-tier recommendation system:
+
+### 1. Rule-Based Matching (First Tier)
+- **Fast Pattern Matching**: Uses keyword-based rules for common queries
+- **High Confidence**: Returns immediate responses for clear matches
+- **Examples**: "I love coding" → Coding Club recommendation
+- **Coverage**: Coding, Business, Robotics, Debate, Art, Music, Sports, Science
+
+### 2. AI Fallback (Second Tier)
+- **OpenAI Integration**: Uses GPT-4o-mini when rules don't match
+- **Contextual Understanding**: Considers user session data and conversation history
+- **Flexible Responses**: Handles complex, nuanced queries
+- **Personalized**: Adapts to user's grade, interests, and previous interactions
+
+### Response Format
+```json
+{
+  "source": "rules" | "ai",
+  "reply": "Club recommendation text",
+  "confidence": "high" | "medium" | "none",
+  "matched_patterns": ["coding", "business"]
+}
 ```
 
-## 🤝 Contributing
+### Example Usage
+```bash
+curl -X POST "http://localhost:8000/api/recommend" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "message": "I love programming and want to learn more",
+    "sessionData": {
+      "grade": 9,
+      "interests": ["coding"]
+    }
+  }'
+```
+
+**Rule Match Response:**
+```json
+{
+  "source": "rules",
+  "reply": "🎯 You should join the Coding Club! It's perfect for programming enthusiasts and offers hands-on coding projects, hackathons, and mentorship opportunities. (Perfect match based on your interests!)",
+  "confidence": "high",
+  "matched_patterns": ["coding"]
+}
+```
+
+**AI Fallback Response:**
+```json
+{
+  "source": "ai",
+  "reply": "Based on your interests in programming, you might enjoy Coding Club, Robotics, or Web Development Club. Each offers unique opportunities to develop your technical skills!",
+  "confidence": "medium"
+}
+```
+
+## Technology Stack
+
+### Frontend
+- React 18
+- Tailwind CSS
+- Lucide React (icons)
+- React Router
+- Firebase (for data)
+
+### Backend
+- FastAPI
+- OpenAI API
+- Python 3.8+
+- Uvicorn (ASGI server)
+
+## Troubleshooting
+
+### Backend Issues
+- Ensure Python virtual environment is activated
+- Check that OpenAI API key is correctly set in `.env`
+- Verify port 8000 is not in use by another service
+
+### Frontend Issues
+- Ensure Node.js dependencies are installed (`npm install`)
+- Check that port 3000 is not in use
+- Verify backend is running on port 8000
+
+### Connection Issues
+- Check that both services are running
+- Verify CORS settings in backend
+- Check browser console for network errors
+
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch
 3. Make your changes
-4. Add tests if applicable
+4. Test both frontend and backend
 5. Submit a pull request
 
-## 📄 License
+## License
 
-This project is licensed under the MIT License.
+MIT License - see LICENSE file for details
