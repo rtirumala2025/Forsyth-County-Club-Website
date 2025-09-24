@@ -6,7 +6,7 @@ import UserMenu from '../components/auth/userMenu';
 import { useNavigate } from 'react-router-dom';
 import { useClubFilter } from '../hooks/useClubFilter';
 import { allClubData, CategoryColors, getClubsBySchool, getAvailableSchools } from '../data/clubData';
-import AIClubChatbotFixed from '../components/chatbot/AIClubChatbotFixed';
+// Removed legacy chatbot import; using global floating Chatbot in App.jsx instead
 
 const ClubsWebsite = () => {
   // Add debugging logs
@@ -20,8 +20,7 @@ const ClubsWebsite = () => {
   const [selectedSchool, setSelectedSchool] = useState('West Forsyth High School');
   const [schoolDropdownOpen, setSchoolDropdownOpen] = useState(false);
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
-  const [chatbotOpen, setChatbotOpen] = useState(false);
-  const [hasSeenChatbot, setHasSeenChatbot] = useState(false);
+  // Removed legacy chatbot local state; use global floating Chatbot via window events
   const { user, loading } = useAuth();  
   const navigate = useNavigate();
   
@@ -526,26 +525,14 @@ const ClubsWebsite = () => {
               <CalendarIcon size={18} className="mr-1 text-black" /> Calendar
             </button>
             
-            {/* AI Chatbot Button */}
+            {/* AI Chatbot Button -> Route to full-page Chatbot */}
             <button
-              onClick={() => {
-                setChatbotOpen(!chatbotOpen);
-                if (!hasSeenChatbot) {
-                  setHasSeenChatbot(true);
-                }
-              }}
-              className={`flex items-center px-3 py-2 rounded-lg border-2 transition-all duration-200 text-sm font-medium ${
-                chatbotOpen 
-                  ? 'bg-blue-50 border-blue-600 text-blue-800' 
-                  : 'bg-transparent border-black hover:bg-gray-50 hover:border-gray-600 text-black'
-              }`}
+              onClick={() => navigate('/chatbot')}
+              className="flex items-center px-3 py-2 rounded-lg border-2 transition-all duration-200 text-sm font-medium bg-transparent border-black hover:bg-gray-50 hover:border-gray-600 text-black"
               title="Get AI-powered club recommendations"
             >
               <MessageCircle size={18} className="mr-1" />
               Club Quiz
-              {!hasSeenChatbot && (
-                <div className="ml-2 w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
-              )}
             </button>
             {/* School Selector Dropdown */}
             <div className="relative">
@@ -669,12 +656,7 @@ const ClubsWebsite = () => {
                     </div>
                   </div>
                   <button
-                    onClick={() => {
-                      setChatbotOpen(true);
-                      if (!hasSeenChatbot) {
-                        setHasSeenChatbot(true);
-                      }
-                    }}
+                    onClick={() => navigate('/chatbot')}
                     className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 hover:scale-105 shadow-lg"
                   >
                     <MessageCircle size={18} className="mr-2 inline" />
@@ -734,42 +716,7 @@ const ClubsWebsite = () => {
         </div>
       </div>
       
-      {/* AI Club Chatbot */}
-      <AIClubChatbotFixed 
-        allClubData={allClubData} 
-        isOpen={chatbotOpen}
-        onClose={() => setChatbotOpen(false)}
-        selectedSchool={selectedSchool}
-      />
-      
-      {/* Welcome Notification for AI Assistant */}
-      {chatbotOpen && !hasSeenChatbot && (
-        <div className="fixed top-20 right-6 bg-white border border-blue-200 rounded-lg shadow-lg p-4 max-w-sm z-50 animate-slideIn">
-          <div className="flex items-start space-x-3">
-            <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-              <MessageCircle size={16} className="text-blue-600" />
-            </div>
-            <div className="flex-1">
-              <h4 className="font-semibold text-gray-900 mb-1">Club Quiz Ready! 🎯</h4>
-              <p className="text-sm text-gray-600 mb-3">
-                Take a quick quiz to discover clubs that match your interests and personality!
-              </p>
-              <button
-                onClick={() => setHasSeenChatbot(true)}
-                className="text-xs text-blue-600 hover:text-blue-800 underline"
-              >
-                Got it, thanks!
-              </button>
-            </div>
-            <button
-              onClick={() => setHasSeenChatbot(true)}
-              className="text-gray-400 hover:text-gray-600"
-            >
-              <X size={16} />
-            </button>
-          </div>
-        </div>
-      )}
+      {/* Legacy AI chatbot UI removed; global floating Chatbot is used (App.jsx) */}
       
       {/* Simple Credit */}
       <div className="fixed bottom-0 left-0 right-0 text-center py-2 text-gray-600 text-sm bg-white border-t border-gray-200">

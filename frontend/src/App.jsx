@@ -1,4 +1,6 @@
-import React from 'react';
+// Step 1: Convert App into a stateful component so we can control the Chatbot's visibility
+// Also, ensure we import React hooks and the Chatbot component
+import React, { useState, useCallback, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './config/firebase';
 import AuthGuard from './components/auth/AuthGuard';
@@ -14,6 +16,8 @@ import {
   ClubQuiz
 } from './components/lazy/LazyPages';
 import AdminDashboard from './pages/AdminDashboard';
+import Chatbot from './components/Chatbot'; // Step 2: Import the Chatbot component
+import ChatbotPage from './pages/ChatbotPage';
 
 // Removed test components for security
 
@@ -55,7 +59,6 @@ const PublicRoute = ({ children }) => {
 
 const AppRoutes = () => {
   return (
-    <Router>
       <Routes>
         {/* Removed insecure bypass routes for security */}
         <Route 
@@ -138,14 +141,62 @@ const AppRoutes = () => {
             </AuthGuard>
           } 
         />
+        {/* Full-page Chatbot route: uses same component with fullPage layout */}
+        <Route
+          path="/chatbot"
+          element={<ChatbotPage />}
+        />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-    </Router>
   );
 };
 
 const App = () => {
-  return <AppRoutes />;
-};
+  // Step 3: Add local state to control Chatbot open/close
+  const [isChatOpen, setIsChatOpen] = useState(false);
+
+  // Step 4: Toggle handler passed down to Chatbot via onToggle
+  const handleToggleChat = useCallback(() => {
+    setIsChatOpen((prev) => !prev);
+  }, []);
+
+  // Step 7: Listen for global events so existing page buttons can open/toggle the Chatbot
+  // Any component can trigger: window.dispatchEvent(new Event('open-chatbot'))
+  // or: window.dispatchEvent(new Event('toggle-chatbot'))
+  useEffect(() => {
+    const openHandler = () => setIsChatOpen(true);
+    const toggleHandler = () => setIsChatOpen((prev) => !prev);
+    window.addEventListener('open-chatbot', openHandler);
+    window.addEventListener('toggle-chatbot', toggleHandler);
+    return () => {
+      window.removeEventListener('open-chatbot', openHandler);
+      window.removeEventListener('toggle-chatbot', toggleHandler);
+    };
+  }, []);
+
+  return (
+    <Router>
+      {/* App routes render the main application */}
+      <AppRoutes />
+
+      {/* Step 5: Floating toggle button (bottom-right) accessible via keyboard */}
+      <button
+        type="button"
+        onClick={handleToggleChat}
+        aria-label={isChatOpen ? 'Close chat' : 'Open chat'}
+        title={isChatOpen ? 'Close chat' : 'Open chat'}
+        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-blue-600 text-white shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
+      >
+        {/* Simple, distinctive chat icon as requested */}
+        <span role="img" aria-hidden="true" className="text-xl">💬</span>
+      </button>
+
+      {/* Step 6: Render Chatbot and wire up visibility control via isOpen/onToggle */}
+      {/* Chatbot internally uses REACT_APP_API_URL (defaults to http://localhost:8000/api) to call the backend */}
+      <Chatbot isOpen={isChatOpen} onToggle={handleToggleChat} />
+    </Router>
+  );
+}
+;
 
 export default App;

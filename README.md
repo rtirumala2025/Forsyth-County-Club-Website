@@ -7,39 +7,35 @@ A modern web application for discovering and exploring clubs in Forsyth County s
 This project is split into two separate services:
 
 - **`frontend/`** - React-based web application
-- **`backend/`** - FastAPI-based AI service
+- **`backend/`** - Node.js/Express AI service (OpenAI integration). A legacy Python FastAPI service still exists but is no longer required for the chatbot.
 
 ## Prerequisites
 
 - Node.js (v16 or higher)
-- Python (v3.8 or higher)
 - OpenAI API key
 
 ## Quick Start
 
-### 1. Backend Setup (AI Service)
+### 1. Backend Setup (AI Service - Node.js)
 
 ```bash
 # Navigate to backend directory
 cd backend
 
-# Create virtual environment (recommended)
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
 # Install dependencies
-pip install -r requirements.txt
+npm install
 
-# Set up environment variables
+# Copy env template and set your OpenAI key
 cp .env.example .env
 # Edit .env and add your OpenAI API key:
 # OPENAI_API_KEY=your_openai_api_key_here
+# Optional: OPENAI_MODEL=gpt-4o (or gpt-5 when available)
 
 # Start the backend server
-uvicorn main:app --reload --port 8000
+npm run dev
 ```
 
-The backend will be available at `http://localhost:8000`
+The backend will be available at `http://localhost:8000`.
 
 ### 2. Frontend Setup (React App)
 
@@ -58,21 +54,33 @@ The frontend will be available at `http://localhost:3000`
 
 ## How They Connect
 
-The frontend communicates with the backend through HTTP API calls:
+The frontend communicates with the Node backend through HTTP API calls:
 
-- **AI Chatbot**: The React chatbot component sends user messages to `http://localhost:8000/api/ai`
-- **Health Check**: The frontend checks backend availability via `http://localhost:8000/api/health`
-- **CORS**: The backend is configured to allow requests from `http://localhost:3000`
+- **AI Chatbot**: The React chatbot component posts to `http://localhost:8000/api/chat`
+- **Health Check**: `GET http://localhost:8000/health` and `GET http://localhost:8000/api/chat/health`
+- **Suggestions**: `GET http://localhost:8000/api/chat/suggestions`
+- **CORS**: The backend allows `http://localhost:3000` by default (configurable via `FRONTEND_URL`).
 
 ## API Endpoints
 
-### Backend (FastAPI)
+### Backend (Node.js / Express)
 
-- `GET /api/health` - Health check and AI configuration status
-- `POST /api/ai` - Main AI endpoint for chat responses
-- `POST /api/recommend` - **Hybrid recommendation endpoint** (recommended)
-- `GET /api/rules` - Club rules and guidelines (placeholder)
-- `POST /api/ai-recommendations` - Legacy endpoint for compatibility
+- `GET /health` - Service health
+- `GET /api/chat/health` - OpenAI connectivity and endpoints listing
+- `GET /api/chat/suggestions` - Conversation starters
+- `POST /api/chat` - Main AI endpoint for chat responses
+  - Request body:
+    - `userQuery: string`
+    - `sessionData: { grade?: number, interests?: string[], experience_types?: string[], clubs_viewed?: string[], query_history?: string[] }`
+  - Response body:
+    - `success: boolean`
+    - `message: string` (AI or fallback text)
+    - `recommendations: { name: string, category: string, confidence: number, reasoning: string, source: string }[]`
+    - `confidence: number (0–100)`
+    - `source: 'ai' | 'ai(cache)' | 'rule-based'`
+    - `degraded?: boolean` (when served from fallback)
+    - `sessionData: object` (updated with recent query)
+    - `usage?: { prompt_tokens, completion_tokens, total_tokens }`
 
 ### Frontend (React)
 
@@ -95,7 +103,11 @@ OPENAI_API_KEY=your_openai_api_key_here
 
 ### Frontend
 
-No environment variables required for basic functionality.
+Create `frontend/.env` (optional):
+
+```
+REACT_APP_API_URL=http://localhost:8000/api
+```
 
 ## Features
 
@@ -106,42 +118,31 @@ No environment variables required for basic functionality.
 - **Real-time Search**: Fast, client-side search and filtering
 - **School Selection**: Filter clubs by specific schools
 
-## Hybrid Recommendation System
+## Recommendation Algorithm (Backend)
 
-The `/api/recommend` endpoint implements a two-tier recommendation system:
+Implemented in `backend/services/aiRecommendationService.js`:
 
-### 1. Rule-Based Matching (First Tier)
-- **Fast Pattern Matching**: Uses keyword-based rules for common queries
-- **High Confidence**: Returns immediate responses for clear matches
-- **Examples**: "I love coding" → Coding Club recommendation
-- **Coverage**: Coding, Business, Robotics, Debate, Art, Music, Sports, Science
-
-### 2. AI Fallback (Second Tier)
-- **OpenAI Integration**: Uses GPT-4o-mini when rules don't match
-- **Contextual Understanding**: Considers user session data and conversation history
-- **Flexible Responses**: Handles complex, nuanced queries
-- **Personalized**: Adapts to user's grade, interests, and previous interactions
-
-### Response Format
-```json
-{
-  "source": "rules" | "ai",
-  "reply": "Club recommendation text",
-  "confidence": "high" | "medium" | "none",
-  "matched_patterns": ["coding", "business"]
-}
-```
+- **Dynamic weighting** across session features:
+  - Interests matched to club tags (20 points per tag; multiple interests compound)
+  - Experience types mapped to heuristic keywords (+10)
+  - Grade suitability (+10)
+  - Query keyword match (+15)
+  - Previously viewed clubs (-10)
+- **AI + Rule merge**:
+  - Parse clubs from AI response; score them and merge with rule-based results
+  - Boost for multiple interest overlaps (+15)
+  - Sorted top 5 with `confidence` 0–100
+- **Overall confidence (0–100)** combines average rec confidence with session richness and reply length
+- **Caching**: In-memory LRU cache (200 entries, 5 min TTL) keyed by normalized query + session
+- **Fallbacks**: If OpenAI fails or returns empty, serve popular/rule-based recommendations and set `source: 'rule-based'` with `degraded: true` in route layer
 
 ### Example Usage
-```bash
-curl -X POST "http://localhost:8000/api/recommend" \
+```
+curl -X POST "http://localhost:8000/api/chat" \
   -H "Content-Type: application/json" \
   -d '{
-    "message": "I love programming and want to learn more",
-    "sessionData": {
-      "grade": 9,
-      "interests": ["coding"]
-    }
+    "userQuery": "I love programming and want to learn more",
+    "sessionData": { "grade": 9, "interests": ["coding", "robotics"] }
   }'
 ```
 
@@ -174,10 +175,20 @@ curl -X POST "http://localhost:8000/api/recommend" \
 - Firebase (for data)
 
 ### Backend
-- FastAPI
-- OpenAI API
-- Python 3.8+
-- Uvicorn (ASGI server)
+- Node.js / Express
+- OpenAI SDK
+- Helmet, CORS, compression, rate limiting, morgan
+
+## Chatbot UI & Accessibility
+
+Implemented in `frontend/src/components/Chatbot.jsx`:
+
+- **Confidence badges** with color scale (0–100)
+- **Animated recommendation list** with hover micro-interactions
+- **Loading indicator** and degraded-mode warning banner
+- **Scrollable history**, sticky input, keyboard Enter to send
+- **ARIA labels** for input, send button, suggestions, badges
+- **No AI branding**; presents as a Smart Club Recommender
 
 ## Troubleshooting
 
@@ -193,8 +204,28 @@ curl -X POST "http://localhost:8000/api/recommend" \
 
 ### Connection Issues
 - Check that both services are running
-- Verify CORS settings in backend
+- Verify CORS settings in backend (`FRONTEND_URL`)
 - Check browser console for network errors
+
+## Testing
+
+### Backend Tests
+
+```
+cd backend
+npm test
+```
+
+Coverage includes structured response schema, fallbacks, and basic parsing/merging.
+
+### Frontend Tests
+
+```
+cd frontend
+npm test -- Chatbot
+```
+
+Integration test renders the chatbot, sends a message, and verifies recommendations and confidence badges.
 
 ## Contributing
 
