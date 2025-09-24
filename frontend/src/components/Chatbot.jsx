@@ -188,13 +188,18 @@ export default function Chatbot({
           setSessionData(data.sessionData);
         }
       } else {
-        pushMessage('bot', 'Sorry, I encountered an issue. Please try again.');
+        pushMessage(
+          'bot', 
+          '⚠️ Oops! I\'m having trouble loading the clubs right now.\n👉 Please try again in a moment, or I can retry for you.',
+          { suggestions: ['🔄 Try Again', '🏫 Start Over'] }
+        );
       }
     } catch (error) {
       console.error('Chat request failed:', error);
       pushMessage(
         'bot',
-        'Sorry, I could not connect to the server. Please check your connection and try again.'
+        '⚠️ Oops! I\'m having trouble loading the clubs right now.\n👉 Please try again in a moment, or I can retry for you.',
+        { suggestions: ['🔄 Try Again', '🏫 Start Over'] }
       );
     } finally {
       setLoading(false);
@@ -214,11 +219,21 @@ export default function Chatbot({
   const handleSuggestion = (s) => {
     if (!s) return;
     
-    // Handle restart command specially
-    if (s.includes('🔄 Restart') || s.toLowerCase().includes('restart')) {
+    // Handle special commands
+    if (s.includes('🔄 Restart') || s.toLowerCase().includes('restart') || s.includes('🏫 Start Over')) {
       setInput('');
       sendToBackend('restart');
       return;
+    }
+    
+    if (s.includes('🔄 Try Again')) {
+      // Retry the last user message
+      const lastUserMessage = messages.filter(m => m.type === 'user').pop();
+      if (lastUserMessage) {
+        setInput('');
+        sendToBackend(lastUserMessage.text);
+        return;
+      }
     }
     
     // Clear input (UX polish) and send trimmed suggestion

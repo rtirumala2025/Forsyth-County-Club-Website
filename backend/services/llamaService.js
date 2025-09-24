@@ -188,10 +188,10 @@ async function getLlamaResponse(userQuery, sessionData = {}) {
   } catch (err) {
     console.error('[LLaMA] Error calling OpenRouter:', err?.response?.status, err?.response?.data || err.message);
     return JSON.stringify({
-      success: false,
-      message: "😔 Sorry! I'm having trouble connecting right now. Please try again or restart.",
+      success: true,
+      message: "⚠️ Oops! I'm having trouble loading the clubs right now.\n👉 Please try again in a moment, or I can retry for you.",
       clubs: [],
-      suggestions: ["🔄 Restart"]
+      suggestions: ["🔄 Try Again", "🏫 Start Over"]
     });
   }
 }

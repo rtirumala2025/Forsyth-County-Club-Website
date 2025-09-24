@@ -102,12 +102,16 @@ router.post('/chat', async (req, res) => {
   } catch (error) {
     console.error('Error in /chat endpoint:', error);
     
-    res.status(500).json({
-      success: false,
-      error: 'Internal server error occurred while processing your request',
-      errorType: 'server_error',
-      recommendations: [],
-      confidence: 0
+    res.status(200).json({
+      success: true,
+      message: JSON.stringify({
+        success: true,
+        message: "⚠️ Oops! I'm having trouble loading the clubs right now.\n👉 Please try again in a moment, or I can retry for you.",
+        clubs: [],
+        suggestions: ["🔄 Try Again", "🏫 Start Over"]
+      }),
+      source: 'error_fallback',
+      sessionData: sanitizeSessionData(sessionData || {})
     });
   }
 });
