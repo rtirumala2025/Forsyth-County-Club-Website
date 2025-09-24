@@ -57,10 +57,10 @@ const Events = () => {
   });
 
   // Get available schools
-  const availableSchools = getAvailableSchools();
+  const availableSchools = getAvailableSchools() || [];
 
   // Get clubs for selected school
-  const filteredClubsData = getClubsBySchool(selectedSchool);
+  const filteredClubsData = getClubsBySchool(selectedSchool) || [];
 
   const months = [
     'All', 'January', 'February', 'March', 'April', 'May', 'June',

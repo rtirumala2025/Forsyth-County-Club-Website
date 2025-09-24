@@ -16,14 +16,14 @@ const Compare = () => {
   const [showComparison, setShowComparison] = useState(false);
 
   // Available schools
-  const availableSchools = getAvailableSchools();
+  const availableSchools = getAvailableSchools() || [];
 
   // Filter clubs by selected school
   const filteredClubsData = useMemo(() => {
-    return getClubsBySchool(selectedSchool);
+    return getClubsBySchool(selectedSchool) || [];
   }, [selectedSchool]);
 
-  const clubsData = filteredClubsData;
+  const clubsData = filteredClubsData || [];
   const categories = ['All', ...Object.keys(CategoryColors)];
 
   const filteredClubs = useMemo(() => {

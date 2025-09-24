@@ -24,7 +24,7 @@ const Calendar = () => {
   const [showSchoolDropdown, setShowSchoolDropdown] = useState(false);
   const [viewMode, setViewMode] = useState('month'); // 'month', 'week', 'list'
   const [selectedCategory, setSelectedCategory] = useState('All');
-  const availableSchools = getAvailableSchools();
+  const availableSchools = getAvailableSchools() || [];
   const eventsData = useMemo(() => [
     {
       id: 1,

@@ -143,6 +143,22 @@ export default function Chatbot({
     }
   };
 
+  // Get emoji for club category
+  const getCategoryEmoji = (category) => {
+    const emojiMap = {
+      'STEM': '🤖',
+      'Arts': '🎭',
+      'Leadership': '👑',
+      'Sports': '🏀',
+      'Service': '🌍',
+      'Community Service': '🤝',
+      'Cultural': '🌍',
+      'Academic': '📚',
+      'Recreational': '🎮'
+    };
+    return emojiMap[category] || '🎯';
+  };
+
   // Create AbortController for request timeout
   const createTimeoutController = (timeoutMs = 15000) => {
     const controller = new AbortController();
@@ -385,14 +401,32 @@ export default function Chatbot({
             <div key={m.id}>
               <Bubble type={m.type} text={m.text} ts={m.ts} />
               {m.clubs && m.clubs.length > 0 && (
-                <div className="mt-2 space-y-2">
+                <div className="mt-3 space-y-3">
                   {m.clubs.map((club, index) => (
-                    <div key={index} className="bg-blue-50 border border-blue-200 rounded-lg p-3 ml-4">
-                      <h4 className="font-semibold text-blue-900">{club.name}</h4>
-                      <p className="text-sm text-gray-700 mt-1">{club.description}</p>
-                      <div className="mt-2 text-xs text-gray-600">
-                        <p><strong>Sponsor:</strong> {club.sponsor}</p>
-                        <p><strong>Category:</strong> {club.category}</p>
+                    <div key={index} className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-4 ml-4 hover:shadow-md transition-shadow">
+                      <div className="flex items-start gap-3">
+                        <div className="text-2xl">{getCategoryEmoji(club.category)}</div>
+                        <div className="flex-1">
+                          <h4 className="font-bold text-blue-900 text-lg mb-2">
+                            <a 
+                              href={club.link} 
+                              className="hover:text-blue-700 hover:underline transition-colors"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              {club.name}
+                            </a>
+                          </h4>
+                          <p className="text-gray-700 mb-3 leading-relaxed">{club.description}</p>
+                          <div className="space-y-1 text-sm">
+                            <p className="text-gray-600">
+                              <strong className="text-gray-800">Sponsor:</strong> {club.sponsor}
+                            </p>
+                            <p className="text-gray-600">
+                              <strong className="text-gray-800">Category:</strong> {club.category}
+                            </p>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   ))}

@@ -1,150 +1,26 @@
 const fs = require('fs');
 const path = require('path');
 
-// Load the club data from frontend
+// Import shared club data from frontend
+const { allClubData, getClubsBySchool: getClubsBySchoolHelper, getAvailableSchools: getAvailableSchoolsHelper } = require('../../frontend/src/shared/data/clubData');
+
+// Load the club data from shared location
 let clubData = null;
 
 function loadClubData() {
   if (clubData) return clubData;
   
-  // For now, let's use the known school structure from the frontend data
-  // This can be expanded to dynamically load from the actual file later
-  clubData = [
-    {
-      school: 'East Forsyth High School',
-      clubs: [
-        {
-          id: 'asl-club',
-          name: 'American Sign Language Club',
-          description: 'A student group that teaches and practices American Sign Language and Deaf culture.',
-          sponsor: 'Contact EFHS Clubs/Staff Directory for advisor',
-          category: 'Cultural',
-          meetingFrequency: 'Weekly',
-          requirements: 'Open to all students; no prior ASL experience required'
-        },
-        {
-          id: 'art-club',
-          name: 'Art Club',
-          description: 'Informal studio club for students who enjoy drawing, painting, and mixed media.',
-          sponsor: 'Aimee Seaney (visual arts teacher)',
-          category: 'Arts',
-          meetingFrequency: 'Weekly',
-          requirements: 'Open to all students'
-        },
-        {
-          id: 'beta-club',
-          name: 'Beta Club',
-          description: 'Chapter of the National Beta Club recognizing academic achievement and promoting leadership and service.',
-          sponsor: 'Laura Englebert & Paula Zaimis',
-          category: 'Leadership',
-          meetingFrequency: 'Monthly',
-          requirements: 'Grades 10-12 with minimum GPA of 3.5'
-        },
-        {
-          id: 'robotics-club',
-          name: 'Robotics Club',
-          description: 'Build and program robots for competitions and learn engineering principles.',
-          sponsor: 'Engineering Department',
-          category: 'STEM',
-          meetingFrequency: 'Weekly',
-          requirements: 'Interest in engineering and technology'
-        }
-      ]
-    },
-    {
-      school: 'West Forsyth High School',
-      clubs: [
-        {
-          id: 'coding-club',
-          name: 'Coding Club',
-          description: 'Learn programming languages and work on software projects.',
-          sponsor: 'Computer Science Department',
-          category: 'STEM',
-          meetingFrequency: 'Weekly',
-          requirements: 'Open to all skill levels'
-        },
-        {
-          id: 'drama-club',
-          name: 'Drama Club',
-          description: 'Participate in theatrical productions and develop acting skills.',
-          sponsor: 'Theater Department',
-          category: 'Arts',
-          meetingFrequency: 'Weekly',
-          requirements: 'Interest in theater and performance'
-        }
-      ]
-    },
-    {
-      school: 'North Forsyth High School',
-      clubs: [
-        {
-          id: 'debate-team',
-          name: 'Debate Team',
-          description: 'Develop public speaking and argumentation skills through competitive debate.',
-          sponsor: 'English Department',
-          category: 'Academic',
-          meetingFrequency: 'Weekly',
-          requirements: 'Strong communication skills preferred'
-        }
-      ]
-    },
-    {
-      school: 'South Forsyth High School',
-      clubs: [
-        {
-          id: 'environmental-club',
-          name: 'Environmental Club',
-          description: 'Promote environmental awareness and participate in conservation projects.',
-          sponsor: 'Science Department',
-          category: 'Service',
-          meetingFrequency: 'Bi-weekly',
-          requirements: 'Interest in environmental issues'
-        }
-      ]
-    },
-    {
-      school: 'Lambert High School',
-      clubs: [
-        {
-          id: 'math-team',
-          name: 'Math Team',
-          description: 'Compete in mathematical competitions and solve challenging problems.',
-          sponsor: 'Mathematics Department',
-          category: 'STEM',
-          meetingFrequency: 'Weekly',
-          requirements: 'Strong math skills'
-        }
-      ]
-    },
-    {
-      school: 'Denmark High School',
-      clubs: [
-        {
-          id: 'student-government',
-          name: 'Student Government',
-          description: 'Represent student interests and organize school events.',
-          sponsor: 'Administration',
-          category: 'Leadership',
-          meetingFrequency: 'Weekly',
-          requirements: 'Election required'
-        }
-      ]
-    }
-  ];
+  // Use the comprehensive shared club data
+  clubData = allClubData;
   
-  console.log(`Loaded club data for ${clubData.length} schools`);
+  console.log(`✅ Loaded comprehensive club data for ${clubData.length} schools`);
+  console.log(`📊 Total clubs: ${clubData.reduce((total, school) => total + (school.clubs?.length || 0), 0)}`);
+  
   return clubData;
 }
 
 // Supported schools list for normalization
-const SUPPORTED_SCHOOLS = [
-  'Denmark High School',
-  'East Forsyth High School', 
-  'Lambert High School',
-  'North Forsyth High School',
-  'South Forsyth High School',
-  'West Forsyth High School'
-];
+const SUPPORTED_SCHOOLS = getAvailableSchoolsHelper();
 
 function normalizeSchoolName(input) {
   if (!input || typeof input !== 'string') return null;
@@ -182,7 +58,7 @@ function normalizeSchoolName(input) {
 }
 
 function getAvailableSchools() {
-  return [...SUPPORTED_SCHOOLS].sort();
+  return getAvailableSchoolsHelper().sort();
 }
 
 function getSchoolData(schoolName) {

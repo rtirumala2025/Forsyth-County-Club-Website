@@ -5,11 +5,13 @@ import { allClubData, getAvailableSchools } from '../data/clubData';
 
 const About = () => {
   const navigate = useNavigate();
-  const availableSchools = getAvailableSchools();
-  const totalClubs = allClubData.reduce((total, school) => total + (school.clubs?.length || school.club?.length || 0), 0);
-  const totalCategories = new Set(allClubData.flatMap(school => 
+  const availableSchools = getAvailableSchools() || [];
+  const totalClubs = allClubData?.reduce((total, school) => 
+    total + (school.clubs || school.club || []).length, 0
+  ) || 0;
+  const totalCategories = new Set(allClubData?.flatMap(school => 
     (school.clubs || school.club || []).map(club => club.category)
-  )).size;
+  ) || []).size;
   const stats = [
     {
       icon: Building,

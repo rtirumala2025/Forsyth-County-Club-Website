@@ -5,7 +5,7 @@ import { useAuth } from '../config/firebase';
 import UserMenu from '../components/auth/userMenu';
 import { useNavigate } from 'react-router-dom';
 import { useClubFilter } from '../hooks/useClubFilter';
-import { allClubData, CategoryColors, getClubsBySchool, getAvailableSchools } from '../data/clubData';
+import { allClubData, getClubsBySchool, getAvailableSchools } from '../data/clubData';
 // Removed legacy chatbot import; using global floating Chatbot in App.jsx instead
 
 const ClubsWebsite = () => {
@@ -27,7 +27,7 @@ const ClubsWebsite = () => {
   console.log('Auth state:', { user, loading });
   
   const availableSchools = useMemo(
-    () => allClubData.map(school => school.school),
+    () => allClubData?.map(school => school.school) || [],
     [allClubData]
   );
 
@@ -35,6 +35,7 @@ const ClubsWebsite = () => {
 
   // Filter clubs by selected school
   const filteredClubsData = useMemo(() => {
+    if (!allClubData) return [];
     const schoolData = allClubData.find(school => school.school === selectedSchool);
     console.log('School data for', selectedSchool, ':', schoolData);
     if (!schoolData) return [];
