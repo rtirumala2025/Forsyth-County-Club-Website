@@ -100,8 +100,14 @@ router.post('/chat', async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Error in /chat endpoint:', error);
+    console.error('🚨 Error in /chat endpoint:', {
+      error: error.message,
+      stack: error.stack,
+      userQuery: userQuery?.substring(0, 100),
+      timestamp: new Date().toISOString()
+    });
     
+    // Always return a successful response to prevent frontend errors
     res.status(200).json({
       success: true,
       message: JSON.stringify({

@@ -32,16 +32,25 @@ app.use(helmet({
   },
 }));
 
-// Rate limiting
+// Rate limiting - relaxed for development, strict for production
+const isDevelopment = process.env.NODE_ENV !== 'production';
+
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per windowMs
+  windowMs: isDevelopment ? 1 * 60 * 1000 : 15 * 60 * 1000, // 1 min dev, 15 min prod
+  max: isDevelopment ? 1000 : 100, // 1000 requests dev, 100 prod
   message: {
     error: 'Too many requests from this IP, please try again later.',
-    retryAfter: '15 minutes'
+    retryAfter: isDevelopment ? '1 minute' : '15 minutes'
   },
   standardHeaders: true,
   legacyHeaders: false,
+  skip: (req) => {
+    // Skip rate limiting for localhost in development
+    if (isDevelopment && (req.ip === '127.0.0.1' || req.ip === '::1' || req.ip === '::ffff:127.0.0.1')) {
+      return true;
+    }
+    return false;
+  }
 });
 
 app.use('/api/', limiter);
@@ -124,6 +133,26 @@ app.use((error, req, res, next) => {
     message: process.env.NODE_ENV === 'development' ? error.message : 'Something went wrong',
     timestamp: new Date().toISOString()
   });
+});
+
+// Handle unhandled promise rejections
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('🚨 Unhandled Promise Rejection at:', promise, 'reason:', reason);
+  // Log the error but don't crash in development
+  if (process.env.NODE_ENV === 'production') {
+    console.error('💥 Shutting down due to unhandled promise rejection');
+    process.exit(1);
+  }
+});
+
+// Handle uncaught exceptions
+process.on('uncaughtException', (error) => {
+  console.error('🚨 Uncaught Exception:', error);
+  // Log the error but don't crash in development
+  if (process.env.NODE_ENV === 'production') {
+    console.error('💥 Shutting down due to uncaught exception');
+    process.exit(1);
+  }
 });
 
 // Graceful shutdown handling

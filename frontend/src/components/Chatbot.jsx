@@ -143,7 +143,36 @@ export default function Chatbot({
     }
   };
 
-  // Core: send a query to the backend
+  // Create AbortController for request timeout
+  const createTimeoutController = (timeoutMs = 15000) => {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+    return { controller, timeoutId };
+  };
+
+  // Retry with exponential backoff
+  const retryWithBackoff = async (fn, maxRetries = 3, baseDelay = 1000) => {
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        return await fn();
+      } catch (error) {
+        // Don't retry on user abort or non-network errors
+        if (error.name === 'AbortError' || error.message.includes('400')) {
+          throw error;
+        }
+        
+        if (attempt === maxRetries) {
+          throw error;
+        }
+        
+        const delay = baseDelay * Math.pow(2, attempt - 1);
+        console.log(`[Chatbot] Attempt ${attempt} failed, retrying in ${delay}ms...`, error.message);
+        await new Promise(resolve => setTimeout(resolve, delay));
+      }
+    }
+  };
+
+  // Core: send a query to the backend with timeout and retry logic
   const sendToBackend = async (userQuery) => {
     const query = (userQuery || '').trim();
     if (!query) return;
@@ -151,20 +180,32 @@ export default function Chatbot({
     pushMessage('user', query);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/chat`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userQuery: query,
-          sessionData: sessionData,
-        }),
-      });
+      const data = await retryWithBackoff(async () => {
+        const { controller, timeoutId } = createTimeoutController(15000); // 15 second timeout
+        
+        try {
+          const response = await fetch(`${API_BASE_URL}/chat`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              userQuery: query,
+              sessionData: sessionData,
+            }),
+            signal: controller.signal,
+          });
 
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`);
-      }
+          clearTimeout(timeoutId);
 
-      const data = await response.json();
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          }
+
+          return await response.json();
+        } catch (error) {
+          clearTimeout(timeoutId);
+          throw error;
+        }
+      }, 3, 1000); // 3 retries, starting with 1 second delay
 
       if (data.success && data.message) {
         // Parse JSON response if the message is JSON formatted
@@ -195,7 +236,7 @@ export default function Chatbot({
         );
       }
     } catch (error) {
-      console.error('Chat request failed:', error);
+      console.error('Chat request failed after retries:', error);
       pushMessage(
         'bot',
         '⚠️ Oops! I\'m having trouble loading the clubs right now.\n👉 Please try again in a moment, or I can retry for you.',
