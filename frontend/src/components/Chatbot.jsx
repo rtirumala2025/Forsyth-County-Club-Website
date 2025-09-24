@@ -39,7 +39,6 @@ export default function Chatbot({
 
   // Session data for backend; can be enriched via props or user profile
   const [sessionData, setSessionData] = useState({
-    interests: [],
     experience_types: [],
     clubs_viewed: [],
     query_history: [],

@@ -62,6 +62,7 @@ router.post('/chat', async (req, res) => {
     if (isResetCommand && isResetCommand(userQuery)) {
       updatedSessionData.school = null;
       updatedSessionData.grade = null;
+      updatedSessionData.interests = null;
     } else {
       // Check if user mentioned a school (only if not already set)
       if (!updatedSessionData.school) {
@@ -81,6 +82,16 @@ router.post('/chat', async (req, res) => {
           if (grade === 'eleventh' || grade === 'junior') grade = '11';
           if (grade === 'twelfth' || grade === 'senior') grade = '12';
           updatedSessionData.grade = parseInt(grade);
+        }
+      }
+      
+      // Check if user mentioned interests (only if school and grade are set but interests are not)
+      if (updatedSessionData.school && updatedSessionData.grade && !updatedSessionData.interests) {
+        const interestKeywords = ['stem', 'arts', 'sports', 'leadership', 'service', 'academic', 'community', 'music', 'drama', 'science', 'math', 'technology', 'robotics', 'coding'];
+        const foundInterests = interestKeywords.filter(keyword => query.includes(keyword));
+        
+        if (foundInterests.length > 0 || query.length > 3) {
+          updatedSessionData.interests = userQuery;
         }
       }
     }
@@ -288,42 +299,58 @@ function sanitizeSessionData(sessionData) {
     }
   }
 
-  // Validate and sanitize interests array
-  if (Array.isArray(sessionData.interests)) {
-    sanitized.interests = sessionData.interests
-      .filter(interest => typeof interest === 'string' && interest.trim().length > 0)
-      .map(interest => interest.trim())
-      .slice(0, 10); // Limit to 10 interests
-  } else {
-    sanitized.interests = [];
+  // Validate and sanitize interests
+  if (sessionData.interests) {
+    if (typeof sessionData.interests === 'string' && sessionData.interests.trim().length > 0) {
+      sanitized.interests = sessionData.interests.trim();
+    } else if (Array.isArray(sessionData.interests) && sessionData.interests.length > 0) {
+      const filteredInterests = sessionData.interests
+        .filter(interest => typeof interest === 'string' && interest.trim().length > 0)
+        .map(interest => interest.trim())
+        .slice(0, 10); // Limit to 10 interests
+      
+      if (filteredInterests.length > 0) {
+        sanitized.interests = filteredInterests;
+      }
+    }
   }
 
   // Validate and sanitize experience types array
-  if (Array.isArray(sessionData.experience_types)) {
-    sanitized.experience_types = sessionData.experience_types
+  if (Array.isArray(sessionData.experience_types) && sessionData.experience_types.length > 0) {
+    const filteredTypes = sessionData.experience_types
       .filter(type => typeof type === 'string' && type.trim().length > 0)
       .map(type => type.trim())
       .slice(0, 5); // Limit to 5 experience types
-  } else {
-    sanitized.experience_types = [];
+    
+    if (filteredTypes.length > 0) {
+      sanitized.experience_types = filteredTypes;
+    }
   }
 
   // Validate and sanitize clubs viewed array
-  if (Array.isArray(sessionData.clubs_viewed)) {
-    sanitized.clubs_viewed = sessionData.clubs_viewed
+  if (Array.isArray(sessionData.clubs_viewed) && sessionData.clubs_viewed.length > 0) {
+    const filteredClubs = sessionData.clubs_viewed
       .filter(club => typeof club === 'string' && club.trim().length > 0)
       .map(club => club.trim())
       .slice(0, 20); // Limit to 20 clubs
+    
+    if (filteredClubs.length > 0) {
+      sanitized.clubs_viewed = filteredClubs;
+    }
   } else {
     sanitized.clubs_viewed = [];
   }
 
   // Validate and sanitize query history array
-  if (Array.isArray(sessionData.query_history)) {
-    sanitized.query_history = sessionData.query_history
+  if (Array.isArray(sessionData.query_history) && sessionData.query_history.length > 0) {
+    const filteredHistory = sessionData.query_history
       .filter(query => typeof query === 'string' && query.trim().length > 0)
       .map(query => query.trim())
       .slice(-10); // Keep only last 10 queries
+    
+    if (filteredHistory.length > 0) {
+      sanitized.query_history = filteredHistory;
+    }
   } else {
     sanitized.query_history = [];
   }

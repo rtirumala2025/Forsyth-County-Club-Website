@@ -30,19 +30,19 @@ function buildJSONResponse(sessionData, userQuery = '', clubs = []) {
   if (!sessionData.grade) {
     return JSON.stringify({
       success: true,
-      message: `Great! You selected ${sessionData.school}. What grade are you in?`,
+      message: `Great! You selected ${sessionData.school}. What grade are you in? (9, 10, 11, or 12)`,
       clubs: [],
       suggestions: ["Grade 9", "Grade 10", "Grade 11", "Grade 12"]
     });
   }
   
-  // Step 3: Both school and grade are set - provide recommendations or ask for interests
-  if (clubs.length === 0 && !userQuery.includes('STEM') && !userQuery.includes('Arts') && !userQuery.includes('Leadership')) {
+  // Step 3: Ask for interests if not provided yet
+  if (!sessionData.interests || (Array.isArray(sessionData.interests) && sessionData.interests.length === 0)) {
     return JSON.stringify({
       success: true,
-      message: `Perfect! You're in grade ${sessionData.grade} at ${sessionData.school}. What types of clubs are you interested in?`,
+      message: `Perfect! You're in grade ${sessionData.grade} at ${sessionData.school}. What types of clubs are you most interested in?`,
       clubs: [],
-      suggestions: ["STEM", "Arts", "Leadership", "Sports", "Community Service", "Academic"]
+      suggestions: ["STEM", "Arts", "Sports", "Leadership", "Community Service", "Academic"]
     });
   }
   
@@ -61,7 +61,7 @@ function buildJSONResponse(sessionData, userQuery = '', clubs = []) {
     
     return {
       name: club.name,
-      description: `${getCategoryEmoji(club.category)} ${club.description}`,
+      description: club.description,
       sponsor: club.sponsor || 'Contact school for advisor',
       category: club.category || 'General',
       link: `/clubs/${schoolSlug}/${clubSlug}`
@@ -69,19 +69,44 @@ function buildJSONResponse(sessionData, userQuery = '', clubs = []) {
   });
   
   if (formattedClubs.length === 0) {
+    // Get a diverse sample of clubs if no matches found
+    const allSchoolClubs = getSchoolClubs(sessionData.school);
+    const sampleClubs = allSchoolClubs.slice(0, 5).map(club => {
+      const schoolSlug = sessionData.school
+        .replace(/\s+High\s+School/i, '')
+        .toLowerCase()
+        .replace(/\s+/g, '-');
+      
+      const clubSlug = (club.id || club.name)
+        .toLowerCase()
+        .replace(/\s+/g, '-');
+      
+      return {
+        name: club.name,
+        description: club.description,
+        sponsor: club.sponsor || 'Contact school for advisor',
+        category: club.category || 'General',
+        link: `/clubs/${schoolSlug}/${clubSlug}`
+      };
+    });
+    
     return JSON.stringify({
       success: true,
-      message: `😔 I don't have specific clubs matching your interests at ${sessionData.school} right now. Would you like to explore other categories or restart?`,
-      clubs: [],
-      suggestions: ["STEM", "Arts", "Leadership", "Sports", "🔄 Restart"]
+      message: `Here are some popular clubs at ${sessionData.school} you might enjoy:`,
+      clubs: sampleClubs,
+      suggestions: ["STEM", "Arts", "Sports", "Leadership", "Community Service", "Academic", "🔄 Restart"]
     });
   }
   
+  const interestText = Array.isArray(sessionData.interests) 
+    ? sessionData.interests.join(', ') 
+    : sessionData.interests;
+  
   return JSON.stringify({
     success: true,
-    message: `Hi grade ${sessionData.grade} student! Here are some clubs you might enjoy at ${sessionData.school}:`,
+    message: `Here are some ${interestText} clubs at ${sessionData.school} you might enjoy:`,
     clubs: formattedClubs,
-    suggestions: ["STEM", "Arts", "Leadership", "Sports", "Community Service", "Academic", "🔄 Restart"]
+    suggestions: ["STEM", "Arts", "Sports", "Leadership", "Community Service", "Academic", "🔄 Restart"]
   });
 }
 
@@ -128,8 +153,18 @@ function parseUserResponse(userQuery, sessionData) {
     }
   }
   
-  // If both school and grade are set, this is an interests/recommendation query
-  if (sessionData.school && sessionData.grade) {
+  // If school and grade set but no interests, detect interests
+  if (sessionData.school && sessionData.grade && (!sessionData.interests || sessionData.interests.length === 0)) {
+    const interestKeywords = ['stem', 'arts', 'sports', 'leadership', 'service', 'academic', 'community', 'music', 'drama', 'science', 'math', 'technology', 'robotics', 'coding'];
+    const foundInterests = interestKeywords.filter(keyword => query.includes(keyword));
+    
+    if (foundInterests.length > 0 || query.length > 3) {
+      return { action: 'set_interests', interests: userQuery };
+    }
+  }
+  
+  // If all info is set, this is a follow-up query
+  if (sessionData.school && sessionData.grade && sessionData.interests) {
     return { action: 'recommend_clubs', interests: userQuery };
   }
   
@@ -159,6 +194,27 @@ async function getLlamaResponse(userQuery, sessionData = {}) {
       }, userQuery, []);
     }
     
+    // Handle interests selection
+    if (parseResult.action === 'set_interests') {
+      const updatedSessionData = {
+        school: sessionData.school,
+        grade: sessionData.grade,
+        interests: parseResult.interests
+      };
+      
+      // Get clubs based on interests
+      const interestKeywords = parseResult.interests.toLowerCase().split(/[,\s]+/).filter(w => w.length > 2);
+      const clubs = getSchoolClubs(sessionData.school, {
+        interests: interestKeywords,
+        grade: sessionData.grade
+      });
+      
+      // If no specific matches, get a diverse sample
+      const finalClubs = clubs.length > 0 ? clubs.slice(0, 7) : getSchoolClubs(sessionData.school).slice(0, 5);
+      
+      return buildJSONResponse(updatedSessionData, userQuery, finalClubs);
+    }
+    
     // If no school set, return school selection prompt
     if (!sessionData.school) {
       return buildJSONResponse(sessionData, userQuery, []);
@@ -169,21 +225,21 @@ async function getLlamaResponse(userQuery, sessionData = {}) {
       return buildJSONResponse(sessionData, userQuery, []);
     }
     
-    // Both school and grade are set - make recommendations
-    if (parseResult.action === 'recommend_clubs') {
-      // Get clubs from the school's dataset
-      const clubs = getSchoolClubs(sessionData.school, {
-        interests: parseResult.interests.split(/[,\s]+/).filter(w => w.length > 2)
-      });
-      
-      // If no clubs found, get all clubs from the school
-      const allClubs = clubs.length > 0 ? clubs : getSchoolClubs(sessionData.school);
-      
-      return buildJSONResponse(sessionData, userQuery, allClubs);
+    // If no interests set, ask for interests
+    if (!sessionData.interests || (Array.isArray(sessionData.interests) && sessionData.interests.length === 0)) {
+      return buildJSONResponse(sessionData, userQuery, []);
     }
     
-    // Default case - ask for interests
-    return buildJSONResponse(sessionData, userQuery, []);
+    // All info collected - provide recommendations
+    const interestKeywords = sessionData.interests.toLowerCase().split(/[,\s]+/).filter(w => w.length > 2);
+    const clubs = getSchoolClubs(sessionData.school, {
+      interests: interestKeywords,
+      grade: sessionData.grade
+    });
+    
+    const finalClubs = clubs.length > 0 ? clubs.slice(0, 7) : getSchoolClubs(sessionData.school).slice(0, 5);
+    
+    return buildJSONResponse(sessionData, userQuery, finalClubs);
     
   } catch (err) {
     console.error('[LLaMA] Error calling OpenRouter:', err?.response?.status, err?.response?.data || err.message);
