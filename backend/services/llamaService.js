@@ -13,7 +13,7 @@ function isResetCommand(query) {
   return resetKeywords.some(keyword => lowerQuery.includes(keyword));
 }
 
-function buildJSONResponse(sessionData, userQuery = '', clubs = []) {
+function buildJSONResponse(sessionData, userQuery = '', clubs = null) {
   const schools = getAvailableSchools();
   
   // Step 1: Ask for school if not set
@@ -46,7 +46,17 @@ function buildJSONResponse(sessionData, userQuery = '', clubs = []) {
     });
   }
   
-  // Step 4: Provide club recommendations
+  // Step 4: Provide club recommendations (only if clubs are explicitly provided)
+  if (clubs === null) {
+    // No clubs provided, this shouldn't happen if we reach here
+    return JSON.stringify({
+      success: true,
+      message: `Perfect! You're in grade ${sessionData.grade} at ${sessionData.school}. What types of clubs are you most interested in?`,
+      clubs: [],
+      suggestions: ["STEM", "Arts", "Sports", "Leadership", "Community Service", "Academic"]
+    });
+  }
+  
   const formattedClubs = clubs.map(club => {
     // Generate school slug (remove "High School" and convert to lowercase with dashes)
     const schoolSlug = sessionData.school
@@ -154,7 +164,7 @@ function parseUserResponse(userQuery, sessionData) {
   }
   
   // If school and grade set but no interests, detect interests
-  if (sessionData.school && sessionData.grade && (!sessionData.interests || sessionData.interests.length === 0)) {
+  if (sessionData.school && sessionData.grade && (!sessionData.interests || (typeof sessionData.interests === 'string' && sessionData.interests.trim() === '') || (Array.isArray(sessionData.interests) && sessionData.interests.length === 0))) {
     const interestKeywords = ['stem', 'arts', 'sports', 'leadership', 'service', 'academic', 'community', 'music', 'drama', 'science', 'math', 'technology', 'robotics', 'coding'];
     const foundInterests = interestKeywords.filter(keyword => query.includes(keyword));
     
@@ -164,7 +174,7 @@ function parseUserResponse(userQuery, sessionData) {
   }
   
   // If all info is set, this is a follow-up query
-  if (sessionData.school && sessionData.grade && sessionData.interests) {
+  if (sessionData.school && sessionData.grade && sessionData.interests && sessionData.interests !== '') {
     return { action: 'recommend_clubs', interests: userQuery };
   }
   
@@ -188,10 +198,12 @@ async function getLlamaResponse(userQuery, sessionData = {}) {
     
     // Handle grade selection
     if (parseResult.action === 'set_grade') {
-      return buildJSONResponse({ 
+      const updatedSessionData = { 
         school: sessionData.school, 
         grade: parseResult.grade 
-      }, userQuery, []);
+      };
+      // Don't pass clubs array - let buildJSONResponse determine the next step
+      return buildJSONResponse(updatedSessionData, userQuery);
     }
     
     // Handle interests selection

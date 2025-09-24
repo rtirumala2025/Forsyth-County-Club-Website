@@ -58,43 +58,8 @@ router.post('/chat', async (req, res) => {
     let updatedSessionData = { ...sanitizedSessionData };
     const query = userQuery.toLowerCase().trim();
     
-    // Handle reset commands first
-    if (isResetCommand && isResetCommand(userQuery)) {
-      updatedSessionData.school = null;
-      updatedSessionData.grade = null;
-      updatedSessionData.interests = null;
-    } else {
-      // Check if user mentioned a school (only if not already set)
-      if (!updatedSessionData.school) {
-        const normalizedSchool = normalizeSchoolName(userQuery);
-        if (normalizedSchool) {
-          updatedSessionData.school = normalizedSchool;
-        }
-      }
-      
-      // Check if user mentioned a grade (only if school is set but grade is not)
-      if (updatedSessionData.school && !updatedSessionData.grade) {
-        const gradeMatch = query.match(/\b(9|10|11|12|ninth|tenth|eleventh|twelfth|freshman|sophomore|junior|senior)\b/);
-        if (gradeMatch) {
-          let grade = gradeMatch[1];
-          if (grade === 'ninth' || grade === 'freshman') grade = '9';
-          if (grade === 'tenth' || grade === 'sophomore') grade = '10';
-          if (grade === 'eleventh' || grade === 'junior') grade = '11';
-          if (grade === 'twelfth' || grade === 'senior') grade = '12';
-          updatedSessionData.grade = parseInt(grade);
-        }
-      }
-      
-      // Check if user mentioned interests (only if school and grade are set but interests are not)
-      if (updatedSessionData.school && updatedSessionData.grade && !updatedSessionData.interests) {
-        const interestKeywords = ['stem', 'arts', 'sports', 'leadership', 'service', 'academic', 'community', 'music', 'drama', 'science', 'math', 'technology', 'robotics', 'coding'];
-        const foundInterests = interestKeywords.filter(keyword => query.includes(keyword));
-        
-        if (foundInterests.length > 0 || query.length > 3) {
-          updatedSessionData.interests = userQuery;
-        }
-      }
-    }
+    // Let the LLaMA service handle ALL parsing logic including reset commands
+    // The route handler should only handle basic session management
     
     
     // Get AI response from LLaMA service
