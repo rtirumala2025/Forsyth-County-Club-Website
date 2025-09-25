@@ -36,13 +36,43 @@ function buildJSONResponse(sessionData, userQuery = '', clubs = null) {
     });
   }
   
-  // Step 3: Ask for interests if not provided yet
-  if (!sessionData.interests || (Array.isArray(sessionData.interests) && sessionData.interests.length === 0)) {
+  // Step 3: Ask for activity type preference
+  if (!sessionData.activityType) {
     return JSON.stringify({
       success: true,
-      message: `Perfect! You're in grade ${sessionData.grade} at ${sessionData.school}. What types of clubs are you most interested in?`,
+      message: `Perfect! You're in grade ${sessionData.grade} at ${sessionData.school}. What type of activities do you prefer?`,
       clubs: [],
-      suggestions: ["STEM", "Arts", "Sports", "Leadership", "Community Service", "Academic"]
+      suggestions: ["Hands-on projects", "Academic competitions", "Arts/creativity", "Leadership/service", "Sports/fitness", "Social/cultural clubs"]
+    });
+  }
+  
+  // Step 4: Ask for time commitment preference
+  if (!sessionData.timeCommitment) {
+    return JSON.stringify({
+      success: true,
+      message: `Great choice! How much time do you want to commit to club activities?`,
+      clubs: [],
+      suggestions: ["Low (1-2 hours/week)", "Medium (3-5 hours/week)", "High (6+ hours/week)"]
+    });
+  }
+  
+  // Step 5: Ask for goal preference
+  if (!sessionData.goal) {
+    return JSON.stringify({
+      success: true,
+      message: `Perfect! What's your main goal for joining clubs?`,
+      clubs: [],
+      suggestions: ["Fun/social", "Resume/college", "Both"]
+    });
+  }
+  
+  // Step 6: Ask for teamwork preference
+  if (!sessionData.teamwork) {
+    return JSON.stringify({
+      success: true,
+      message: `Almost done! Do you prefer working in teams or individually?`,
+      clubs: [],
+      suggestions: ["Team-focused", "Individual-focused", "Both"]
     });
   }
   
