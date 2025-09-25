@@ -266,7 +266,42 @@ function sanitizeSessionData(sessionData) {
     }
   }
 
-  // Validate and sanitize interests
+  // Validate and sanitize activity type
+  if (sessionData.activityType && typeof sessionData.activityType === 'string') {
+    const validActivityTypes = [
+      'Hands-on projects', 'Academic competitions', 'Arts/creativity', 
+      'Leadership/service', 'Sports/fitness', 'Social/cultural clubs'
+    ];
+    if (validActivityTypes.includes(sessionData.activityType) || sessionData.activityType.trim().length > 0) {
+      sanitized.activityType = sessionData.activityType.trim();
+    }
+  }
+
+  // Validate and sanitize time commitment
+  if (sessionData.timeCommitment && typeof sessionData.timeCommitment === 'string') {
+    const validTimeCommitments = ['Low', 'Medium', 'High'];
+    if (validTimeCommitments.includes(sessionData.timeCommitment) || sessionData.timeCommitment.trim().length > 0) {
+      sanitized.timeCommitment = sessionData.timeCommitment.trim();
+    }
+  }
+
+  // Validate and sanitize goal
+  if (sessionData.goal && typeof sessionData.goal === 'string') {
+    const validGoals = ['Fun/social', 'Resume/college', 'Both'];
+    if (validGoals.includes(sessionData.goal) || sessionData.goal.trim().length > 0) {
+      sanitized.goal = sessionData.goal.trim();
+    }
+  }
+
+  // Validate and sanitize teamwork preference
+  if (sessionData.teamwork && typeof sessionData.teamwork === 'string') {
+    const validTeamwork = ['Team-focused', 'Individual-focused', 'Both'];
+    if (validTeamwork.includes(sessionData.teamwork) || sessionData.teamwork.trim().length > 0) {
+      sanitized.teamwork = sessionData.teamwork.trim();
+    }
+  }
+
+  // Validate and sanitize interests (legacy field)
   if (sessionData.interests) {
     if (typeof sessionData.interests === 'string' && sessionData.interests.trim().length > 0) {
       sanitized.interests = sessionData.interests.trim();

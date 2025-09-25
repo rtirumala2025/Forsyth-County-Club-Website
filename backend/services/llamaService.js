@@ -76,18 +76,20 @@ function buildJSONResponse(sessionData, userQuery = '', clubs = null) {
     });
   }
   
-  // Step 4: Provide club recommendations (only if clubs are explicitly provided)
+  // Step 7: Provide personalized club recommendations
+  // All preferences collected, now we can recommend clubs
   if (clubs === null) {
-    // No clubs provided, this shouldn't happen if we reach here
+    // This means we have all preferences but no clubs were provided
+    // This should trigger the matching algorithm
     return JSON.stringify({
       success: true,
-      message: `Perfect! You're in grade ${sessionData.grade} at ${sessionData.school}. What types of clubs are you most interested in?`,
+      message: `Excellent! Based on your preferences, let me find the perfect clubs for you at ${sessionData.school}...`,
       clubs: [],
-      suggestions: ["STEM", "Arts", "Sports", "Leadership", "Community Service", "Academic"]
+      suggestions: ["🔄 Restart", "📋 See All Clubs"]
     });
   }
   
-  const formattedClubs = clubs.map(club => {
+  const formattedClubs = clubs.map((club, index) => {
     // Generate school slug (remove "High School" and convert to lowercase with dashes)
     const schoolSlug = sessionData.school
       .replace(/\s+High\s+School/i, '')
@@ -99,9 +101,18 @@ function buildJSONResponse(sessionData, userQuery = '', clubs = null) {
       .toLowerCase()
       .replace(/\s+/g, '-');
     
+    // Enhanced description with match reasons
+    let enhancedDescription = club.description;
+    if (club.matchReasons && club.matchReasons.length > 0) {
+      enhancedDescription += `\n\n🎯 **Why this matches:** ${club.matchReasons.join(', ')}`;
+    }
+    if (club.matchScore) {
+      enhancedDescription += `\n📊 **Match Score:** ${club.matchScore}/8`;
+    }
+    
     return {
-      name: club.name,
-      description: club.description,
+      name: `${index + 1}. ${club.name}`,
+      description: enhancedDescription,
       sponsor: club.sponsor || 'Contact school for advisor',
       category: club.category || 'General',
       link: `/clubs/${schoolSlug}/${clubSlug}`
@@ -130,11 +141,16 @@ function buildJSONResponse(sessionData, userQuery = '', clubs = null) {
       };
     });
     
+    // Create personalized message based on preferences
+    let personalizedMessage = `🎯 **Perfect matches for you at ${sessionData.school}!**\n\n`;
+    personalizedMessage += `✨ **Your Profile:** ${sessionData.activityType}, ${sessionData.timeCommitment} commitment, ${sessionData.goal} focus, ${sessionData.teamwork} preference\n\n`;
+    personalizedMessage += `Here are your top 3 personalized club recommendations:`;
+    
     return JSON.stringify({
       success: true,
-      message: `Here are some popular clubs at ${sessionData.school} you might enjoy:`,
-      clubs: sampleClubs,
-      suggestions: ["STEM", "Arts", "Sports", "Leadership", "Community Service", "Academic", "🔄 Restart"]
+      message: personalizedMessage,
+      clubs: formattedClubs,
+      suggestions: ["📋 See More Clubs", "🔄 Restart", "🔍 Refine Preferences"]
     });
   }
   
@@ -193,22 +209,240 @@ function parseUserResponse(userQuery, sessionData) {
     }
   }
   
-  // If school and grade set but no interests, detect interests
-  if (sessionData.school && sessionData.grade && (!sessionData.interests || (typeof sessionData.interests === 'string' && sessionData.interests.trim() === '') || (Array.isArray(sessionData.interests) && sessionData.interests.length === 0))) {
-    const interestKeywords = ['stem', 'arts', 'sports', 'leadership', 'service', 'academic', 'community', 'music', 'drama', 'science', 'math', 'technology', 'robotics', 'coding'];
-    const foundInterests = interestKeywords.filter(keyword => query.includes(keyword));
+  // If school and grade set but no activity type, detect activity type
+  if (sessionData.school && sessionData.grade && !sessionData.activityType) {
+    const activityKeywords = {
+      'hands-on': 'Hands-on projects',
+      'projects': 'Hands-on projects',
+      'building': 'Hands-on projects',
+      'making': 'Hands-on projects',
+      'academic': 'Academic competitions',
+      'competitions': 'Academic competitions',
+      'compete': 'Academic competitions',
+      'quiz': 'Academic competitions',
+      'arts': 'Arts/creativity',
+      'creative': 'Arts/creativity',
+      'art': 'Arts/creativity',
+      'music': 'Arts/creativity',
+      'drama': 'Arts/creativity',
+      'leadership': 'Leadership/service',
+      'service': 'Leadership/service',
+      'volunteer': 'Leadership/service',
+      'community': 'Leadership/service',
+      'sports': 'Sports/fitness',
+      'fitness': 'Sports/fitness',
+      'athletic': 'Sports/fitness',
+      'social': 'Social/cultural clubs',
+      'cultural': 'Social/cultural clubs',
+      'friends': 'Social/cultural clubs'
+    };
     
-    if (foundInterests.length > 0 || query.length > 3) {
-      return { action: 'set_interests', interests: userQuery };
+    for (const [keyword, activityType] of Object.entries(activityKeywords)) {
+      if (query.includes(keyword)) {
+        return { action: 'set_activity_type', activityType };
+      }
+    }
+    
+    // If no specific keywords found but user provided input that looks like an activity type
+    const activityOptions = ['hands-on projects', 'academic competitions', 'arts/creativity', 'leadership/service', 'sports/fitness', 'social/cultural clubs'];
+    const matchesActivityOption = activityOptions.some(option => 
+      query.includes(option.toLowerCase()) || option.toLowerCase().includes(query)
+    );
+    
+    if (matchesActivityOption || (query.length > 3 && !query.includes('hour') && !query.includes('time') && !query.includes('commitment'))) {
+      return { action: 'set_activity_type', activityType: userQuery };
     }
   }
   
-  // If all info is set, this is a follow-up query
-  if (sessionData.school && sessionData.grade && sessionData.interests && sessionData.interests !== '') {
-    return { action: 'recommend_clubs', interests: userQuery };
+  // If activity type set but no time commitment, detect time commitment
+  if (sessionData.school && sessionData.grade && sessionData.activityType && !sessionData.timeCommitment) {
+    if (query.includes('low') || query.includes('1-2')) {
+      return { action: 'set_time_commitment', timeCommitment: 'Low' };
+    }
+    if (query.includes('medium') || query.includes('3-5')) {
+      return { action: 'set_time_commitment', timeCommitment: 'Medium' };
+    }
+    if (query.includes('high') || query.includes('6+')) {
+      return { action: 'set_time_commitment', timeCommitment: 'High' };
+    }
+    // Default handling
+    if (query.length > 2) {
+      return { action: 'set_time_commitment', timeCommitment: userQuery };
+    }
+  }
+  
+  // If time commitment set but no goal, detect goal
+  if (sessionData.school && sessionData.grade && sessionData.activityType && sessionData.timeCommitment && !sessionData.goal) {
+    if (query.includes('fun') || query.includes('social')) {
+      return { action: 'set_goal', goal: 'Fun/social' };
+    }
+    if (query.includes('resume') || query.includes('college')) {
+      return { action: 'set_goal', goal: 'Resume/college' };
+    }
+    if (query.includes('both')) {
+      return { action: 'set_goal', goal: 'Both' };
+    }
+    // Default handling
+    if (query.length > 2) {
+      return { action: 'set_goal', goal: userQuery };
+    }
+  }
+  
+  // If goal set but no teamwork preference, detect teamwork
+  if (sessionData.school && sessionData.grade && sessionData.activityType && sessionData.timeCommitment && sessionData.goal && !sessionData.teamwork) {
+    
+    if (query.includes('team') || query.includes('group')) {
+      return { action: 'set_teamwork', teamwork: 'Team-focused' };
+    }
+    if (query.includes('individual') || query.includes('alone')) {
+      return { action: 'set_teamwork', teamwork: 'Individual-focused' };
+    }
+    if (query.includes('both')) {
+      return { action: 'set_teamwork', teamwork: 'Both' };
+    }
+    // Default handling
+    if (query.length > 2) {
+      return { action: 'set_teamwork', teamwork: userQuery };
+    }
+  }
+  
+  // If all preferences are collected, recommend clubs
+  if (sessionData.school && sessionData.grade && sessionData.activityType && sessionData.timeCommitment && sessionData.goal && sessionData.teamwork) {
+    return { action: 'recommend_clubs', preferences: sessionData };
   }
   
   return { action: 'continue' };
+}
+
+function matchClubsToPreferences(sessionData) {
+  const { getSchoolClubs } = require('./schoolClubService');
+  
+  // Get all clubs for the school
+  const allClubs = getSchoolClubs(sessionData.school);
+  
+  
+  // Enhanced club metadata mapping for better matching
+  const clubMetadata = {
+    'Robotics Club (FRC)': {
+      activityType: 'Hands-on projects',
+      timeCommitment: 'High',
+      goal: ['Resume/college', 'Fun/social'],
+      teamwork: 'Team-focused'
+    },
+    'STEM-E': {
+      activityType: 'Hands-on projects',
+      timeCommitment: 'Medium',
+      goal: ['Resume/college', 'Both'],
+      teamwork: 'Team-focused'
+    },
+    'Computer Science Club': {
+      activityType: 'Hands-on projects',
+      timeCommitment: 'Medium',
+      goal: ['Resume/college', 'Fun/social'],
+      teamwork: 'Both'
+    },
+    'Academic Bowl': {
+      activityType: 'Academic competitions',
+      timeCommitment: 'Medium',
+      goal: ['Resume/college'],
+      teamwork: 'Team-focused'
+    },
+    'Science Olympiad': {
+      activityType: 'Academic competitions',
+      timeCommitment: 'High',
+      goal: ['Resume/college'],
+      teamwork: 'Team-focused'
+    },
+    'Art Club': {
+      activityType: 'Arts/creativity',
+      timeCommitment: 'Low',
+      goal: ['Fun/social', 'Both'],
+      teamwork: 'Both'
+    },
+    'Drama Club': {
+      activityType: 'Arts/creativity',
+      timeCommitment: 'Medium',
+      goal: ['Fun/social', 'Resume/college'],
+      teamwork: 'Team-focused'
+    },
+    'BETA Club': {
+      activityType: 'Leadership/service',
+      timeCommitment: 'Medium',
+      goal: ['Resume/college'],
+      teamwork: 'Team-focused'
+    },
+    'National Honor Society': {
+      activityType: 'Leadership/service',
+      timeCommitment: 'Low',
+      goal: ['Resume/college'],
+      teamwork: 'Both'
+    },
+    'Anime Club': {
+      activityType: 'Social/cultural clubs',
+      timeCommitment: 'Low',
+      goal: ['Fun/social'],
+      teamwork: 'Both'
+    }
+  };
+  
+  // Score each club based on preference matching
+  const scoredClubs = allClubs.map(club => {
+    const metadata = clubMetadata[club.name] || {
+      activityType: 'Social/cultural clubs',
+      timeCommitment: 'Medium',
+      goal: ['Fun/social'],
+      teamwork: 'Both'
+    };
+    
+    let score = 0;
+    let matchReasons = [];
+    
+    // Activity type matching (highest weight)
+    if (metadata.activityType === sessionData.activityType) {
+      score += 3;
+      matchReasons.push(`Perfect match for ${sessionData.activityType.toLowerCase()}`);
+    } else if (sessionData.activityType === 'Hands-on projects' && metadata.activityType === 'Academic competitions') {
+      score += 1;
+      matchReasons.push('Similar analytical approach');
+    }
+    
+    // Time commitment matching
+    if (metadata.timeCommitment === sessionData.timeCommitment) {
+      score += 2;
+      matchReasons.push(`${sessionData.timeCommitment.toLowerCase()} time commitment`);
+    } else if (
+      (sessionData.timeCommitment === 'Medium' && (metadata.timeCommitment === 'Low' || metadata.timeCommitment === 'High')) ||
+      (sessionData.timeCommitment === 'Low' && metadata.timeCommitment === 'Medium')
+    ) {
+      score += 1;
+      matchReasons.push('Flexible time commitment');
+    }
+    
+    // Goal matching
+    const goalArray = Array.isArray(metadata.goal) ? metadata.goal : [metadata.goal];
+    if (goalArray.includes(sessionData.goal) || goalArray.includes('Both') || sessionData.goal === 'Both') {
+      score += 2;
+      matchReasons.push(`Aligns with your ${sessionData.goal.toLowerCase()} goals`);
+    }
+    
+    // Teamwork preference matching
+    if (metadata.teamwork === sessionData.teamwork || metadata.teamwork === 'Both' || sessionData.teamwork === 'Both') {
+      score += 1;
+      matchReasons.push(`Matches your ${sessionData.teamwork.toLowerCase()} preference`);
+    }
+    
+    return {
+      ...club,
+      matchScore: score,
+      matchReasons: matchReasons,
+      metadata: metadata
+    };
+  });
+  
+  // Sort by score and return top 3
+  return scoredClubs
+    .sort((a, b) => b.matchScore - a.matchScore)
+    .slice(0, 3);
 }
 
 async function getLlamaResponse(userQuery, sessionData = {}) {
@@ -249,28 +483,65 @@ async function getLlamaResponse(userQuery, sessionData = {}) {
       };
     }
     
-    // Handle interests selection
-    if (parseResult.action === 'set_interests') {
+    // Handle activity type selection
+    if (parseResult.action === 'set_activity_type') {
       const updatedSessionData = {
         ...sessionData,
-        school: sessionData.school,
-        grade: sessionData.grade,
-        interests: parseResult.interests
+        activityType: parseResult.activityType
+      };
+      return {
+        response: buildJSONResponse(updatedSessionData, userQuery),
+        sessionData: updatedSessionData
+      };
+    }
+    
+    // Handle time commitment selection
+    if (parseResult.action === 'set_time_commitment') {
+      const updatedSessionData = {
+        ...sessionData,
+        timeCommitment: parseResult.timeCommitment
+      };
+      return {
+        response: buildJSONResponse(updatedSessionData, userQuery),
+        sessionData: updatedSessionData
+      };
+    }
+    
+    // Handle goal selection
+    if (parseResult.action === 'set_goal') {
+      const updatedSessionData = {
+        ...sessionData,
+        goal: parseResult.goal
+      };
+      return {
+        response: buildJSONResponse(updatedSessionData, userQuery),
+        sessionData: updatedSessionData
+      };
+    }
+    
+    // Handle teamwork preference selection
+    if (parseResult.action === 'set_teamwork') {
+      const updatedSessionData = {
+        ...sessionData,
+        teamwork: parseResult.teamwork
       };
       
-      // Get clubs based on interests
-      const interestKeywords = parseResult.interests.toLowerCase().split(/[,\s]+/).filter(w => w.length > 2);
-      const clubs = getSchoolClubs(sessionData.school, {
-        interests: interestKeywords,
-        grade: sessionData.grade
-      });
-      
-      // If no specific matches, get a diverse sample
-      const finalClubs = clubs.length > 0 ? clubs.slice(0, 7) : getSchoolClubs(sessionData.school).slice(0, 5);
+      // Since this is the final preference, immediately get club recommendations
+      const matchedClubs = matchClubsToPreferences(updatedSessionData);
       
       return {
-        response: buildJSONResponse(updatedSessionData, userQuery, finalClubs),
+        response: buildJSONResponse(updatedSessionData, userQuery, matchedClubs),
         sessionData: updatedSessionData
+      };
+    }
+    
+    // Handle club recommendations with preference matching
+    if (parseResult.action === 'recommend_clubs') {
+      const matchedClubs = matchClubsToPreferences(sessionData);
+      
+      return {
+        response: buildJSONResponse(sessionData, userQuery, matchedClubs),
+        sessionData: sessionData
       };
     }
     
