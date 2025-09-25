@@ -188,27 +188,41 @@ async function getLlamaResponse(userQuery, sessionData = {}) {
     
     // Handle reset command
     if (parseResult.action === 'reset_all') {
-      return buildJSONResponse({}, userQuery, []);
+      return {
+        response: buildJSONResponse({}, userQuery, []),
+        sessionData: {}
+      };
     }
     
     // Handle school selection
     if (parseResult.action === 'set_school') {
-      return buildJSONResponse({ school: parseResult.school }, userQuery, []);
+      const updatedSessionData = { 
+        ...sessionData,
+        school: parseResult.school 
+      };
+      return {
+        response: buildJSONResponse(updatedSessionData, userQuery, []),
+        sessionData: updatedSessionData
+      };
     }
     
     // Handle grade selection
     if (parseResult.action === 'set_grade') {
       const updatedSessionData = { 
+        ...sessionData,
         school: sessionData.school, 
         grade: parseResult.grade 
       };
-      // Don't pass clubs array - let buildJSONResponse determine the next step
-      return buildJSONResponse(updatedSessionData, userQuery);
+      return {
+        response: buildJSONResponse(updatedSessionData, userQuery),
+        sessionData: updatedSessionData
+      };
     }
     
     // Handle interests selection
     if (parseResult.action === 'set_interests') {
       const updatedSessionData = {
+        ...sessionData,
         school: sessionData.school,
         grade: sessionData.grade,
         interests: parseResult.interests
@@ -224,43 +238,29 @@ async function getLlamaResponse(userQuery, sessionData = {}) {
       // If no specific matches, get a diverse sample
       const finalClubs = clubs.length > 0 ? clubs.slice(0, 7) : getSchoolClubs(sessionData.school).slice(0, 5);
       
-      return buildJSONResponse(updatedSessionData, userQuery, finalClubs);
+      return {
+        response: buildJSONResponse(updatedSessionData, userQuery, finalClubs),
+        sessionData: updatedSessionData
+      };
     }
     
-    // If no school set, return school selection prompt
-    if (!sessionData.school) {
-      return buildJSONResponse(sessionData, userQuery, []);
-    }
-    
-    // If no grade set, return grade selection prompt
-    if (!sessionData.grade) {
-      return buildJSONResponse(sessionData, userQuery, []);
-    }
-    
-    // If no interests set, ask for interests
-    if (!sessionData.interests || (Array.isArray(sessionData.interests) && sessionData.interests.length === 0)) {
-      return buildJSONResponse(sessionData, userQuery, []);
-    }
-    
-    // All info collected - provide recommendations
-    const interestKeywords = sessionData.interests.toLowerCase().split(/[,\s]+/).filter(w => w.length > 2);
-    const clubs = getSchoolClubs(sessionData.school, {
-      interests: interestKeywords,
-      grade: sessionData.grade
-    });
-    
-    const finalClubs = clubs.length > 0 ? clubs.slice(0, 7) : getSchoolClubs(sessionData.school).slice(0, 5);
-    
-    return buildJSONResponse(sessionData, userQuery, finalClubs);
+    // Default case - return current state
+    return {
+      response: buildJSONResponse(sessionData, userQuery, []),
+      sessionData: sessionData
+    };
     
   } catch (err) {
-    console.error('[LLaMA] Error calling OpenRouter:', err?.response?.status, err?.response?.data || err.message);
-    return JSON.stringify({
-      success: true,
-      message: "⚠️ Oops! I'm having trouble loading the clubs right now.\n👉 Please try again in a moment, or I can retry for you.",
-      clubs: [],
-      suggestions: ["🔄 Try Again", "🏫 Start Over"]
-    });
+    console.error('[LLaMA] Error in getLlamaResponse:', err?.response?.status, err?.response?.data || err.message);
+    return {
+      response: JSON.stringify({
+        success: true,
+        message: "⚠️ Oops! I'm having trouble loading the clubs right now.\n👉 Please try again in a moment, or I can retry for you.",
+        clubs: [],
+        suggestions: ["🔄 Try Again", "🏫 Start Over"]
+      }),
+      sessionData: sessionData
+    };
   }
 }
 

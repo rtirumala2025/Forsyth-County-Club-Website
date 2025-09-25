@@ -61,16 +61,18 @@ router.post('/chat', async (req, res) => {
     // Let the LLaMA service handle ALL parsing logic including reset commands
     // The route handler should only handle basic session management
     
-    
     // Get AI response from LLaMA service
-    const aiResponse = await getLlamaResponse(userQuery, updatedSessionData);
+    const llamaResult = await getLlamaResponse(userQuery, updatedSessionData);
 
+    // Update session data with the result from LLaMA service
+    updatedSessionData = llamaResult.sessionData || updatedSessionData;
+    
     // Update session data with current query
     updatedSessionData = updateSessionHistory(updatedSessionData, userQuery);
 
     return res.json({
       success: true,
-      message: aiResponse,
+      message: llamaResult.response || llamaResult,
       source: 'llama',
       sessionData: updatedSessionData
     });
