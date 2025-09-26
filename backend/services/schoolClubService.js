@@ -1,29 +1,84 @@
 const fs = require('fs');
 const path = require('path');
 
-// Import shared club data from frontend
-const { allClubData, getClubsBySchool: getClubsBySchoolHelper, getAvailableSchools: getAvailableSchoolsHelper } = require('../../frontend/src/shared/data/clubData');
-
-// Load the club data from shared location
-let clubData = null;
+// Club data loading state
+let allClubData = [];
+let loadAttempted = false;
+let loadError = null;
 
 function loadClubData() {
-  if (clubData) return clubData;
+  if (loadAttempted) {
+    if (loadError) throw loadError;
+    return allClubData;
+  }
+
+  loadAttempted = true;
+  console.log('🔍 Attempting to load club data...');
   
-  // Use the comprehensive shared club data
-  clubData = allClubData;
-  
-  console.log(`✅ Loaded comprehensive club data for ${clubData.length} schools`);
-  console.log(`📊 Total clubs: ${clubData.reduce((total, school) => total + (school.clubs?.length || 0), 0)}`);
-  
-  return clubData;
+  try {
+    // Try to load from frontend location first
+    try {
+      const frontendDataPath = path.resolve(__dirname, '../../frontend/src/shared/data/clubData.js');
+      console.log(`📂 Attempting to load from: ${frontendDataPath}`);
+      
+      // Clear require cache to ensure fresh load
+      delete require.cache[require.resolve(frontendDataPath)];
+      
+      const frontendModule = require(frontendDataPath);
+      allClubData = frontendModule.allClubData || frontendModule.default?.allClubData || [];
+      
+      if (!Array.isArray(allClubData)) {
+        throw new Error('Club data is not an array');
+      }
+      
+      console.log(`✅ Successfully loaded club data for ${allClubData.length} schools`);
+      console.log(`📊 Total clubs: ${allClubData.reduce((total, school) => 
+        total + (Array.isArray(school.clubs) ? school.clubs.length : 0), 0)}`);
+      
+      return allClubData;
+    } catch (frontendError) {
+      console.warn('⚠️ Could not load frontend club data, trying fallback...', frontendError);
+      
+      // Fallback to local data file if available
+      const localDataPath = path.resolve(__dirname, '../data/clubs.json');
+      console.log(`🔍 Attempting to load from fallback: ${localDataPath}`);
+      
+      if (fs.existsSync(localDataPath)) {
+        const rawData = fs.readFileSync(localDataPath, 'utf8');
+        allClubData = JSON.parse(rawData);
+        
+        if (!Array.isArray(allClubData)) {
+          throw new Error('Fallback club data is not an array');
+        }
+        
+        console.log(`✅ Successfully loaded fallback club data for ${allClubData.length} schools`);
+        return allClubData;
+      }
+      
+      throw new Error('No club data available - frontend and fallback data not found');
+    }
+  } catch (error) {
+    loadError = error;
+    console.error('❌ Failed to load club data:', error);
+    throw error;
+  }
 }
 
 // Supported schools list for normalization
-const SUPPORTED_SCHOOLS = getAvailableSchoolsHelper();
+const SUPPORTED_SCHOOLS = (() => {
+  try {
+    return loadClubData().map(school => school.school).filter(Boolean);
+  } catch (error) {
+    console.error('❌ Error getting supported schools:', error);
+    return [];
+  }
+})();
 
 function normalizeSchoolName(input) {
-  if (!input || typeof input !== 'string') return null;
+  if (!input || typeof input !== 'string') {
+    console.warn('⚠️ Invalid school name input:', input);
+    return null;
+  }
   
   const normalized = input.toLowerCase().trim();
   
@@ -50,55 +105,98 @@ function normalizeSchoolName(input) {
     
     // For non-directional schools, check if key words match
     return inputWords.some(word => 
-      schoolWords.includes(word) && word !== 'high' && word !== 'school' && word !== 'forsyth'
+      schoolWords.includes(word) && 
+      !['high', 'school', 'forsyth', 'academy', 'county'].includes(word)
     );
   });
+  
+  if (!partialMatch) {
+    console.warn(`⚠️ Could not find matching school for: ${input}`);
+  }
   
   return partialMatch || null;
 }
 
 function getAvailableSchools() {
-  return getAvailableSchoolsHelper().sort();
+  try {
+    return [...SUPPORTED_SCHOOLS].sort();
+  } catch (error) {
+    console.error('❌ Error getting available schools:', error);
+    return [];
+  }
 }
 
 function getSchoolData(schoolName) {
-  const normalizedName = normalizeSchoolName(schoolName);
-  if (!normalizedName) return null;
-  
-  const data = loadClubData();
-  return data.find(schoolData => 
-    schoolData.school.toLowerCase() === normalizedName.toLowerCase()
-  );
+  try {
+    if (!schoolName) {
+      console.warn('⚠️ No school name provided to getSchoolData');
+      return null;
+    }
+    
+    const normalizedSchool = normalizeSchoolName(schoolName);
+    if (!normalizedSchool) {
+      console.warn(`⚠️ Could not normalize school name: ${schoolName}`);
+      return null;
+    }
+    
+    const data = loadClubData();
+    const schoolData = data.find(school => 
+      school.school && school.school.toLowerCase() === normalizedSchool.toLowerCase()
+    );
+    
+    if (!schoolData) {
+      console.warn(`⚠️ No data found for school: ${normalizedSchool}`);
+    }
+    
+    return schoolData || null;
+  } catch (error) {
+    console.error(`❌ Error getting school data for ${schoolName}:`, error);
+    return null;
+  }
 }
 
 function getSchoolClubs(schoolName, filters = {}) {
-  const schoolData = getSchoolData(schoolName);
-  if (!schoolData) return [];
-  
-  let clubs = schoolData.clubs || [];
-  
-  // Filter by category if provided
-  if (filters.category) {
-    const categories = Array.isArray(filters.category) ? filters.category : [filters.category];
-    clubs = clubs.filter(club => 
-      categories.some(cat => 
-        club.category && club.category.toLowerCase().includes(cat.toLowerCase())
-      )
-    );
-  }
-  
-  // Filter by interests/keywords if provided
-  if (filters.interests) {
-    const interests = Array.isArray(filters.interests) ? filters.interests : [filters.interests];
-    clubs = clubs.filter(club => {
-      const searchText = `${club.name} ${club.description} ${club.category} ${club.activities?.join(' ') || ''}`.toLowerCase();
-      return interests.some(interest => 
-        searchText.includes(interest.toLowerCase())
+  try {
+    console.log(`🔍 Getting clubs for school: ${schoolName}`);
+    const schoolData = getSchoolData(schoolName);
+    
+    if (!schoolData || !schoolData.clubs) {
+      console.warn(`⚠️ No clubs found for school: ${schoolName}`);
+      return [];
+    }
+    
+    let clubs = [...(schoolData.clubs || [])];
+    
+    // Apply filters if provided
+    if (filters.category) {
+      const categories = Array.isArray(filters.category) ? filters.category : [filters.category];
+      const categoryFilters = categories.map(cat => cat.toLowerCase());
+      
+      clubs = clubs.filter(club => 
+        club.category && 
+        categoryFilters.some(filter => 
+          club.category.toLowerCase().includes(filter)
+        )
       );
-    });
+    }
+    
+    // Filter by interests/keywords if provided
+    if (filters.interests) {
+      const interests = Array.isArray(filters.interests) ? filters.interests : [filters.interests];
+      const interestFilters = interests.map(i => i.toLowerCase());
+      
+      clubs = clubs.filter(club => {
+        const searchText = `${club.name || ''} ${club.description || ''} ${club.category || ''} ${Array.isArray(club.activities) ? club.activities.join(' ') : ''}`.toLowerCase();
+        return interestFilters.some(filter => searchText.includes(filter));
+      });
+    }
+    
+    console.log(`✅ Found ${clubs.length} clubs for ${schoolName}`);
+    return clubs;
+  } catch (error) {
+    console.error(`❌ Error getting clubs for ${schoolName}:`, error);
+    return [];
   }
-  
-  return clubs;
 }
 
 function formatClubsForLLaMA(clubs, schoolName, userGrade = null) {

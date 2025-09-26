@@ -266,6 +266,22 @@ function sanitizeSessionData(sessionData) {
     }
   }
 
+  // Validate and sanitize categories
+  if (sessionData.categories) {
+    if (Array.isArray(sessionData.categories) && sessionData.categories.length > 0) {
+      const validCategories = ['STEM', 'Arts', 'Leadership', 'Sports', 'Community Service', 'Cultural/Diversity', 'Academic'];
+      const filteredCategories = sessionData.categories
+        .filter(cat => typeof cat === 'string' && cat.trim().length > 0)
+        .map(cat => cat.trim())
+        .filter(cat => validCategories.includes(cat) || cat.length > 0)
+        .slice(0, 5); // Limit to 5 categories
+      
+      if (filteredCategories.length > 0) {
+        sanitized.categories = filteredCategories;
+      }
+    }
+  }
+
   // Validate and sanitize activity type
   if (sessionData.activityType && typeof sessionData.activityType === 'string') {
     const validActivityTypes = [
