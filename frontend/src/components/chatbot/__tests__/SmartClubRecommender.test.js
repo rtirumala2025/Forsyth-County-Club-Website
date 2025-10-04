@@ -64,7 +64,7 @@ describe('SmartClubRecommender', () => {
     
     smartClubService.generateSmartBotResponse.mockReturnValue({
       text: 'Here are some smart recommendations for you!',
-      quickReplies: ['🔄 Start Over', '💬 Ask More Questions'],
+      quickReplies: [' Start Over', ' Ask More Questions'],
       recommendations: [],
       confidence: 'high',
       source: 'rules'
@@ -419,7 +419,7 @@ describe('SmartClubRecommender Integration', () => {
         ok: true,
         json: async () => ({
           source: 'rules',
-          reply: '🎯 Perfect match! The Coding Club is ideal for you!',
+          reply: ' Perfect match! The Coding Club is ideal for you!',
           confidence: 'high',
           matched_patterns: ['coding']
         })

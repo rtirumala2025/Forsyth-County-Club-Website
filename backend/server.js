@@ -137,20 +137,20 @@ app.use((error, req, res, next) => {
 
 // Handle unhandled promise rejections
 process.on('unhandledRejection', (reason, promise) => {
-  console.error('🚨 Unhandled Promise Rejection at:', promise, 'reason:', reason);
+  console.error(' Unhandled Promise Rejection at:', promise, 'reason:', reason);
   // Log the error but don't crash in development
   if (process.env.NODE_ENV === 'production') {
-    console.error('💥 Shutting down due to unhandled promise rejection');
+    console.error(' Shutting down due to unhandled promise rejection');
     process.exit(1);
   }
 });
 
 // Handle uncaught exceptions
 process.on('uncaughtException', (error) => {
-  console.error('🚨 Uncaught Exception:', error);
+  console.error(' Uncaught Exception:', error);
   // Log the error but don't crash in development
   if (process.env.NODE_ENV === 'production') {
-    console.error('💥 Shutting down due to uncaught exception');
+    console.error(' Shutting down due to uncaught exception');
     process.exit(1);
   }
 });
@@ -172,10 +172,10 @@ process.on('SIGINT', () => {
 
 // Start server
 const server = app.listen(PORT, () => {
-  console.log(`🚀 Forsyth County Club Backend running on port ${PORT}`);
-  console.log(`📍 Health check: http://localhost:${PORT}/health`);
-  console.log(`🤖 Chat API: http://localhost:${PORT}/api/chat`);
-  console.log(`🔧 Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`Forsyth County Club Backend running on port ${PORT}`);
+  console.log(`Health check: http://localhost:${PORT}/health`);
+  console.log(`Chat API: http://localhost:${PORT}/api/chat`);
+  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
 });
 
 module.exports = app;

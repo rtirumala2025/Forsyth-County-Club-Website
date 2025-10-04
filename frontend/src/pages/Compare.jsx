@@ -499,7 +499,7 @@ const Compare = () => {
                           {isSelected && (
                             <div className="flex-shrink-0">
                               <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
-                                <span className="text-white text-xs">✓</span>
+                                <span className="text-white text-xs"></span>
                               </div>
                             </div>
                           )}
@@ -549,7 +549,7 @@ const Compare = () => {
                         {isSelected && (
                           <div className="absolute top-2 right-2">
                             <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
-                              <span className="text-white text-xs">✓</span>
+                              <span className="text-white text-xs"></span>
                             </div>
                           </div>
                         )}

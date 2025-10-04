@@ -2,7 +2,7 @@
 
 A modern web application for discovering and joining high school clubs in Forsyth County, featuring an AI-powered recommendation system.
 
-## 🚀 Quick Start
+##  Quick Start
 
 ### Prerequisites
 - Node.js (v18 or higher)
@@ -20,11 +20,11 @@ npm start
 npm run server
 ```
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 forsyth-county-club-website/
-├── 📁 docs/                          # Documentation files
+├──  docs/                          # Documentation files
 │   ├── AI_CHATBOT_SETUP.md
 │   ├── ENHANCED_CHATBOT_USAGE.md
 │   ├── ENHANCED_INTENT_ANALYSIS_DOCUMENTATION.md
@@ -33,58 +33,58 @@ forsyth-county-club-website/
 │   ├── REVAMPED_SYSTEM_SUMMARY.md
 │   └── SECURITY_SETUP.md
 │
-├── 📁 public/                        # Static assets
+├──  public/                        # Static assets
 │   ├── default-avatar.svg
 │   ├── favicon.ico
 │   └── index.html
 │
-├── 📁 src/                           # Frontend React application
-│   ├── 📁 components/                # React components
-│   │   ├── 📁 auth/                  # Authentication components
-│   │   ├── 📁 chatbot/               # AI chatbot components
+├──  src/                           # Frontend React application
+│   ├──  components/                # React components
+│   │   ├──  auth/                  # Authentication components
+│   │   ├──  chatbot/               # AI chatbot components
 │   │   │   ├── AIClubChatbot.jsx
 │   │   │   ├── AIClubChatbotExample.jsx
 │   │   │   └── AIClubChatbot.test.jsx
-│   │   ├── 📁 club/                  # Club-related components
-│   │   ├── 📁 common/                # Shared/common components
-│   │   ├── 📁 layout/                # Layout components
-│   │   ├── 📁 profile/               # User profile components
-│   │   └── 📁 ui/                    # UI utility components
+│   │   ├──  club/                  # Club-related components
+│   │   ├──  common/                # Shared/common components
+│   │   ├──  layout/                # Layout components
+│   │   ├──  profile/               # User profile components
+│   │   └──  ui/                    # UI utility components
 │   │       └── CategoryColors.js
-│   ├── 📁 config/                    # Configuration files
+│   ├──  config/                    # Configuration files
 │   │   ├── api.js
 │   │   ├── firebase.js
 │   │   └── firebaseConfig.js
-│   ├── 📁 data/                      # Static data files
-│   ├── 📁 hooks/                     # Custom React hooks
-│   ├── 📁 pages/                     # Page components
-│   ├── 📁 utils/                     # Utility functions
+│   ├──  data/                      # Static data files
+│   ├──  hooks/                     # Custom React hooks
+│   ├──  pages/                     # Page components
+│   ├──  utils/                     # Utility functions
 │   ├── App.jsx                       # Main App component
 │   ├── App.css                       # App styles
 │   └── index.js                      # Entry point
 │
-├── 📁 server/                        # Backend server
-│   ├── 📁 backups/                   # Backup server files
+├──  server/                        # Backend server
+│   ├──  backups/                   # Backup server files
 │   │   ├── simple-server.js
 │   │   ├── working-server.js
 │   │   └── node-v18.20.2.pkg
-│   ├── 📁 config/                    # Server configuration
-│   ├── 📁 controllers/               # Route controllers
-│   ├── 📁 data/                      # Server data files
-│   ├── 📁 routes/                    # API routes
-│   ├── 📁 services/                  # Business logic services
-│   ├── 📁 utils/                     # Server utilities
+│   ├──  config/                    # Server configuration
+│   ├──  controllers/               # Route controllers
+│   ├──  data/                      # Server data files
+│   ├──  routes/                    # API routes
+│   ├──  services/                  # Business logic services
+│   ├──  utils/                     # Server utilities
 │   └── server.js                     # Main server file
 │
-├── 📁 backend/                       # Legacy backend (if any)
-├── 📁 club-website/                  # Legacy frontend (if any)
+├──  backend/                       # Legacy backend (if any)
+├──  club-website/                  # Legacy frontend (if any)
 ├── package.json                      # Project dependencies
 ├── package-lock.json                 # Locked dependencies
 ├── postcss.config.js                 # PostCSS configuration
 └── README.md                         # This file
 ```
 
-## 🛠️ Available Scripts
+##  Available Scripts
 
 - `npm start` - Start the React development server
 - `npm run build` - Build the production version
@@ -93,7 +93,7 @@ forsyth-county-club-website/
 - `npm run dev` - Start both frontend and backend concurrently
 - `npm run server:dev` - Start backend with nodemon for development
 
-## 🔧 Configuration
+##  Configuration
 
 ### Environment Variables
 Create a `.env` file in the root directory:
@@ -115,7 +115,7 @@ PORT=5001
 NODE_ENV=development
 ```
 
-## 🎯 Features
+##  Features
 
 - **AI-Powered Recommendations**: Intelligent club matching based on user preferences
 - **Real-time Chatbot**: Interactive AI assistant for club discovery
@@ -124,7 +124,7 @@ NODE_ENV=development
 - **Responsive Design**: Works on desktop and mobile devices
 - **Follow-up Recommendations**: Context-aware follow-up suggestions
 
-## 🤖 AI Recommendation System
+##  AI Recommendation System
 
 The application uses a sophisticated recommendation algorithm that considers:
 - User interests and preferences
@@ -133,7 +133,7 @@ The application uses a sophisticated recommendation algorithm that considers:
 - Grade level appropriateness
 - Previous recommendations and follow-up requests
 
-## 📚 Documentation
+##  Documentation
 
 Detailed documentation is available in the `docs/` folder:
 - AI Chatbot Setup and Usage
@@ -142,7 +142,7 @@ Detailed documentation is available in the `docs/` folder:
 - Security Setup Guidelines
 - Real Club Data Integration
 
-## 🚀 Deployment
+##  Deployment
 
 ### Frontend (React)
 ```bash
@@ -157,7 +157,7 @@ npm start
 # Deploy to your server or cloud platform
 ```
 
-## 🤝 Contributing
+##  Contributing
 
 1. Fork the repository
 2. Create a feature branch
@@ -165,6 +165,6 @@ npm start
 4. Add tests if applicable
 5. Submit a pull request
 
-## 📄 License
+##  License
 
 This project is licensed under the MIT License.

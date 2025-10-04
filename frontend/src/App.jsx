@@ -78,6 +78,10 @@ const AppRoutes = () => {
           element={<ClubsWebsite />} 
         />
         <Route 
+          path="/clubs/:schoolSlug/:clubSlug" 
+          element={<ClubsWebsite />} 
+        />
+        <Route 
           path="/compare" 
           element={
             <AuthGuard>
@@ -188,7 +192,7 @@ const App = () => {
         className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-blue-600 text-white shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
       >
         {/* Simple, distinctive chat icon as requested */}
-        <span role="img" aria-hidden="true" className="text-xl">💬</span>
+        <span role="img" aria-hidden="true" className="text-xl"></span>
       </button>
 
       {/* Step 6: Render Chatbot and wire up visibility control via isOpen/onToggle */}

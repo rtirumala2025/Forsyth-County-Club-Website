@@ -33,9 +33,9 @@ const CreateAccount = () => {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-      console.log("User created:", user); // ✅ this must run
+      console.log("User created:", user); //  this must run
 
-      // 🔥 Save additional user info to Firestore
+      //  Save additional user info to Firestore
       await setDoc(doc(db, 'users', user.uid), {
         name: name,
         email: user.email,

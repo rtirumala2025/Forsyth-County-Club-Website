@@ -49,14 +49,14 @@ const Layout = ({
             <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
               <div className="text-center md:text-left">
                 <p className="text-lg font-semibold bg-gradient-to-r from-blue-300 to-purple-300 bg-clip-text text-transparent">
-                  🚀 Crafted with passion by Ritvik Tirumala
+                   Crafted with passion by Ritvik Tirumala
                 </p>
                 <p className="text-sm text-gray-300 mt-1">
-                  Established 2025 • Building the future of student connections
+                  Established 2025  Building the future of student connections
                 </p>
               </div>
               <div className="flex items-center space-x-2 text-gray-300">
-                <span className="text-2xl">⚡</span>
+                <span className="text-2xl"></span>
                 <span className="text-sm font-medium">Powered by React & AI</span>
               </div>
             </div>

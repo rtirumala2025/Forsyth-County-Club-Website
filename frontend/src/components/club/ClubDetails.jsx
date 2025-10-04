@@ -49,19 +49,19 @@ const ClubDetails = ({ club, CategoryColors }) => {
           <div>
             <h3 className="text-lg font-semibold text-gray-800 mb-3">How to Join</h3>
             <ul className="space-y-2 text-gray-600">
-              <li>• Contact the club sponsor</li>
-              <li>• Attend a club meeting</li>
-              <li>• Fill out membership forms</li>
-              <li>• Participate in club activities</li>
+              <li> Contact the club sponsor</li>
+              <li> Attend a club meeting</li>
+              <li> Fill out membership forms</li>
+              <li> Participate in club activities</li>
             </ul>
           </div>
           <div>
             <h3 className="text-lg font-semibold text-gray-800 mb-3">Benefits</h3>
             <ul className="space-y-2 text-gray-600">
-              <li>• Meet like-minded students</li>
-              <li>• Develop leadership skills</li>
-              <li>• Build your resume</li>
-              <li>• Make a positive impact</li>
+              <li> Meet like-minded students</li>
+              <li> Develop leadership skills</li>
+              <li> Build your resume</li>
+              <li> Make a positive impact</li>
             </ul>
           </div>
         </div>

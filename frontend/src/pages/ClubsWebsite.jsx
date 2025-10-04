@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import { Search, Menu, X, Users, ChevronRight, BarChart3, Calendar as CalendarIcon, ChevronDown, BookOpen, MessageCircle } from 'lucide-react';
 import { useAuth } from '../config/firebase';
 import UserMenu from '../components/auth/userMenu';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useClubFilter } from '../hooks/useClubFilter';
 import { allClubData, getClubsBySchool, getAvailableSchools } from '../data/clubData';
 // Removed legacy chatbot import; using global floating Chatbot in App.jsx instead
@@ -23,6 +23,7 @@ const ClubsWebsite = () => {
   // Removed legacy chatbot local state; use global floating Chatbot via window events
   const { user, loading } = useAuth();  
   const navigate = useNavigate();
+  const { schoolSlug, clubSlug } = useParams();
   
   console.log('Auth state:', { user, loading });
   
@@ -46,6 +47,51 @@ const ClubsWebsite = () => {
   }, [selectedSchool, allClubData]);
 
   console.log('Filtered clubs data:', filteredClubsData);
+
+  // Handle URL parameters for direct club links
+  useEffect(() => {
+    if (schoolSlug && clubSlug && allClubData?.length > 0) {
+      // Convert school slug back to school name using proper mapping
+      const getSchoolNameFromSlug = (slug) => {
+        const slugMappings = {
+          'east-forsyth': 'East Forsyth High School',
+          'west-forsyth': 'West Forsyth High School',
+          'lambert': 'Lambert High School',
+          'forsyth-central': 'Forsyth Central High School',
+          'denmark': 'Denmark High School',
+          'south-forsyth': 'South Forsyth High School',
+          'north-forsyth': 'North Forsyth High School',
+          'alliance-academy': 'Alliance Academy for Innovation'
+        };
+        return slugMappings[slug] || slug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') + ' High School';
+      };
+      
+      const schoolName = getSchoolNameFromSlug(schoolSlug);
+      
+      // Find the school data
+      const schoolData = allClubData.find(school => school.school === schoolName);
+      if (schoolData) {
+        const clubs = schoolData.clubs || schoolData.club || [];
+        
+        // Find the club by exact ID match (club data already has proper IDs)
+        const club = clubs.find(club => club.id === clubSlug);
+        
+        if (club) {
+          console.log('Found club from URL:', club.name, 'in', schoolName);
+          setSelectedSchool(schoolName);
+          setSelectedClub(club.id);
+        } else {
+          console.warn('Club not found:', clubSlug, 'in', schoolName);
+          // Redirect to home if club not found
+          navigate('/home');
+        }
+      } else {
+        console.warn('School not found:', schoolName);
+        // Redirect to home if school not found
+        navigate('/home');
+      }
+    }
+  }, [schoolSlug, clubSlug, allClubData]);
 
   // Call all hooks before any conditional returns
   const { clubsByCategory, filteredClubs, categories, stats } = useClubFilter(filteredClubsData || [], searchTerm, selectedCategory);
@@ -636,7 +682,7 @@ const ClubsWebsite = () => {
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
                     <h2 className="text-2xl font-bold text-blue-900 mb-2">
-                      Welcome to The Club Network! 🎉
+                      Welcome to The Club Network! 
                     </h2>
                     <p className="text-blue-800 mb-4">
                       Discover amazing clubs and organizations at {selectedSchool}. Browse by category or take a quiz to find clubs that match your interests!
@@ -711,7 +757,15 @@ const ClubsWebsite = () => {
             <ClubDetails
               club={selectedClubData}
               categoryColors={CategoryColors}
-              onBack={() => setSelectedClub(null)}
+              onBack={() => {
+                if (schoolSlug && clubSlug) {
+                  // If we came from a direct URL, navigate back to home
+                  navigate('/home');
+                } else {
+                  // If we selected the club from the UI, just clear selection
+                  setSelectedClub(null);
+                }
+              }}
             />
           ) : null}
         </div>

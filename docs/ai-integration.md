@@ -1,6 +1,6 @@
 # LLaMA (OpenRouter) AI Integration Guide
 
-This project has migrated from OpenAI to LLaMA (OpenRouter). All AI responses are now served via the `meta-llama/llama-4-scout:free` model through OpenRouter’s Chat Completions API.
+This project has migrated from OpenAI to LLaMA (OpenRouter). All AI responses are now served via the `meta-llama/llama-4-scout:free` model through OpenRouters Chat Completions API.
 
 ## 1. Overview
 - The backend no longer uses OpenAI APIs, keys, degraded-mode handling, or admin diagnostics endpoints.

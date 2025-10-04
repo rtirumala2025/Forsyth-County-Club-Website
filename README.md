@@ -76,7 +76,7 @@ The frontend communicates with the Node backend through HTTP API calls:
     - `success: boolean`
     - `message: string` (AI or fallback text)
     - `recommendations: { name: string, category: string, confidence: number, reasoning: string, source: string }[]`
-    - `confidence: number (0–100)`
+    - `confidence: number (0100)`
     - `source: 'ai' | 'ai(cache)' | 'rule-based'`
     - `degraded?: boolean` (when served from fallback)
     - `sessionData: object` (updated with recent query)
@@ -131,8 +131,8 @@ Implemented in `backend/services/aiRecommendationService.js`:
 - **AI + Rule merge**:
   - Parse clubs from AI response; score them and merge with rule-based results
   - Boost for multiple interest overlaps (+15)
-  - Sorted top 5 with `confidence` 0–100
-- **Overall confidence (0–100)** combines average rec confidence with session richness and reply length
+  - Sorted top 5 with `confidence` 0100
+- **Overall confidence (0100)** combines average rec confidence with session richness and reply length
 - **Caching**: In-memory LRU cache (200 entries, 5 min TTL) keyed by normalized query + session
 - **Fallbacks**: If OpenAI fails or returns empty, serve popular/rule-based recommendations and set `source: 'rule-based'` with `degraded: true` in route layer
 
@@ -150,7 +150,7 @@ curl -X POST "http://localhost:8000/api/chat" \
 ```json
 {
   "source": "rules",
-  "reply": "🎯 You should join the Coding Club! It's perfect for programming enthusiasts and offers hands-on coding projects, hackathons, and mentorship opportunities. (Perfect match based on your interests!)",
+  "reply": " You should join the Coding Club! It's perfect for programming enthusiasts and offers hands-on coding projects, hackathons, and mentorship opportunities. (Perfect match based on your interests!)",
   "confidence": "high",
   "matched_patterns": ["coding"]
 }
@@ -183,7 +183,7 @@ curl -X POST "http://localhost:8000/api/chat" \
 
 Implemented in `frontend/src/components/Chatbot.jsx`:
 
-- **Confidence badges** with color scale (0–100)
+- **Confidence badges** with color scale (0100)
 - **Animated recommendation list** with hover micro-interactions
 - **Loading indicator** and degraded-mode warning banner
 - **Scrollable history**, sticky input, keyboard Enter to send

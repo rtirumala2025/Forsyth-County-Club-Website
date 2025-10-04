@@ -15,12 +15,12 @@ import {
 const testFirestoreConnection = async () => {
   try {
     const testDoc = doc(db, "test", "connection");
-    console.log("🔧 Firestore test doc created:", testDoc);
-    console.log("🔧 Firestore database instance:", db);
-    console.log("🔧 Firestore app:", db.app);
+    console.log("Firestore test doc created:", testDoc);
+    console.log("Firestore database instance:", db);
+    console.log("Firestore app:", db.app);
     return true;
   } catch (error) {
-    console.error("❌ Firestore connection test failed:", error);
+    console.error("Firestore connection test failed:", error);
     return false;
   }
 };
@@ -30,13 +30,13 @@ const testFirestoreConnection = async () => {
 // Helper function to create user profile in Firestore
 const createUserProfile = async (user) => {
   if (!user) {
-    console.error("❌ No user provided to createUserProfile");
+    console.error("No user provided to createUserProfile");
     return null;
   }
 
   const firestorePath = `users/${user.uid}`;
-  console.log("📝 Creating profile for UID:", user.uid, "at path:", firestorePath);
-  console.log("👤 Current user object:", {
+  console.log("Creating profile for UID:", user.uid, "at path:", firestorePath);
+  console.log(" Current user object:", {
     uid: user.uid,
     email: user.email,
     displayName: user.displayName,
@@ -45,8 +45,8 @@ const createUserProfile = async (user) => {
 
   try {
     const docRef = doc(db, "users", user.uid);
-    console.log("📝 Document reference for creation:", docRef);
-    console.log("📝 Database instance for creation:", db);
+    console.log("Document reference for creation:", docRef);
+    console.log("Database instance for creation:", db);
     
     const defaultProfile = {
       name: user.displayName || user.email?.split('@')[0] || "New User",
@@ -69,8 +69,8 @@ const createUserProfile = async (user) => {
       updatedAt: serverTimestamp()
     };
 
-    console.log("💾 Writing default profile to Firestore:", defaultProfile);
-    console.log("💾 About to call setDoc...");
+    console.log("Writing default profile to Firestore:", defaultProfile);
+    console.log("About to call setDoc...");
     
     await setDoc(docRef, defaultProfile);
     
@@ -78,25 +78,25 @@ const createUserProfile = async (user) => {
     if (defaultProfile.name && !user.displayName) {
       try {
         await updateProfile(user, { displayName: defaultProfile.name });
-        console.log("✅ Firebase Auth displayName set to:", defaultProfile.name);
+        console.log(" Firebase Auth displayName set to:", defaultProfile.name);
       } catch (authError) {
-        console.warn("⚠️ Failed to set Firebase Auth displayName:", authError);
+        console.warn(" Failed to set Firebase Auth displayName:", authError);
         // Don't fail the whole creation if auth update fails
       }
     }
     
-    console.log("✅ Profile created successfully for UID:", user.uid);
-    console.log("📊 Profile data written:", defaultProfile);
+    console.log("Profile created successfully for UID:", user.uid);
+    console.log("Profile data written:", defaultProfile);
     return defaultProfile;
   } catch (error) {
-    console.error("❌ Error creating profile for UID:", user.uid, error);
-    console.error("🔍 Error details:", {
+    console.error(" Error creating profile for UID:", user.uid, error);
+    console.error(" Error details:", {
       code: error.code,
       message: error.message,
       stack: error.stack
     });
-    console.error("🔍 User object:", user);
-    console.error("🔍 Database object:", db);
+    console.error(" User object:", user);
+    console.error(" Database object:", db);
     throw error;
   }
 };
@@ -104,13 +104,13 @@ const createUserProfile = async (user) => {
 // Helper function to fetch user profile from Firestore
 const fetchUserProfile = async (user) => {
   if (!user) {
-    console.error("❌ No user provided to fetchUserProfile");
+    console.error(" No user provided to fetchUserProfile");
     return null;
   }
 
   const firestorePath = `users/${user.uid}`;
-  console.log("🔍 Fetching profile for UID:", user.uid, "at path:", firestorePath);
-  console.log("👤 Current user object:", {
+  console.log(" Fetching profile for UID:", user.uid, "at path:", firestorePath);
+  console.log(" Current user object:", {
     uid: user.uid,
     email: user.email,
     displayName: user.displayName,
@@ -119,33 +119,33 @@ const fetchUserProfile = async (user) => {
 
   try {
     const docRef = doc(db, "users", user.uid);
-    console.log("📄 Executing getDoc for path:", firestorePath);
-    console.log("📄 Document reference:", docRef);
-    console.log("📄 Database instance:", db);
+    console.log(" Executing getDoc for path:", firestorePath);
+    console.log(" Document reference:", docRef);
+    console.log(" Database instance:", db);
     
     const docSnap = await getDoc(docRef);
-    console.log("📄 Document snapshot received:", docSnap);
-    console.log("📄 Document exists:", docSnap.exists());
+    console.log(" Document snapshot received:", docSnap);
+    console.log(" Document exists:", docSnap.exists());
 
     if (docSnap.exists()) {
       const profileData = docSnap.data();
-      console.log("✅ Profile exists and fetched successfully for UID:", user.uid);
-      console.log("📊 Profile data retrieved:", profileData);
+      console.log(" Profile exists and fetched successfully for UID:", user.uid);
+      console.log(" Profile data retrieved:", profileData);
       return profileData;
     } else {
-      console.log("⚠️ No profile document found for UID:", user.uid, "at path:", firestorePath);
-      console.log("📝 Profile document does not exist - will need to create one");
+      console.log(" No profile document found for UID:", user.uid, "at path:", firestorePath);
+      console.log(" Profile document does not exist - will need to create one");
       return null;
     }
   } catch (error) {
-    console.error("❌ Error fetching profile for UID:", user.uid, error);
-    console.error("🔍 Error details:", {
+    console.error(" Error fetching profile for UID:", user.uid, error);
+    console.error(" Error details:", {
       code: error.code,
       message: error.message,
       stack: error.stack
     });
-    console.error("🔍 User object:", user);
-    console.error("🔍 Database object:", db);
+    console.error(" User object:", user);
+    console.error(" Database object:", db);
     throw error;
   }
 };
@@ -334,9 +334,9 @@ const Profile = () => {
 
   // Get motivational message based on completion percentage
   const getMotivationalMessage = (percentage) => {
-    if (percentage >= 71) return "Profile complete! 🎉";
-    if (percentage >= 41) return "Almost there! Keep going! 💪";
-    return "Let's get started! 🚀";
+    if (percentage >= 71) return "Profile complete! ";
+    if (percentage >= 41) return "Almost there! Keep going! ";
+    return "Let's get started! ";
   };
 
   // Helper function to extract grade number from grade string
@@ -356,8 +356,8 @@ const Profile = () => {
 
   useEffect(() => {
     const loadProfile = async () => {
-      console.log("🚀 Profile useEffect triggered");
-      console.log("📊 Current state:", { authLoading, user: user?.uid, loading });
+      console.log(" Profile useEffect triggered");
+      console.log(" Current state:", { authLoading, user: user?.uid, loading });
       
       if (authLoading) {
         console.log("⏳ Auth is still loading, waiting...");
@@ -365,7 +365,7 @@ const Profile = () => {
       }
 
       if (!user) {
-        console.log("👤 No user authenticated, clearing profile data");
+        console.log(" No user authenticated, clearing profile data");
         setProfile(null);
         setProfileError(null);
         setBio("");
@@ -377,21 +377,21 @@ const Profile = () => {
         return;
       }
 
-      console.log("🔄 Auth state changed. User:", user ? user.uid : "null");
-      console.log("🔍 Auth state change details:", {
+      console.log(" Auth state changed. User:", user ? user.uid : "null");
+      console.log(" Auth state change details:", {
         hasUser: !!user,
         uid: user?.uid,
         email: user?.email,
         displayName: user?.displayName
       });
       
-      console.log("👤 User is authenticated, processing profile...");
+      console.log(" User is authenticated, processing profile...");
       setProfileError(null);
       setLoading(true);
       
       try {
-        console.log("📋 Starting profile fetch/creation process...");
-        console.log("🔧 Testing Firestore connection...");
+        console.log(" Starting profile fetch/creation process...");
+        console.log(" Testing Firestore connection...");
         
         // Test Firestore connection first
         const connectionTest = await testFirestoreConnection();
@@ -400,31 +400,31 @@ const Profile = () => {
         }
         
         // First, try to fetch existing profile
-        console.log("🔍 Step 1: Attempting to fetch existing profile...");
+        console.log(" Step 1: Attempting to fetch existing profile...");
         let profileData = null;
         let profileCreationError = null;
         
         try {
           profileData = await fetchUserProfile(user);
-          console.log("🔍 Step 1 result:", profileData ? "Profile found" : "No profile found");
+          console.log(" Step 1 result:", profileData ? "Profile found" : "No profile found");
         } catch (fetchError) {
-          console.warn("⚠️ Step 1 failed (likely due to security rules):", fetchError.message);
-          console.log("🔄 Will attempt to create profile directly...");
+          console.warn(" Step 1 failed (likely due to security rules):", fetchError.message);
+          console.log(" Will attempt to create profile directly...");
         }
         
         // If no profile exists or fetch failed, try to create one
         if (!profileData) {
-          console.log("📝 Step 2: No existing profile found or fetch failed, creating new one...");
+          console.log(" Step 2: No existing profile found or fetch failed, creating new one...");
           try {
             profileData = await createUserProfile(user);
-            console.log("✅ Step 2 Complete: New profile created successfully");
+            console.log(" Step 2 Complete: New profile created successfully");
           } catch (createError) {
-            console.error("❌ Step 2 failed:", createError.message);
+            console.error(" Step 2 failed:", createError.message);
             profileCreationError = createError;
             
             // If creation also fails due to permissions, create a local profile
             if (createError.code === 'permission-denied' || createError.message.includes("permissions") || createError.message.includes("Permission denied")) {
-              console.log("🔄 Creating local profile as fallback...");
+              console.log(" Creating local profile as fallback...");
               profileData = {
                 name: user.displayName || user.email?.split('@')[0] || "New User",
                 email: user.email,
@@ -445,18 +445,18 @@ const Profile = () => {
                 createdAt: new Date().toISOString(),
                 isLocalProfile: true // Flag to indicate this is a local profile
               };
-              console.log("✅ Local profile created as fallback");
+              console.log(" Local profile created as fallback");
             } else {
               throw createError;
             }
           }
         } else {
-          console.log("✅ Step 1 Complete: Existing profile found and loaded");
+          console.log(" Step 1 Complete: Existing profile found and loaded");
         }
         
         // Set profile data in state
         if (profileData) {
-          console.log("🔄 Step 3: Updating component state with profile data...");
+          console.log(" Step 3: Updating component state with profile data...");
           setProfile(profileData);
           setName(profileData.name || "");
           setEmail(profileData.email || "");
@@ -470,9 +470,9 @@ const Profile = () => {
           setSocialLinks(profileData.socialLinks || { github: "", linkedin: "", website: "" });
           setAchievements(profileData.achievements || []);
           setQuizResults(profileData.quizResults || null);
-          console.log("✅ Step 3 Complete: Component state updated successfully");
-          console.log("🎉 Profile loaded successfully for user:", user.uid);
-          console.log("📊 Final profile state:", {
+          console.log(" Step 3 Complete: Component state updated successfully");
+          console.log(" Profile loaded successfully for user:", user.uid);
+          console.log(" Final profile state:", {
             name: profileData.name,
             email: profileData.email,
             bio: profileData.bio,
@@ -485,8 +485,8 @@ const Profile = () => {
           throw new Error("Failed to create or fetch profile - no data returned");
         }
       } catch (error) {
-        console.error("❌ Error handling profile for user:", user.uid, error);
-        console.error("🔍 Error context:", {
+        console.error(" Error handling profile for user:", user.uid, error);
+        console.error(" Error context:", {
           uid: user.uid,
           email: user.email,
           errorCode: error.code,
@@ -497,7 +497,7 @@ const Profile = () => {
         setProfile(null);
       }
       setLoading(false);
-      console.log("🏁 Profile processing complete, loading state set to false");
+      console.log(" Profile processing complete, loading state set to false");
     };
 
     loadProfile();
@@ -532,19 +532,19 @@ const Profile = () => {
 
   async function handleSave() {
     if (!user) {
-      console.error("❌ Cannot save profile: No user authenticated");
+      console.error(" Cannot save profile: No user authenticated");
       return;
     }
     
-    console.log("💾 Starting profile save process...");
-    console.log("👤 User:", { uid: user.uid, email: user.email });
-    console.log("📝 Data to save:", { name, email, bio, grade, school, clubs, skills, interests, socialLinks, achievements, quizResults });
-    console.log("🔍 Profile type:", profile?.isLocalProfile ? "Local" : "Firestore");
+    console.log(" Starting profile save process...");
+    console.log(" User:", { uid: user.uid, email: user.email });
+    console.log(" Data to save:", { name, email, bio, grade, school, clubs, skills, interests, socialLinks, achievements, quizResults });
+    console.log(" Profile type:", profile?.isLocalProfile ? "Local" : "Firestore");
     
     setSaving(true);
     try {
       // Always try to save to Firebase first, regardless of local profile status
-      console.log("🔄 Attempting to save to Firebase...");
+      console.log(" Attempting to save to Firebase...");
       
       
       // Try to save to Firestore
@@ -564,8 +564,8 @@ const Profile = () => {
           updatedAt: serverTimestamp()
       };
       
-      console.log("🔄 Updating Firestore document at path:", `users/${user.uid}`);
-      console.log("📊 Update data:", updateData);
+      console.log(" Updating Firestore document at path:", `users/${user.uid}`);
+      console.log(" Update data:", updateData);
       
       await updateDoc(docRef, updateData);
       
@@ -573,9 +573,9 @@ const Profile = () => {
       if (name && name !== user.displayName) {
         try {
           await updateProfile(user, { displayName: name });
-          console.log("✅ Firebase Auth displayName updated to:", name);
+          console.log(" Firebase Auth displayName updated to:", name);
         } catch (authError) {
-          console.warn("⚠️ Failed to update Firebase Auth displayName:", authError);
+          console.warn(" Failed to update Firebase Auth displayName:", authError);
           // Don't fail the whole save if auth update fails
         }
       }
@@ -597,13 +597,13 @@ const Profile = () => {
         isLocalProfile: false // Remove local profile flag since we successfully saved to Firebase
       }));
       
-      console.log("✅ Profile updated successfully in Firestore");
-      console.log("🔄 Local state updated");
+      console.log(" Profile updated successfully in Firestore");
+      console.log(" Local state updated");
       
-      alert("✅ Profile saved to Firebase successfully!");
+      alert(" Profile saved to Firebase successfully!");
     } catch (error) {
-      console.error("❌ Error updating profile:", error);
-      console.error("🔍 Error details:", {
+      console.error(" Error updating profile:", error);
+      console.error(" Error details:", {
         code: error.code,
         message: error.message,
         uid: user.uid,
@@ -612,7 +612,7 @@ const Profile = () => {
       
       // If it's a permissions error, update locally as fallback
       if (error.code === 'permission-denied' || error.message.includes("permissions") || error.message.includes("Permission denied")) {
-        console.log("🔄 Firestore save failed due to permissions, updating locally as fallback");
+        console.log(" Firestore save failed due to permissions, updating locally as fallback");
         setProfile(prev => ({ 
           ...prev, 
           name,
@@ -630,7 +630,7 @@ const Profile = () => {
         }));
         alert("Profile updated locally! (Note: Changes are not saved to server due to permissions)");
       } else if (error.code === 'not-found') {
-        console.log("🔄 Document not found, attempting to create new profile...");
+        console.log(" Document not found, attempting to create new profile...");
         try {
           // Try to create the document if it doesn't exist
           const docRef = doc(db, "users", user.uid);
@@ -654,16 +654,16 @@ const Profile = () => {
           setProfile(prev => ({ ...prev, ...createData }));
           alert("Profile created and updated successfully!");
         } catch (createError) {
-          console.error("❌ Failed to create profile:", createError);
+          console.error(" Failed to create profile:", createError);
           alert("Failed to create profile. Please try again.");
         }
       } else {
-        console.error("❌ Unexpected error:", error);
+        console.error(" Unexpected error:", error);
         alert(`Failed to update profile: ${error.message}`);
       }
     } finally {
       setSaving(false);
-      console.log("🏁 Profile save process complete");
+      console.log(" Profile save process complete");
     }
   }
 
@@ -696,7 +696,7 @@ const Profile = () => {
     
     // Set new timeout for auto-save (2 seconds after user stops typing)
     const timeout = setTimeout(async () => {
-      console.log("🔄 Auto-saving profile data...");
+      console.log(" Auto-saving profile data...");
       try {
       const docRef = doc(db, "users", user.uid);
         const updateData = { 
@@ -720,17 +720,17 @@ const Profile = () => {
         if (name && name !== user.displayName) {
           try {
             await updateProfile(user, { displayName: name });
-            console.log("✅ Firebase Auth displayName updated to:", name);
+            console.log(" Firebase Auth displayName updated to:", name);
           } catch (authError) {
-            console.warn("⚠️ Failed to update Firebase Auth displayName:", authError);
+            console.warn(" Failed to update Firebase Auth displayName:", authError);
             // Don't fail the whole save if auth update fails
           }
         }
         
         setLastSaved(new Date().toLocaleTimeString());
-        console.log("✅ Auto-save completed at:", new Date().toLocaleTimeString());
+        console.log(" Auto-save completed at:", new Date().toLocaleTimeString());
     } catch (error) {
-        console.error("❌ Auto-save failed:", error);
+        console.error(" Auto-save failed:", error);
         // Don't show alert for auto-save failures to avoid annoying the user
       }
     }, 2000); // 2 second delay
@@ -764,9 +764,9 @@ const Profile = () => {
       const data = JSON.stringify(updateData);
       navigator.sendBeacon(`/api/save-profile/${user.uid}`, data);
       
-      console.log("💾 Data saved before page unload");
+      console.log(" Data saved before page unload");
     } catch (error) {
-      console.error("❌ Failed to save data before page unload:", error);
+      console.error(" Failed to save data before page unload:", error);
     }
   };
 
@@ -845,7 +845,7 @@ const Profile = () => {
           <div className="space-y-3">
             <button
               onClick={() => {
-                console.log("🔄 User clicked refresh page button");
+                console.log(" User clicked refresh page button");
                 window.location.reload();
               }}
               className="w-full bg-blue-500 text-white py-3 px-6 rounded-xl font-semibold hover:bg-blue-600 transition-all duration-300"
@@ -854,7 +854,7 @@ const Profile = () => {
             </button>
             <button
               onClick={() => {
-                console.log("🏠 User clicked go home button");
+                console.log(" User clicked go home button");
                 navigate('/');
               }}
               className="w-full bg-gray-500 text-white py-3 px-6 rounded-xl font-semibold hover:bg-gray-600 transition-all duration-300"
@@ -985,7 +985,7 @@ const Profile = () => {
                 <p className="text-gray-600 mb-4">Email: {profile.email}</p>
                 {lastSaved && (
                   <p className="text-sm text-green-600 mb-2">
-                    ✅ Last saved: {lastSaved}
+                     Last saved: {lastSaved}
                   </p>
                 )}
                 {profile.grade && (
@@ -994,7 +994,7 @@ const Profile = () => {
                 {profile.isLocalProfile && (
                   <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-2 rounded-lg mb-4">
                     <p className="text-sm">
-                      <strong>⚠️ Local Mode:</strong> Profile data is stored locally only. 
+                      <strong> Local Mode:</strong> Profile data is stored locally only. 
                       To enable cloud storage, please configure Firestore security rules.
                     </p>
                   </div>

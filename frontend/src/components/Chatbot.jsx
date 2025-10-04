@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Rnd } from 'react-rnd';
+import { useNavigate } from 'react-router-dom';
 import { Bot, MessageCircle, Send, X, Loader2 } from 'lucide-react';
+import { Rnd } from 'react-rnd';
 
 // Chatbot component that supports both mini (floating) and full-page modes.
 // Props:
@@ -36,6 +37,9 @@ export default function Chatbot({
   const containerRef = useRef(null);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
+  
+  // Navigation
+  const navigate = useNavigate();
 
   // Session data for backend; can be enriched via props or user profile
   const [sessionData, setSessionData] = useState({
@@ -60,7 +64,7 @@ export default function Chatbot({
     );
     
     if (isErrorState) {
-      return ['🔄 Restart'];
+      return ['Restart'];
     }
     
     if (!sessionData.school) {
@@ -111,7 +115,7 @@ export default function Chatbot({
           id: Date.now(),
           type: 'bot',
           text:
-            '🏫 Welcome to the Forsyth County Club Recommender! I\'ll help you find the perfect clubs at your high school. Which high school do you attend?',
+            'Welcome to the Forsyth County Club Recommender! I\'ll help you find the perfect clubs at your high school. Which high school do you attend?',
           ts: new Date().toISOString(),
         },
       ]);
@@ -144,18 +148,8 @@ export default function Chatbot({
 
   // Get emoji for club category
   const getCategoryEmoji = (category) => {
-    const emojiMap = {
-      'STEM': '🤖',
-      'Arts': '🎭',
-      'Leadership': '👑',
-      'Sports': '🏀',
-      'Service': '🌍',
-      'Community Service': '🤝',
-      'Cultural': '🌍',
-      'Academic': '📚',
-      'Recreational': '🎮'
-    };
-    return emojiMap[category] || '🎯';
+    // Return empty string to remove all emojis
+    return '';
   };
 
   // Create AbortController for request timeout
@@ -246,17 +240,24 @@ export default function Chatbot({
       } else {
         pushMessage(
           'bot', 
-          '⚠️ Oops! I\'m having trouble loading the clubs right now.\n👉 Please try again in a moment, or I can retry for you.',
-          { suggestions: ['🔄 Try Again', '🏫 Start Over'] }
+          'Oops! I\'m having trouble loading the clubs right now. Please try again in a moment, or I can retry for you.',
+          { suggestions: ['Try Again', 'Start Over'] }
         );
       }
     } catch (error) {
       console.error('Chat request failed after retries:', error);
       pushMessage(
         'bot',
-        '⚠️ Oops! I\'m having trouble loading the clubs right now.\n👉 Please try again in a moment, or I can retry for you.',
-        { suggestions: ['🔄 Try Again', '🏫 Start Over'] }
+        'Oops! I\'m having trouble loading the clubs right now. Please try again in a moment, or I can retry for you.',
+        { suggestions: ['Try Again', 'Start Over'] }
       );
+      // Log error to analytics
+      if (window.ga) {
+        window.ga('send', 'exception', {
+          exDescription: `Chat request failed after retries: ${error.message}`,
+          exFatal: false,
+        });
+      }
     } finally {
       setLoading(false);
     }
@@ -276,13 +277,13 @@ export default function Chatbot({
     if (!s) return;
     
     // Handle special commands
-    if (s.includes('🔄 Restart') || s.toLowerCase().includes('restart') || s.includes('🏫 Start Over')) {
+    if (s.includes('Restart') || s.toLowerCase().includes('restart') || s.includes('Start Over')) {
       setInput('');
       sendToBackend('restart');
       return;
     }
     
-    if (s.includes('🔄 Try Again')) {
+    if (s.includes('Try Again')) {
       // Retry the last user message
       const lastUserMessage = messages.filter(m => m.type === 'user').pop();
       if (lastUserMessage) {
@@ -407,16 +408,14 @@ export default function Chatbot({
                         <div className="text-2xl">{getCategoryEmoji(club.category)}</div>
                         <div className="flex-1">
                           <h4 className="font-bold text-blue-900 text-lg mb-2">
-                            <a 
-                              href={club.link} 
-                              className="hover:text-blue-700 hover:underline transition-colors"
-                              target="_blank"
-                              rel="noopener noreferrer"
+                            <button 
+                              onClick={() => navigate(club.link)}
+                              className="hover:text-blue-700 hover:underline transition-colors text-left"
                             >
                               {club.name}
-                            </a>
+                            </button>
                           </h4>
-                          <p className="text-gray-700 mb-3 leading-relaxed">{club.description}</p>
+                          <pre className="text-gray-700 mb-3 leading-relaxed whitespace-pre-wrap font-sans">{club.description}</pre>
                           <div className="space-y-1 text-sm">
                             <p className="text-gray-600">
                               <strong className="text-gray-800">Sponsor:</strong> {club.sponsor}
@@ -467,7 +466,7 @@ export default function Chatbot({
             ref={inputRef}
             type="text"
             className={inputClasses}
-            placeholder="Type your message…"
+            placeholder="Type your message"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             aria-label="Type your message"

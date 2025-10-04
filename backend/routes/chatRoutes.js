@@ -78,7 +78,7 @@ router.post('/chat', async (req, res) => {
     });
 
   } catch (error) {
-    console.error('🚨 Error in /chat endpoint:', {
+    console.error(' Error in /chat endpoint:', {
       error: error.message,
       stack: error.stack,
       userQuery: userQuery?.substring(0, 100),
@@ -90,9 +90,9 @@ router.post('/chat', async (req, res) => {
       success: true,
       message: JSON.stringify({
         success: true,
-        message: "⚠️ Oops! I'm having trouble loading the clubs right now.\n👉 Please try again in a moment, or I can retry for you.",
+        message: " Oops! I'm having trouble loading the clubs right now.\n Please try again in a moment, or I can retry for you.",
         clubs: [],
-        suggestions: ["🔄 Try Again", "🏫 Start Over"]
+        suggestions: [" Try Again", " Start Over"]
       }),
       source: 'error_fallback',
       sessionData: sanitizeSessionData(sessionData || {})

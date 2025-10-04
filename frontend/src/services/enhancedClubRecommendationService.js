@@ -154,7 +154,7 @@ export const isGuidedFlowInput = (userInput, currentState) => {
   const inputLower = userInput.toLowerCase();
   
   // Check for reset/start over
-  if (inputLower.includes('start over') || inputLower.includes('reset') || inputLower.includes('🔄')) {
+  if (inputLower.includes('start over') || inputLower.includes('reset') || inputLower.includes('')) {
     return true;
   }
   
@@ -173,8 +173,8 @@ export const isGuidedFlowInput = (userInput, currentState) => {
   }
   
   // Check for follow-up actions
-  if (inputLower.includes('see more') || inputLower.includes('📚') || 
-      inputLower.includes('ask') || inputLower.includes('💬')) {
+  if (inputLower.includes('see more') || inputLower.includes('') || 
+      inputLower.includes('ask') || inputLower.includes('')) {
     return true;
   }
   
@@ -205,7 +205,7 @@ const processGuidedFlowInput = (userInput, currentState, allClubData, selectedSc
   const inputLower = userInput.toLowerCase();
   
   // Check for reset/start over
-  if (inputLower.includes('start over') || inputLower.includes('reset') || inputLower.includes('🔄')) {
+  if (inputLower.includes('start over') || inputLower.includes('reset') || inputLower.includes('')) {
     return {
       ...currentState,
       step: 'greeting',
@@ -252,14 +252,14 @@ const processGuidedFlowInput = (userInput, currentState, allClubData, selectedSc
   }
   
   // Check for follow-up actions
-  if (inputLower.includes('see more') || inputLower.includes('📚')) {
+  if (inputLower.includes('see more') || inputLower.includes('')) {
     return {
       ...currentState,
       step: 'follow_up'
     };
   }
   
-  if (inputLower.includes('ask') || inputLower.includes('💬')) {
+  if (inputLower.includes('ask') || inputLower.includes('')) {
     return {
       ...currentState,
       step: 'follow_up'
@@ -352,7 +352,7 @@ export const generateConversationFlow = (conversationState) => {
   switch (step) {
     case 'greeting':
       return {
-        text: "Hi there! 👋 I'm your personal club discovery assistant! I'm excited to help you find the perfect clubs that match your interests and personality. What interests you most?",
+        text: "Hi there!  I'm your personal club discovery assistant! I'm excited to help you find the perfect clubs that match your interests and personality. What interests you most?",
         quickReplies: Object.keys(interestAreas).map(interest => 
           `${interest} ${interestAreas[interest].icon}`
         ),
@@ -374,7 +374,7 @@ export const generateConversationFlow = (conversationState) => {
       return {
         text: `Perfect! ${subData.description}. Here are some clubs I think you'd love:`,
         recommendations: recommendations,
-        quickReplies: ['🔄 Start Over', '📚 See More Clubs', '💬 Ask Questions'],
+        quickReplies: [' Start Over', ' See More Clubs', ' Ask Questions'],
         type: 'recommendations'
       };
       
@@ -382,7 +382,7 @@ export const generateConversationFlow = (conversationState) => {
       return {
         text: `Based on your query, here are some AI-powered club recommendations:`,
         recommendations: aiRecommendations,
-        quickReplies: ['🔄 Start Over', '📚 Try Guided Flow', '💬 Ask More Questions'],
+        quickReplies: [' Start Over', ' Try Guided Flow', ' Ask More Questions'],
         type: 'ai_recommendations'
       };
       
@@ -390,7 +390,7 @@ export const generateConversationFlow = (conversationState) => {
       return {
         text: `Here are some clubs that might match what you're looking for:`,
         recommendations: recommendations,
-        quickReplies: ['🔄 Start Over', '📚 Try Guided Flow', '💬 Ask More Questions'],
+        quickReplies: [' Start Over', ' Try Guided Flow', ' Ask More Questions'],
         type: 'fallback_recommendations'
       };
       
@@ -398,14 +398,14 @@ export const generateConversationFlow = (conversationState) => {
       return {
         text: `Hmm, I didn't find a perfect match for ${mainInterest} + ${subcategory}, but here are some popular ${mainInterest} clubs you might enjoy:`,
         recommendations: recommendations,
-        quickReplies: ['🔄 Start Over', '📚 Try Different Category', '💬 Ask Questions'],
+        quickReplies: [' Start Over', ' Try Different Category', ' Ask Questions'],
         type: 'fallback'
       };
       
     case 'follow_up':
       return {
         text: "What would you like to do next?",
-        quickReplies: ['🔄 Start Over', '📚 Explore Another Category', '💬 Ask Questions'],
+        quickReplies: [' Start Over', ' Explore Another Category', ' Ask Questions'],
         type: 'follow_up'
       };
       

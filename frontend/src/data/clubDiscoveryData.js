@@ -596,22 +596,22 @@ export const uniqueClubs = {
 
 // Interest area descriptions with consistent icons
 export const interestAreas = {
-  "STEM": { icon: "🔬", description: "Science, Technology, Engineering, and Mathematics" },
-  "Arts": { icon: "🎨", description: "Creative expression and artistic activities" },
-  "Sports": { icon: "⚽", description: "Athletic activities and physical fitness" },
-  "Business": { icon: "💼", description: "Business, entrepreneurship, and leadership" },
-  "Service": { icon: "🤝", description: "Community service and volunteer work" },
-  "Academic": { icon: "📚", description: "Academic excellence and scholarly pursuits" },
-  "Cultural": { icon: "🌍", description: "Cultural diversity and international interests" },
-  "Recreational": { icon: "🎮", description: "Fun activities and hobbies" }
+  "STEM": { icon: "", description: "Science, Technology, Engineering, and Mathematics" },
+  "Arts": { icon: "", description: "Creative expression and artistic activities" },
+  "Sports": { icon: "", description: "Athletic activities and physical fitness" },
+  "Business": { icon: "", description: "Business, entrepreneurship, and leadership" },
+  "Service": { icon: "", description: "Community service and volunteer work" },
+  "Academic": { icon: "", description: "Academic excellence and scholarly pursuits" },
+  "Cultural": { icon: "", description: "Cultural diversity and international interests" },
+  "Recreational": { icon: "", description: "Fun activities and hobbies" }
 };
 
 // Experience type descriptions with consistent icons
 export const experienceTypes = {
-  "Competitive": { icon: "⚡", description: "Clubs with tournaments, competitions, and performance opportunities" },
-  "Leadership": { icon: "👔", description: "Clubs focused on developing leadership skills and taking initiative" },
-  "Casual": { icon: "🎉", description: "Relaxed clubs for socializing and pursuing interests without pressure" },
-  "Creative": { icon: "🎨", description: "Clubs for artistic expression and creative projects" }
+  "Competitive": { icon: "", description: "Clubs with tournaments, competitions, and performance opportunities" },
+  "Leadership": { icon: "", description: "Clubs focused on developing leadership skills and taking initiative" },
+  "Casual": { icon: "", description: "Relaxed clubs for socializing and pursuing interests without pressure" },
+  "Creative": { icon: "", description: "Clubs for artistic expression and creative projects" }
 };
 
 // Category mappings using club IDs (deduplicated)

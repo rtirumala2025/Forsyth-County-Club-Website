@@ -7,13 +7,13 @@ const allClubData = [
       id: 'asl-club',
       name: 'American Sign Language Club',
       description: 'A student group that teaches and practices American Sign Language and Deaf culture. Members learn conversational signs, fingerspelling, and basic interpreting skills; host awareness events for the school community; and coordinate volunteer opportunities with local Deaf/Hard-of-Hearing organizations. The club also supports students interested in the National ASL Honor Society and sometimes partners with language classes for joint events.',
-      sponsor: 'Not listed on EFHS site (club page available) — contact EFHS Clubs/Staff Directory for advisor',
+      sponsor: 'Not listed on EFHS site (club page available)  contact EFHS Clubs/Staff Directory for advisor',
       category: 'Cultural',
       meetingFrequency: 'Weekly',
-      meetingDay: 'Fridays at lunch (approx. 12:30–1:00pm) — (placeholder; check Remind/club page)',
+      meetingDay: 'Fridays at lunch (approx. 12:301:00pm)  (placeholder; check Remind/club page)',
       requirements: 'Open to all students; no prior ASL experience required',
       activities: ['Beginner & intermediate sign lessons', 'Deaf culture workshops', 'Guest speakers / interpreters', 'Community outreach and volunteering', 'Preparation for National ASL Honor Society membership'],
-      commitment: 'Low–Medium — weekly practice plus occasional weekend outreach events',
+      commitment: 'LowMedium  weekly practice plus occasional weekend outreach events',
       benefits: ['Basic ASL fluency', 'Cultural competency', 'Volunteer/service opportunities', 'Resume/college activity']
     },
     {
@@ -23,10 +23,10 @@ const allClubData = [
       sponsor: 'Aimee Seaney (visual arts teacher / Fine Arts contact on EFHS site)',
       category: 'Arts',
       meetingFrequency: 'Weekly',
-      meetingDay: 'Tuesdays after school, 3:30–4:45pm (typical placeholder; confirm with sponsor)',
+      meetingDay: 'Tuesdays after school, 3:304:45pm (typical placeholder; confirm with sponsor)',
       requirements: 'Open to all students; bring own materials or request school supplies for projects',
       activities: ['Open-studio time', 'Portfolio prep', 'Murals and campus art projects', 'Field trips to local galleries', 'Art contests and shows'],
-      commitment: 'Low–Medium — flexible weekly meetings, extra time for shows or murals',
+      commitment: 'LowMedium  flexible weekly meetings, extra time for shows or murals',
       benefits: ['Portfolio development', 'Creative community', 'College application support', 'Collaborative project experience']
     },
     {
@@ -36,23 +36,23 @@ const allClubData = [
       sponsor: 'Laura Englebert & Paula Zaimis (contacts listed on the EFHS Beta Club page).',
       category: 'Leadership',
       meetingFrequency: 'Monthly (with additional service-project meetings as needed)',
-      meetingDay: 'TBD — meeting announcements made via Remind/Canvas (per EFHS Beta page).',
-      requirements: 'Open to grades 10–12 who maintain a minimum GPA of 3.5 (per EFHS Beta Club page).',
+      meetingDay: 'TBD  meeting announcements made via Remind/Canvas (per EFHS Beta page).',
+      requirements: 'Open to grades 1012 who maintain a minimum GPA of 3.5 (per EFHS Beta Club page).',
       activities: ['Community & school service projects', 'Induction ceremony for new members', 'Fundraisers', 'Leadership workshops', 'Recordkeeping of service hours via Canvas/Remind'],
-      commitment: 'Medium — monthly meetings plus required service hours and participation in induction/fundraising',
+      commitment: 'Medium  monthly meetings plus required service hours and participation in induction/fundraising',
       benefits: ['Leadership development', 'Community service hours', 'Honor recognition for transcripts', 'Scholarship/college resume advantage']
     },
     {
       id: 'chess-club',
       name: 'Chess',
       description: 'Casual and competitive chess club where members of all skill levels learn strategy, play friendly matches, and prepare for local scholastic tournaments.',
-      sponsor: 'Not listed on EFHS site — contact EFHS Clubs/Staff Directory for advisor',
+      sponsor: 'Not listed on EFHS site  contact EFHS Clubs/Staff Directory for advisor',
       category: 'Recreational',
       meetingFrequency: 'Weekly',
-      meetingDay: 'Wednesdays after school, 3:30–4:30pm (placeholder)',
+      meetingDay: 'Wednesdays after school, 3:304:30pm (placeholder)',
       requirements: 'Open to all students; no experience required',
       activities: ['Club matches', 'Tactics & strategy workshops', 'Inter-school tournaments', 'Puzzle/problem-solving sessions'],
-      commitment: 'Low — attend as able; tournament players may practice more frequently',
+      commitment: 'Low  attend as able; tournament players may practice more frequently',
       benefits: ['Critical thinking', 'Concentration', 'Competitive experience', 'Community']
     },
     {
@@ -61,193 +61,193 @@ const allClubData = [
       description: 'Performance ensemble that performs with the marching band for halftime shows and competes in winterguard events. Members rehearse choreography with flags, rifles, and sabres; learn marching/visual techniques; and travel for competitions and football games.',
       sponsor: 'Rachael Bearden (Color Guard director listed on EFHS Band/Fine Arts staff information).',
       category: 'Arts',
-      meetingFrequency: 'Weekly — daily/extended rehearsals during marching/winterguard season',
-      meetingDay: 'Tuesdays & Thursdays 4:00–6:00pm; extra rehearsals and weekend competitions in season (placeholder—confirm with director)',
+      meetingFrequency: 'Weekly  daily/extended rehearsals during marching/winterguard season',
+      meetingDay: 'Tuesdays & Thursdays 4:006:00pm; extra rehearsals and weekend competitions in season (placeholderconfirm with director)',
       requirements: 'Auditions required (yearly); students must attend rehearsals and performances',
       activities: ['Choreography & equipment work', 'Drill rehearsals with band', 'Winterguard competitions', 'Game-day performances', 'Fitness & conditioning'],
-      commitment: 'High — regular rehearsals, performances at games, and competition travel during season',
+      commitment: 'High  regular rehearsals, performances at games, and competition travel during season',
       benefits: ['Performance experience', 'Teamwork', 'Physical fitness', 'Competition & travel']
     },
     {
       id: 'debate-team',
       name: 'Debate Team',
       description: 'Competitive speech & debate team that prepares students for local and state debate tournaments. Training covers argumentation, research skills, public speaking, and tournament strategy.',
-      sponsor: 'Not listed on EFHS site — contact EFHS Clubs/Staff Directory for advisor',
+      sponsor: 'Not listed on EFHS site  contact EFHS Clubs/Staff Directory for advisor',
       category: 'Academic',
       meetingFrequency: 'Weekly',
-      meetingDay: 'Mondays 3:30–5:00pm (realistic placeholder; tournament schedules vary)',
+      meetingDay: 'Mondays 3:305:00pm (realistic placeholder; tournament schedules vary)',
       requirements: 'Open to interested students; tryouts may be used to select tournament teams',
       activities: ['Round practice', 'Case-writing workshops', 'Mock debates', 'Tournament travel', 'Speech & interp coaching'],
-      commitment: 'High — weekly practices plus weekend tournaments during season',
+      commitment: 'High  weekly practices plus weekend tournaments during season',
       benefits: ['Public speaking', 'Research & critical thinking', 'College-ready skills', 'Competitive recognition']
     },
     {
       id: 'esports',
       name: 'ESports',
       description: 'Student-run esports club that organizes varsity and club-level gaming teams for common competitive titles. Members practice strategy, scrimmage other schools, and learn streaming/production basics.',
-      sponsor: 'Not listed on EFHS site — contact EFHS Clubs/Staff Directory for advisor',
+      sponsor: 'Not listed on EFHS site  contact EFHS Clubs/Staff Directory for advisor',
       category: 'STEM',
       meetingFrequency: 'Weekly',
-      meetingDay: 'Fridays 3:30–5:30pm (placeholder — online scrimmages may occur evenings/weekends)',
+      meetingDay: 'Fridays 3:305:30pm (placeholder  online scrimmages may occur evenings/weekends)',
       requirements: 'Sign-up form and parent permission; game account(s) as required by team',
       activities: ['Team practices', 'Online scrimmages & ladder matches', 'League/tournament participation', 'Streaming and production workshops'],
-      commitment: 'Medium — regular practice and evening/weekend matches for competitive rosters',
+      commitment: 'Medium  regular practice and evening/weekend matches for competitive rosters',
       benefits: ['Teamwork', 'Strategic thinking', 'Potential scholarship/competitive opportunities', 'Technical skills (streaming, team ops)']
     },
     {
       id: 'fca',
       name: 'Fellowship of Christian Athletes',
       description: 'Faith-based student club that brings together athletes and non-athletes for Bible study, fellowship, and community service. Meetings often include speakers, testimonies, and service projects focused on local needs.',
-      sponsor: 'Not listed on EFHS site — often sponsored by a staff member and local FCA volunteer (contact EFHS for current advisor)',
+      sponsor: 'Not listed on EFHS site  often sponsored by a staff member and local FCA volunteer (contact EFHS for current advisor)',
       category: 'Religious',
       meetingFrequency: 'Weekly',
-      meetingDay: 'Wednesdays before school (7:30–8:00am) or lunch meetings (placeholder)',
+      meetingDay: 'Wednesdays before school (7:308:00am) or lunch meetings (placeholder)',
       requirements: 'Open to all students',
       activities: ['Bible study groups', 'Team devotionals', 'Service projects', 'Guest speakers and athlete mentors'],
-      commitment: 'Low — optional weekly fellowship with occasional service events',
+      commitment: 'Low  optional weekly fellowship with occasional service events',
       benefits: ['Peer support', 'Spiritual growth', 'Community service opportunities']
     },
     {
       id: 'gsa',
       name: 'Gay Straight Alliance',
       description: 'Supportive student group focused on providing a safe, inclusive space for LGBTQ+ students and allies. Activities include discussion groups, advocacy, awareness events, and ally training.',
-      sponsor: 'Not listed on EFHS site — contact EFHS Clubs/Staff Directory for current advisor',
+      sponsor: 'Not listed on EFHS site  contact EFHS Clubs/Staff Directory for current advisor',
       category: 'Support',
       meetingFrequency: 'Biweekly',
       meetingDay: 'Thursdays at lunch (placeholder)',
       requirements: 'Open to all students; confidentiality and respectful behavior expected',
       activities: ['Support circles', 'Awareness campaigns', 'Ally training', 'Planning for Pride/awareness events'],
-      commitment: 'Low — drop-in support with occasional event planning',
+      commitment: 'Low  drop-in support with occasional event planning',
       benefits: ['Peer support', 'Safe space', 'Advocacy experience', 'Leadership opportunities']
     },
     {
       id: 'international-club',
       name: 'International Club',
       description: 'Celebrates global cultures through student-led presentations, food nights, and language exchanges. The club promotes cultural awareness, global citizenship, and international friendships.',
-      sponsor: 'Not listed on EFHS site — likely a world language or social studies teacher (contact EFHS for advisor)',
+      sponsor: 'Not listed on EFHS site  likely a world language or social studies teacher (contact EFHS for advisor)',
       category: 'Cultural',
       meetingFrequency: 'Monthly',
       meetingDay: 'Third Wednesday at lunch (placeholder)',
       requirements: 'Open to all students',
       activities: ['Cultural showcases', 'International food nights', 'Language practice sessions', 'Collaborations with world language classes'],
-      commitment: 'Low — monthly involvement with extra work for events',
+      commitment: 'Low  monthly involvement with extra work for events',
       benefits: ['Cultural competency', 'Networking with international students', 'Event planning experience']
     },
     {
       id: 'latinos-at-east',
       name: 'Latinos at East',
       description: 'Student organization that supports Latino/Hispanic students and promotes cultural events, mentorship, and academic support. The club hosts celebrations, tutoring sessions, and community outreach projects.',
-      sponsor: 'Not listed on EFHS site — contact EFHS for advisor name',
+      sponsor: 'Not listed on EFHS site  contact EFHS for advisor name',
       category: 'Cultural',
       meetingFrequency: 'Monthly',
-      meetingDay: 'Wednesdays after school 4:00–5:00pm (placeholder)',
+      meetingDay: 'Wednesdays after school 4:005:00pm (placeholder)',
       requirements: 'Open to all students; targeted outreach to Latino/Hispanic community',
       activities: ['Cultural events', 'Peer tutoring', 'Family/community outreach', 'College & scholarship information sessions'],
-      commitment: 'Low–Medium — monthly meetings with added event planning',
+      commitment: 'LowMedium  monthly meetings with added event planning',
       benefits: ['Cultural affirmation', 'Academic support', 'Community connections', 'Leadership roles']
     },
     {
       id: 'literary-team',
       name: 'Literary Team',
       description: 'Group for student writers who compete in literary contests and produce the school literary magazine. Activities include writing workshops, critique sessions, and submissions to regional competitions.',
-      sponsor: 'Not listed on EFHS site — often an English teacher (contact EFHS for advisor)',
+      sponsor: 'Not listed on EFHS site  often an English teacher (contact EFHS for advisor)',
       category: 'Academic',
       meetingFrequency: 'Weekly',
-      meetingDay: 'Thursdays after school 3:30–4:30pm (placeholder)',
+      meetingDay: 'Thursdays after school 3:304:30pm (placeholder)',
       requirements: 'Open to writers; tryouts or submission-based selection for competitive squads',
       activities: ['Writing workshops', 'Peer critique', 'Magazine publishing', 'Entry into writing contests'],
-      commitment: 'Medium — weekly workshops and deadlines for submissions',
+      commitment: 'Medium  weekly workshops and deadlines for submissions',
       benefits: ['Improved writing', 'Publication credits', 'Critical feedback', 'Contest awards']
     },
     {
       id: 'math-team',
       name: 'Math Team',
       description: 'Competitive math team preparing for contests (AMC, regional contests). Members practice advanced problem-solving, team rounds, and attend competitions representing EFHS.',
-      sponsor: 'Not listed on EFHS site — contact EFHS Math Department/Staff Directory for advisor',
+      sponsor: 'Not listed on EFHS site  contact EFHS Math Department/Staff Directory for advisor',
       category: 'Academic',
       meetingFrequency: 'Weekly',
-      meetingDay: 'Tuesdays 3:30–4:30pm (placeholder)',
+      meetingDay: 'Tuesdays 3:304:30pm (placeholder)',
       requirements: 'Open to students with interest in math; tryouts for varsity/competitive teams may occur',
       activities: ['Problem-solving practice', 'Mock contests', 'AMC/AIME/MathCounts preparation', 'Regional competitions'],
-      commitment: 'Medium–High — weekly practice plus weekend competitions for competitive members',
+      commitment: 'MediumHigh  weekly practice plus weekend competitions for competitive members',
       benefits: ['Advanced problem-solving', 'College application strength', 'Scholarship & contest opportunities']
     },
     {
       id: 'mock-trial',
       name: 'Mock Trial',
       description: 'Hands-on legal simulation team where students role-play attorneys and witnesses to prepare cases and compete in regional/state mock trial competitions. Students learn courtroom procedure, case-building, and public speaking.',
-      sponsor: 'Not listed on EFHS site — contact EFHS for current advisor',
+      sponsor: 'Not listed on EFHS site  contact EFHS for current advisor',
       category: 'Academic',
       meetingFrequency: 'Weekly',
-      meetingDay: 'Wednesdays 3:30–5:30pm (placeholder; more frequent closer to competitions)',
+      meetingDay: 'Wednesdays 3:305:30pm (placeholder; more frequent closer to competitions)',
       requirements: 'Tryouts typically required for competitive team roles; open to learners for practice positions',
       activities: ['Case prep & witness coaching', 'Mock courtroom practice', 'Regional competitions', 'Guest attorney Q&A'],
-      commitment: 'High — heavy prep and weekend competitions',
+      commitment: 'High  heavy prep and weekend competitions',
       benefits: ['Legal knowledge', 'Public speaking', 'Teamwork', 'College resume enhancement']
     },
     {
       id: 'naacp',
       name: 'NAACP',
       description: 'Student chapter that focuses on civil rights education, advocacy, and community service. The club organizes awareness events, voter education (when age-appropriate), and local partnerships.',
-      sponsor: 'Not listed on EFHS site — contact EFHS for advisor',
+      sponsor: 'Not listed on EFHS site  contact EFHS for advisor',
       category: 'Cultural',
       meetingFrequency: 'Monthly',
       meetingDay: 'First Monday at lunch (placeholder)',
       requirements: 'Open to all students',
       activities: ['Educational events', 'Community service', 'Discussion forums', 'Partnerships with local NAACP chapter'],
-      commitment: 'Low–Medium — monthly meetings plus project work',
+      commitment: 'LowMedium  monthly meetings plus project work',
       benefits: ['Civic engagement', 'Leadership development', 'Community connections']
     },
     {
       id: 'robotics-club',
       name: 'Robotics Club',
       description: 'Build-and-compete club for students interested in robotics and engineering (VEX/FTC/FRC-style activities). Members design, build, program robots, troubleshoot systems, and prepare for regional competitions.',
-      sponsor: 'Not listed on EFHS site — contact EFHS Clubs/Staff Directory for advisor',
+      sponsor: 'Not listed on EFHS site  contact EFHS Clubs/Staff Directory for advisor',
       category: 'STEM',
       meetingFrequency: 'Weekly (more frequent during build season)',
-      meetingDay: 'Tuesdays & Thursdays 3:30–5:30pm (placeholder)',
+      meetingDay: 'Tuesdays & Thursdays 3:305:30pm (placeholder)',
       requirements: 'Open to students interested in design, engineering, or programming; safety training required; sign-up recommended',
       activities: ['Robot design & build', 'Programming sessions', 'Competition strategy', 'Outreach/demos at feeder schools'],
-      commitment: 'High — regular after-school build time and weekend competitions',
+      commitment: 'High  regular after-school build time and weekend competitions',
       benefits: ['Engineering & programming experience', 'Team problem-solving', 'STEM competition exposure', 'College/career prep']
     },
     {
       id: 'science-ambassadors',
       name: 'Science Ambassadors',
       description: 'Student outreach group that runs science demos, tutoring sessions, and campus STEM outreach. Members help at science nights, mentor younger students, and promote STEM in the community.',
-      sponsor: 'Not listed on EFHS site — contact EFHS Science Department for advisor',
+      sponsor: 'Not listed on EFHS site  contact EFHS Science Department for advisor',
       category: 'STEM',
       meetingFrequency: 'Monthly',
       meetingDay: 'Second Tuesday at lunch (placeholder)',
       requirements: 'Interest in STEM and outreach; attendance at outreach events expected',
       activities: ['Hands-on demos', 'Science fair mentorship', 'Middle-school outreach', 'STEM tutoring'],
-      commitment: 'Medium — monthly meetings plus event participation',
+      commitment: 'Medium  monthly meetings plus event participation',
       benefits: ['Communication skills', 'STEM outreach experience', 'Volunteer hours', 'Leadership opportunities']
     },
     {
       id: 'science-olympiad',
       name: 'Science Olympiad',
       description: 'Competitive STEM team preparing for Science Olympiad events across disciplines (biology, chemistry, engineering, etc.). Students specialize in events, perform lab/build tasks, and compete regionally/statewide.',
-      sponsor: 'Not listed on EFHS site — contact EFHS Science Department for advisor',
+      sponsor: 'Not listed on EFHS site  contact EFHS Science Department for advisor',
       category: 'STEM',
       meetingFrequency: 'Weekly',
-      meetingDay: 'Mondays 3:30–5:00pm (placeholder)',
+      meetingDay: 'Mondays 3:305:00pm (placeholder)',
       requirements: 'Open to students interested in STEM; tryouts/selection for certain events possible',
       activities: ['Event-specific practice', 'Lab work', 'Engineering builds', 'Regional/state competitions'],
-      commitment: 'High — frequent practices and competition travel',
+      commitment: 'High  frequent practices and competition travel',
       benefits: ['Deep STEM knowledge', 'Competition experience', 'Teamwork', 'College prep']
     },
     {
       id: 'student-council',
       name: 'Student Council',
       description: 'Representative student government responsible for planning school events, fundraisers, and serving as a student voice in school decisions. Officers and class representatives organize dances, spirit weeks, and community service.',
-      sponsor: 'Not listed on EFHS site — check EFHS Student Services / Staff Directory for current advisor',
+      sponsor: 'Not listed on EFHS site  check EFHS Student Services / Staff Directory for current advisor',
       category: 'Leadership',
       meetingFrequency: 'Weekly',
-      meetingDay: 'Fridays after school 3:30–4:30pm (placeholder)',
+      meetingDay: 'Fridays after school 3:304:30pm (placeholder)',
       requirements: 'Elected positions for officers; grade-level representatives may be selected or elected',
       activities: ['Event planning (dances, spirit week)', 'Fundraising', 'Leadership training', 'Liaison with administration'],
-      commitment: 'Medium–High — weekly meetings and event duties (peak work around major events)',
+      commitment: 'MediumHigh  weekly meetings and event duties (peak work around major events)',
       benefits: ['Leadership experience', 'Event management', 'Community engagement', 'Resume/college references']
     },
     {
@@ -260,59 +260,59 @@ const allClubData = [
       meetingDay: 'Tuesdays after school (typical placeholder; chapter announces schedule via school store/Remind).',
       requirements: 'Membership tiers and dues (EFHS lists Gold/Silver/Bronze membership options and associated fees).',
       activities: ['Competitive case and role-play preparation', 'Conferences & state/national competitions', 'Fundraising', 'Business partner events'],
-      commitment: 'Medium–High — regular meetings plus conference travel for competitive members',
+      commitment: 'MediumHigh  regular meetings plus conference travel for competitive members',
       benefits: ['Business & leadership skills', 'Networking', 'Scholarship & career pathways', 'Competitive recognition']
     },
     {
       id: 'fbla',
       name: 'FBLA',
       description: 'Future Business Leaders of America chapter that provides business education, competitive events, and leadership training for students interested in business careers.',
-      sponsor: 'Not listed on EFHS site — contact EFHS Career & Technical Education (CTE) / Staff Directory',
+      sponsor: 'Not listed on EFHS site  contact EFHS Career & Technical Education (CTE) / Staff Directory',
       category: 'Business',
       meetingFrequency: 'Weekly',
-      meetingDay: 'Wednesdays after school 3:30–4:30pm (placeholder)',
+      meetingDay: 'Wednesdays after school 3:304:30pm (placeholder)',
       requirements: 'Student membership registration (state/national FBLA dues may apply)',
       activities: ['Competition prep (entrepreneurship, finance, marketing)', 'Workshops', 'Community business partnerships', 'Fundraising'],
-      commitment: 'Medium — weekly meetings and competitions/conferences',
+      commitment: 'Medium  weekly meetings and competitions/conferences',
       benefits: ['Business skills', 'Resume/portfolio items', 'Scholarship opportunities', 'Networking']
     },
     {
       id: 'skillsusa',
       name: 'SkillsUSA',
       description: 'Career/technical student organization focused on skilled trades and leadership. Members compete in hands-on contests, attend leadership conferences, and gain workplace-ready skills.',
-      sponsor: 'Not listed on EFHS site — typically a CTE instructor (contact EFHS CTE for advisor)',
+      sponsor: 'Not listed on EFHS site  typically a CTE instructor (contact EFHS CTE for advisor)',
       category: 'Career',
       meetingFrequency: 'Monthly',
       meetingDay: 'Varies (workshop evenings and event days; placeholder)',
       requirements: 'Often aligned with CTE course enrollment; membership may require dues',
       activities: ['Skills competitions', 'Hands-on workshops', 'Industry visits', 'Leadership development'],
-      commitment: 'Medium — project-based with occasional weekend competitions',
+      commitment: 'Medium  project-based with occasional weekend competitions',
       benefits: ['Trade skills', 'Certifications/workplace readiness', 'Competition exposure', 'Career networking']
     },
     {
       id: 'tsa',
       name: 'Technology Student Association',
       description: 'STEM organization for students interested in engineering, design, and technology. Members build projects, enter competitive events, and develop engineering/design documentation skills.',
-      sponsor: 'Not listed on EFHS site — contact EFHS CTE or Computer Science department for advisor',
+      sponsor: 'Not listed on EFHS site  contact EFHS CTE or Computer Science department for advisor',
       category: 'STEM',
       meetingFrequency: 'Weekly',
-      meetingDay: 'Thursdays 3:30–5:00pm (placeholder)',
+      meetingDay: 'Thursdays 3:305:00pm (placeholder)',
       requirements: 'Membership registration for TSA competitions; open to students interested in STEM/engineering',
       activities: ['Design & build projects', 'Documenting engineering processes', 'Regional & state competitions', 'Workshops'],
-      commitment: 'Medium–High — weekly build/practice time plus competitions',
+      commitment: 'MediumHigh  weekly build/practice time plus competitions',
       benefits: ['Engineering design experience', 'Competition credits', 'Teamwork & documentation skills']
     },
     {
       id: 'fccla',
       name: 'FCCLA',
-      description: 'Family, Career and Community Leaders of America — a student organization connected to Family & Consumer Sciences. FCCLA focuses on leadership, career preparation, and family/community programming.',
-      sponsor: 'Not listed on EFHS site — contact EFHS Family & Consumer Sciences department for advisor',
+      description: 'Family, Career and Community Leaders of America  a student organization connected to Family & Consumer Sciences. FCCLA focuses on leadership, career preparation, and family/community programming.',
+      sponsor: 'Not listed on EFHS site  contact EFHS Family & Consumer Sciences department for advisor',
       category: 'Career',
       meetingFrequency: 'Weekly',
       meetingDay: 'Wednesdays during lunch or after school (placeholder)',
       requirements: 'Membership registration (often open to students enrolled in related courses)',
       activities: ['Leadership projects', 'Community service', 'Culinary/CTE events', 'Competitive STAR events'],
-      commitment: 'Medium — meetings plus event/project work',
+      commitment: 'Medium  meetings plus event/project work',
       benefits: ['Career skills', 'Leadership development', 'Competitive opportunities', 'Community service']
     }
 ]
@@ -1362,7 +1362,7 @@ clubs: [
     meetingDay: 'Third Wednesday after school',
     requirements: 'Open to all with leadership interest',
     activities: ['Leadership retreats', 'Service projects', 'Peer mentoring forums'],
-    commitment: 'Medium – monthly meetings plus event participation',
+    commitment: 'Medium  monthly meetings plus event participation',
     benefits: ['Leadership development', 'Networking opportunities', 'Community involvement']
   },
   {
@@ -1511,7 +1511,7 @@ clubs: [
   {
     id: 'creative-writing-and-arts',
     name: 'Creative Writing & Arts Club',
-    description: 'A creative space to write, art, publish, and compete while showcasing students’ creativity.',
+    description: 'A creative space to write, art, publish, and compete while showcasing students creativity.',
     sponsor: 'n/a',
     category: 'Arts',
     meetingFrequency: 'Biweekly',
@@ -1926,7 +1926,7 @@ clubs: [
   },
   {
     id: 'save-a-childs-heart',
-    name: 'Save A Child’s Heart',
+    name: 'Save A Childs Heart',
     description: 'Awareness and fundraising club supporting children with heart conditions; PVSA-certified.',
     sponsor: 'Mrs. Potter',
     category: 'Service',
@@ -1992,7 +1992,7 @@ clubs: [
   {
     id: 'student-ambassadors',
     name: 'Student Ambassador Program',
-    description: 'Promotes civic leadership via voter registration outreach, public engagement, and competitions by Secretary of State’s office.',
+    description: 'Promotes civic leadership via voter registration outreach, public engagement, and competitions by Secretary of States office.',
     sponsor: 'Mrs. Lauren Watkins',
     category: 'Leadership',
     meetingFrequency: 'Monthly',
@@ -2226,7 +2226,7 @@ clubs: [
   {
     id: 'unicef-club',
     name: 'UNICEF Club',
-    description: 'Advocates for children’s rights globally through education, fundraising, and service.',
+    description: 'Advocates for childrens rights globally through education, fundraising, and service.',
     sponsor: 'TBD',
     category: 'Service',
     meetingFrequency: 'Monthly',
@@ -2290,7 +2290,7 @@ clubs: [
     meetingDay: 'Mondays after school',
     requirements: 'Open tryouts in September',
     activities: ['Practice matches', 'Quiz bowl scrimmages', 'Regional competition'],
-    commitment: 'Medium – preparation and travel for contests',
+    commitment: 'Medium  preparation and travel for contests',
     benefits: ['Critical thinking', 'Teamwork', 'Academic recognition']
   },
   {
@@ -2868,7 +2868,7 @@ clubs: [
   {
     id: 'open-mic-club',
     name: 'Open Mic Club',
-    description: 'Allows performers—musicians, poets, speakers—to practice and perform in a safe space.',
+    description: 'Allows performersmusicians, poets, speakersto practice and perform in a safe space.',
     sponsor: 'TBD',
     category: 'Arts',
     meetingFrequency: 'Monthly',
@@ -3102,7 +3102,7 @@ clubs: [
   {
     id: 'girl-up-club',
     name: 'Girl Up Club',
-    description: 'Advocates for girls’ rights globally through awareness campaigns and fundraising initiatives.',
+    description: 'Advocates for girls rights globally through awareness campaigns and fundraising initiatives.',
     sponsor: 'Valadez',
     category: 'Leadership',
     meetingFrequency: 'Biweekly',
@@ -3342,7 +3342,7 @@ clubs: [
   {
     id: '3d-printing-club',
     name: '3D Printing Club',
-    description: 'Students learn how to design, model, and print 3D objects using modern tools—from CAD basics to final prints.',
+    description: 'Students learn how to design, model, and print 3D objects using modern toolsfrom CAD basics to final prints.',
     sponsor: 'Shawn Prince',
     category: 'STEM',
     meetingFrequency: 'Biweekly',
@@ -3888,7 +3888,7 @@ clubs: [
   {
     id: 'mock-trial',
     name: 'Mock Trial',
-    description: 'Simulates courtroom trials—enhancing public speaking, legal reasoning, and teamwork skills.',
+    description: 'Simulates courtroom trialsenhancing public speaking, legal reasoning, and teamwork skills.',
     sponsor: 'Jarrod Shirley',
     category: 'Academic',
     meetingFrequency: 'Weekly',
@@ -3992,7 +3992,7 @@ clubs: [
   {
     id: 'national-honor-society',
     name: 'National Honor Society (NHS)',
-    description: 'Recognizes character, leadership, scholarship, and service—organizing school service and peer mentoring.',
+    description: 'Recognizes character, leadership, scholarship, and serviceorganizing school service and peer mentoring.',
     sponsor: 'Clair Patterson',
     category: 'Leadership',
     meetingFrequency: 'Monthly',
@@ -4134,7 +4134,7 @@ clubs: [
   },
   {
     id: 'sga-freshman-class',
-    name: 'SGA – Freshman Class',
+    name: 'SGA  Freshman Class',
     description: 'Leads freshman activities and builds class unity through peer leadership and event planning.',
     sponsor: 'Kelsie Hand',
     category: 'Leadership',
@@ -4147,7 +4147,7 @@ clubs: [
   },
   {
     id: 'sga-sophomore-class',
-    name: 'SGA – Sophomore Class',
+    name: 'SGA  Sophomore Class',
     description: 'Plans sophomore-specific events and fosters school spirit within the class.',
     sponsor: 'Corrine Leeman',
     category: 'Leadership',
@@ -4160,7 +4160,7 @@ clubs: [
   },
   {
     id: 'sga-junior-class',
-    name: 'SGA – Junior Class',
+    name: 'SGA  Junior Class',
     description: 'Coordinates junior events and encourages class engagement through leadership roles.',
     sponsor: 'Laura Sweeney',
     category: 'Leadership',
@@ -4173,7 +4173,7 @@ clubs: [
   },
   {
     id: 'sga-senior-class',
-    name: 'SGA – Senior Class',
+    name: 'SGA  Senior Class',
     description: 'Oversees senior activities including graduation planning and senior week events.',
     sponsor: 'Erica Nelson',
     category: 'Leadership',
@@ -4303,8 +4303,8 @@ clubs: [
   },
   {
     id: 'unicef-club',
-    name: 'UNICEF Club – Denmark Chapter',
-    description: 'Supports UNICEF’s mission via fundraising, awareness, and advocacy projects at the school level.',
+    name: 'UNICEF Club  Denmark Chapter',
+    description: 'Supports UNICEFs mission via fundraising, awareness, and advocacy projects at the school level.',
     sponsor: 'Brittany Rhodes',
     category: 'Service',
     meetingFrequency: 'Monthly',
@@ -4365,10 +4365,10 @@ clubs: [
   sponsor: "Laura Pearce",
   category: "Academic",
   meetingFrequency: "Weekly (seasonal)",
-  meetingDay: "Mondays & Wednesdays after school (3:45–4:30 PM) during the competition season",
+  meetingDay: "Mondays & Wednesdays after school (3:454:30 PM) during the competition season",
   requirements: "Open to all students; tryouts for official competition roster may occur before tournament season.",
   activities: ["Weekly buzzer practice", "Practice matches", "Regional & state competitions", "Research and topic workshops"],
-  commitment: "Medium — weekly practices with extra time during competition season.",
+  commitment: "Medium  weekly practices with extra time during competition season.",
   benefits: ["Improves general knowledge and quick thinking", "Teamwork and competition experience", "College resume booster"]
 },
 {
@@ -4381,7 +4381,7 @@ clubs: [
   meetingDay: "Tuesdays after school (monthly study sessions; extra sessions before exam windows)",
   requirements: "Interest in chemistry; strong recommendation for students enrolled in chemistry/advanced chemistry classes.",
   activities: ["Problem sets", "Lab demonstrations", "Past USNCO practice exams", "Guest lectures from local chemists"],
-  commitment: "Medium — monthly meetings plus optional extra prep for competitors.",
+  commitment: "Medium  monthly meetings plus optional extra prep for competitors.",
   benefits: ["Deeper chemistry understanding", "Competition experience", "Preparation for STEM majors"]
 },
 {
@@ -4394,7 +4394,7 @@ clubs: [
   meetingDay: "Every other Wednesday during lunch or after school (room TBA)",
   requirements: "Open to all skill levels; submissions accepted for workshops but not required.",
   activities: ["Writer workshops", "Prompt exercises", "Publication and contest prep", "Open-mic events"],
-  commitment: "Low — attend when you can; members who submit to contests may invest extra time.",
+  commitment: "Low  attend when you can; members who submit to contests may invest extra time.",
   benefits: ["Improves writing craft", "Peer feedback", "Publication/contest opportunities"]
 },
 {
@@ -4404,10 +4404,10 @@ clubs: [
   sponsor: "Michael Holmes",
   category: "Academic",
   meetingFrequency: "Weekly",
-  meetingDay: "Tuesdays after school (3:45–5:00 PM)",
+  meetingDay: "Tuesdays after school (3:455:00 PM)",
   requirements: "Open membership; tryouts/select teams for tournament travel.",
   activities: ["Case writing", "Mock rounds", "Public speaking drills", "Tournament travel"],
-  commitment: "Medium–High for competitive members (weekly practice + travel), Low for casual participants.",
+  commitment: "MediumHigh for competitive members (weekly practice + travel), Low for casual participants.",
   benefits: ["Stronger public speaking and research skills", "College admissions advantage", "Confidence and leadership"]
 },
 {
@@ -4420,7 +4420,7 @@ clubs: [
   meetingDay: "Monthly meetings (day/time TBA at start of school year)",
   requirements: "Open to students interested in economics; no prerequisites.",
   activities: ["Workshops", "Simulated markets and trading games", "Preparation for econ competitions", "Guest speakers"],
-  commitment: "Low–Medium — monthly meetings with optional competition prep.",
+  commitment: "LowMedium  monthly meetings with optional competition prep.",
   benefits: ["Financial literacy", "Analytical thinking", "Competition and leadership opportunities"]
 },
 {
@@ -4433,7 +4433,7 @@ clubs: [
   meetingDay: "3rd Wednesday or Thursday of every month (per SFHS clubs calendar)",
   requirements: "Open to all students (no language requirement).",
   activities: ["Cultural celebrations", "Language practice meetups", "Movie nights", "Community service events"],
-  commitment: "Low — monthly meetings with optional events.",
+  commitment: "Low  monthly meetings with optional events.",
   benefits: ["Cultural exposure", "Language practice", "Community/service experience"]
 },
 {
@@ -4446,7 +4446,7 @@ clubs: [
   meetingDay: "Monthly (specific day/time set at start of year; typically late afternoon)",
   requirements: "Open to all students.",
   activities: ["Cultural crafts & food events", "Film/showings", "Language games", "Exchange information"],
-  commitment: "Low — monthly events with optional activities.",
+  commitment: "Low  monthly events with optional activities.",
   benefits: ["Cultural literacy", "Language exposure", "Social connections"]
 },
 {
@@ -4459,7 +4459,7 @@ clubs: [
   meetingDay: "First Monday of each month (after school / room posted)",
   requirements: "Interest in healthcare; preference for students considering pre-med track but open to others.",
   activities: ["Guest speakers (physicians/nurses)", "Clinical exposure opportunities", "Volunteer coordination", "College/career guidance"],
-  commitment: "Medium — monthly meetings plus volunteer/externship activities.",
+  commitment: "Medium  monthly meetings plus volunteer/externship activities.",
   benefits: ["Healthcare career exposure", "Networking with professionals", "Volunteer experience for applications"]
 },
 {
@@ -4485,7 +4485,7 @@ clubs: [
   meetingDay: "Second Friday of every month at 3:45 PM (room listed on SFHS site)",
   requirements: "Interest in world affairs and research; some conferences require application.",
   activities: ["Committee simulations", "Research and position paper writing", "Conference travel"],
-  commitment: "Medium — monthly meetings with extra time before conferences.",
+  commitment: "Medium  monthly meetings with extra time before conferences.",
   benefits: ["Global awareness", "Research/writing skills", "Public speaking & networking"]
 },
 {
@@ -4498,7 +4498,7 @@ clubs: [
   meetingDay: "Meeting schedule tbd; typically increases leading up to contest deadlines",
   requirements: "Interest in public speaking; contestants prepare and submit oration following Optimist rules.",
   activities: ["Speech writing workshops", "Mock presentations", "Local contest participation"],
-  commitment: "Medium — more time required during competition season.",
+  commitment: "Medium  more time required during competition season.",
   benefits: ["Public speaking experience", "Potential scholarship opportunities", "Confidence building"]
 },
 {
@@ -4511,7 +4511,7 @@ clubs: [
   meetingDay: "Monthly after school (day posted at start of year)",
   requirements: "Interest in physics; students preparing for AP/competition encouraged to join.",
   activities: ["Hands-on demonstrations", "Problem-of-the-week sessions", "F=ma prep", "Guest speakers"],
-  commitment: "Low–Medium — monthly meetings with extra prep for competitions.",
+  commitment: "LowMedium  monthly meetings with extra prep for competitions.",
   benefits: ["Deeper physics knowledge", "Competition readiness", "STEM mentorship"]
 },
 {
@@ -4537,7 +4537,7 @@ clubs: [
   meetingDay: "Weekly after school (day/time posted at start of season)",
   requirements: "Open to students with interest in competitive math; different teams for various contest levels.",
   activities: ["Problem-solving practice", "Mock contests", "Regional & state competitions"],
-  commitment: "Medium — weekly practice and occasional weekend competitions.",
+  commitment: "Medium  weekly practice and occasional weekend competitions.",
   benefits: ["Improves quantitative reasoning", "Competition recognition", "Scholarship/college value"]
 },
 {
@@ -4550,20 +4550,20 @@ clubs: [
   meetingDay: "Tuesdays after school (monthly workshops and mock crime scenes)",
   requirements: "Open to interested students; some activities require parent permission for lab work.",
   activities: ["Mock crime scenes", "Hands-on labs", "Guest speakers from forensics community"],
-  commitment: "Low–Medium — monthly meetings with optional field trips.",
+  commitment: "LowMedium  monthly meetings with optional field trips.",
   benefits: ["Practical lab skills", "Insight into forensic careers", "Critical thinking"]
 },
 {
   id: "gavel-club",
   name: "SFHS Gavel Club",
-  description: "Affiliated with Toastmasters — develops public speaking and leadership through structured practice and peer feedback.",
+  description: "Affiliated with Toastmasters  develops public speaking and leadership through structured practice and peer feedback.",
   sponsor: "Jesica Sloan",
   category: "Leadership",
   meetingFrequency: "Weekly",
   meetingDay: "Mondays after school (room posted at start of year)",
   requirements: "Open to all students interested in improving communication skills.",
   activities: ["Prepared speeches", "Impromptu speaking", "Leadership roles and mentoring"],
-  commitment: "Low–Medium — weekly meetings; optional leadership path.",
+  commitment: "LowMedium  weekly meetings; optional leadership path.",
   benefits: ["Confidence in public speaking", "Leadership experience", "Communication skills for college/career"]
 },
 {
@@ -4576,7 +4576,7 @@ clubs: [
   meetingDay: "Monthly (day/time TBA by sponsors)",
   requirements: "Open to all students.",
   activities: ["Cultural events", "Language games", "Community outreach"],
-  commitment: "Low — monthly meetings with optional event participation.",
+  commitment: "Low  monthly meetings with optional event participation.",
   benefits: ["Cultural appreciation", "Language exposure", "Service opportunities"]
 },
 {
@@ -4589,7 +4589,7 @@ clubs: [
   meetingDay: "Sporadic meetings and organized visits to the State House (dates posted when available)",
   requirements: "Application/selection often required to represent the school.",
   activities: ["Legislative visits", "Civics workshops", "Advocacy projects"],
-  commitment: "Medium — depends on events and legislator schedules.",
+  commitment: "Medium  depends on events and legislator schedules.",
   benefits: ["Civic knowledge", "Networking with officials", "Leadership and resume value"]
 },
 {
@@ -4602,7 +4602,7 @@ clubs: [
   meetingDay: "IF or one Wednesday morning each month (per tech clubs page)",
   requirements: "Open to all who support the mission; outreach projects may have volunteer requirements.",
   activities: ["STEM mentorship", "Project showcases", "Field trips and speaker events"],
-  commitment: "Low–Medium — monthly meetings plus occasional events.",
+  commitment: "LowMedium  monthly meetings plus occasional events.",
   benefits: ["Mentoring", "STEM community", "Confidence and college/career preparation"]
 },
 {
@@ -4615,7 +4615,7 @@ clubs: [
   meetingDay: "Weekly after school (day commonly Thursdays; exact schedule posted by advisors)",
   requirements: "Membership/dues required for competitive participation; open to students in business/marketing pathways.",
   activities: ["Competitive event prep", "Business simulations", "Community service and leadership workshops"],
-  commitment: "Medium–High for competitors (regular meetings + weekend competitions).",
+  commitment: "MediumHigh for competitors (regular meetings + weekend competitions).",
   benefits: ["Career skills", "Competitive achievement", "Networking and scholarship opportunities"]
 },
 {
@@ -4628,7 +4628,7 @@ clubs: [
   meetingDay: "Generally Thursdays after school (per SFHS CTSO listing)",
   requirements: "Open to students; membership dues for state/national participation.",
   activities: ["Competitive events", "Resume/workshop sessions", "Service projects"],
-  commitment: "Medium — weekly meetings with additional time for competitions.",
+  commitment: "Medium  weekly meetings with additional time for competitions.",
   benefits: ["Business skill development", "Leadership", "Career exploration"]
 },
 {
@@ -4641,7 +4641,7 @@ clubs: [
   meetingDay: "Monthly meetings (day posted by sponsors; typically Wednesday mornings)",
   requirements: "Open to students in relevant CTAE pathways; membership may require dues.",
   activities: ["Project-based competitions", "Leadership training", "Community outreach"],
-  commitment: "Medium — project timeline dependent.",
+  commitment: "Medium  project timeline dependent.",
   benefits: ["CTAE pathway experience", "Leadership", "Competitions and scholarships"]
 },
 {
@@ -4654,7 +4654,7 @@ clubs: [
   meetingDay: "Meetings scheduled at 3:45 PM (exact day posted by advisors)",
   requirements: "Open to students interested in healthcare careers; membership may include dues for contests.",
   activities: ["Clinical skills workshops", "Health career panels", "Competitive event prep"],
-  commitment: "Medium — extra time if competing.",
+  commitment: "Medium  extra time if competing.",
   benefits: ["Healthcare exposure", "Clinical skill development", "Networking"]
 },
 {
@@ -4667,7 +4667,7 @@ clubs: [
   meetingDay: "Biweekly after school (meeting room posted by sponsor; project work often required)",
   requirements: "Students in CTAE pathways encouraged; membership may require dues.",
   activities: ["Technical competitions", "Shop/project work", "Leadership development"],
-  commitment: "Medium — project timelines and competitions may increase commitment.",
+  commitment: "Medium  project timelines and competitions may increase commitment.",
   benefits: ["Workforce skills", "Certifications and competitions", "Career readiness"]
 },
 {
@@ -4680,7 +4680,7 @@ clubs: [
   meetingDay: "Tuesdays & Thursdays (per technology clubs page)",
   requirements: "Open to students with interest in engineering/technology pathways.",
   activities: ["Team design projects", "Competition prep", "Workshops in CAD/engineering"],
-  commitment: "Medium — weekly meetings + competition preparation.",
+  commitment: "Medium  weekly meetings + competition preparation.",
   benefits: ["Hands-on technical experience", "Competition awards", "STEM career exploration"]
 },
 {
@@ -4693,7 +4693,7 @@ clubs: [
   meetingDay: "3rd Wednesday or Thursday of every month",
   requirements: "Usually requires teacher nomination/grade threshold (details via sponsor).",
   activities: ["Cultural events", "Tutoring/mentoring", "Honor society service projects"],
-  commitment: "Low–Medium — monthly meetings and occasional events.",
+  commitment: "LowMedium  monthly meetings and occasional events.",
   benefits: ["Recognition for language achievement", "Leadership/service opportunities"]
 },
 {
@@ -4719,7 +4719,7 @@ clubs: [
   meetingDay: "Last Monday of the month",
   requirements: "Nomination-based for juniors and seniors; portfolio review is typical.",
   activities: ["Gallery shows", "Community art projects", "Peer mentoring"],
-  commitment: "Medium — meetings plus project work for events.",
+  commitment: "Medium  meetings plus project work for events.",
   benefits: ["Recognition", "Portfolio development", "Community outreach"]
 },
 {
@@ -4732,7 +4732,7 @@ clubs: [
   meetingDay: "1st Thursday of the month @ 8:00 AM",
   requirements: "Selection typically for juniors and seniors meeting GPA/English criteria.",
   activities: ["Literary events", "Service projects", "Publication opportunities"],
-  commitment: "Low–Medium — monthly meetings plus event participation.",
+  commitment: "LowMedium  monthly meetings plus event participation.",
   benefits: ["Academic recognition", "Leadership in literary activities"]
 },
 {
@@ -4745,7 +4745,7 @@ clubs: [
   meetingDay: "Tuesdays (regular meeting day announced by sponsor)",
   requirements: "Selection based on GPA, service, leadership and faculty recommendations.",
   activities: ["Service projects", "Peer tutoring", "Leadership training"],
-  commitment: "Medium — monthly service hours and leadership responsibilities.",
+  commitment: "Medium  monthly service hours and leadership responsibilities.",
   benefits: ["National recognition", "Leadership development", "College resume enhancement"]
 },
 {
@@ -4758,7 +4758,7 @@ clubs: [
   meetingDay: "Usually once a month after the school year begins",
   requirements: "Typically requires an A in Latin I and other academic criteria.",
   activities: ["Cultural events", "Tutoring", "Community service"],
-  commitment: "Low–Medium — monthly involvement and event work.",
+  commitment: "LowMedium  monthly involvement and event work.",
   benefits: ["Recognition for classical studies", "Leadership opportunities"]
 },
 {
@@ -4769,9 +4769,9 @@ clubs: [
   category: "Honor Society",
   meetingFrequency: "Monthly",
   meetingDay: "Monthly Wednesday morning meetings",
-  requirements: "Open to grades 10–12; minimum GPA 3.5 and STEM coursework requirement.",
+  requirements: "Open to grades 1012; minimum GPA 3.5 and STEM coursework requirement.",
   activities: ["STEM outreach", "Speaker series", "Competition support"],
-  commitment: "Medium — monthly meetings plus outreach events.",
+  commitment: "Medium  monthly meetings plus outreach events.",
   benefits: ["Academic recognition", "STEM networking", "Scholarship information"]
 },
 {
@@ -4784,12 +4784,12 @@ clubs: [
   meetingDay: "3rd Thursday of each month (starting in October)",
   requirements: "Students in CTAE pathways; selection based on achievement and character.",
   activities: ["Recognition events", "Career networking", "Scholarship guidance"],
-  commitment: "Medium — meetings and career-pathway projects.",
+  commitment: "Medium  meetings and career-pathway projects.",
   benefits: ["Professional connections", "Recognition", "Scholarship access"]
 },
 {
   id: "psi-alpha",
-  name: "Psi Alpha – Psychology National Honor Society",
+  name: "Psi Alpha  Psychology National Honor Society",
   description: "For students interested in psychology; promotes academic excellence and exploration of the field.",
   sponsor: "Tricia Pileggi",
   category: "Honor Society",
@@ -4797,7 +4797,7 @@ clubs: [
   meetingDay: "TBD (sponsor will post meeting schedule)",
   requirements: "Interest in psychology; typical chapter criteria include course completion and GPA.",
   activities: ["Psychology talks", "Research exposure", "Community outreach"],
-  commitment: "Low–Medium depending on involvement.",
+  commitment: "LowMedium depending on involvement.",
   benefits: ["Exploration of psychology", "Academic recognition", "Networking opportunities"]
 },
 {
@@ -4810,7 +4810,7 @@ clubs: [
   meetingDay: "Second Thursday before school once a month",
   requirements: "Selection based on social studies achievement and teacher nomination.",
   activities: ["Civic projects", "History events", "Field trips"],
-  commitment: "Low–Medium — monthly meetings plus project work.",
+  commitment: "LowMedium  monthly meetings plus project work.",
   benefits: ["Recognition in social studies", "Civic engagement experience"]
 },
 {
@@ -4823,7 +4823,7 @@ clubs: [
   meetingDay: "Tuesday after school, once a month",
   requirements: "Selection based on science achievement and involvement.",
   activities: ["Guest speakers", "Science outreach", "Competition support"],
-  commitment: "Medium — monthly meetings plus outreach and competition commitments.",
+  commitment: "Medium  monthly meetings plus outreach and competition commitments.",
   benefits: ["Recognition", "Science community involvement", "Competition help"]
 },
 {
@@ -4836,7 +4836,7 @@ clubs: [
   meetingDay: "TBD (meetings typically monthly; sponsor will post schedule)",
   requirements: "Selection based on Spanish coursework, grades, and service requirements.",
   activities: ["Cultural events", "Service projects", "Conventions & trips"],
-  commitment: "Medium — meetings plus event/trip participation.",
+  commitment: "Medium  meetings plus event/trip participation.",
   benefits: ["Language recognition", "Travel and convention experience", "Leadership"]
 },
 {
@@ -4849,7 +4849,7 @@ clubs: [
   meetingDay: "Wednesdays during IF once a month in Room 449 (sign up via student support time)",
   requirements: "Open to all students.",
   activities: ["Heritage events", "Panel discussions", "Community outreach"],
-  commitment: "Low — monthly meetings with occasional events.",
+  commitment: "Low  monthly meetings with occasional events.",
   benefits: ["Increased cultural awareness", "Community building", "Leadership experience"]
 },
 {
@@ -4875,7 +4875,7 @@ clubs: [
   meetingDay: "Monthly (lunchtime or after school; schedule posted by sponsor)",
   requirements: "Open to all readers.",
   activities: ["Group discussions", "Reading challenges", "Author spotlights"],
-  commitment: "Low — monthly meetings.",
+  commitment: "Low  monthly meetings.",
   benefits: ["Improves reading and discussion skills", "Community with fellow readers"]
 },
 {
@@ -4888,7 +4888,7 @@ clubs: [
   meetingDay: "Bi-monthly in Room 644 (day varies; check school calendar)",
   requirements: "Open to students interested in civic issues.",
   activities: ["Discussions", "Voter registration drives", "Civic projects"],
-  commitment: "Low — bi-monthly meetings.",
+  commitment: "Low  bi-monthly meetings.",
   benefits: ["Civic knowledge", "Community impact", "Leadership development"]
 },
 {
@@ -4901,7 +4901,7 @@ clubs: [
   meetingDay: "Weekly (early morning at 7:50 AM in Room 486)",
   requirements: "Open to all students.",
   activities: ["Campus clean-ups", "Recycling initiatives", "Awareness events"],
-  commitment: "Low–Medium depending on project work.",
+  commitment: "LowMedium depending on project work.",
   benefits: ["Environmental stewardship", "Service hours", "Leadership"]
 },
 {
@@ -4914,7 +4914,7 @@ clubs: [
   meetingDay: "First Monday of the month in Room 489",
   requirements: "Interest in pediatric healthcare and advocacy.",
   activities: ["Awareness campaigns", "Fundraisers", "Panel discussions"],
-  commitment: "Low–Medium depending on events.",
+  commitment: "LowMedium depending on events.",
   benefits: ["Healthcare advocacy experience", "Volunteer opportunities", "Leadership"]
 },
 {
@@ -4927,7 +4927,7 @@ clubs: [
   meetingDay: "Tuesdays for leadership staff; every other Friday open to entire student body",
   requirements: "Open to all students; emphasis on student-athletes in outreach.",
   activities: ["Group devotionals", "Community service", "Leadership training"],
-  commitment: "Low–Medium depending on level of involvement.",
+  commitment: "LowMedium depending on level of involvement.",
   benefits: ["Spiritual support", "Community building", "Leadership opportunities"]
 },
 {
@@ -4940,7 +4940,7 @@ clubs: [
   meetingDay: "Fridays after school in Room 1150",
   requirements: "Open to all skill levels.",
   activities: ["Theatre games", "Short-form improv exercises", "Performance nights"],
-  commitment: "Low — weekly practice; performances optional.",
+  commitment: "Low  weekly practice; performances optional.",
   benefits: ["Creativity", "Confidence", "Stage presence"]
 },
 {
@@ -4950,10 +4950,10 @@ clubs: [
   sponsor: "James Pratt",
   category: "Cultural",
   meetingFrequency: "Monthly",
-  meetingDay: "Friday mornings monthly in Mr. Pratt’s room",
+  meetingDay: "Friday mornings monthly in Mr. Pratts room",
   requirements: "Open to all students.",
   activities: ["Cultural celebrations", "Festivals", "Community outreach"],
-  commitment: "Low — monthly meetings and event planning.",
+  commitment: "Low  monthly meetings and event planning.",
   benefits: ["Cultural connection", "Event leadership", "Community building"]
 },
 {
@@ -4966,7 +4966,7 @@ clubs: [
   meetingDay: "First Tuesday of the month in Room 647 at 7:45 AM",
   requirements: "Open to students committed to the service mission.",
   activities: ["Fundraisers", "Awareness campaigns", "Partnerships with NGOs"],
-  commitment: "Low–Medium depending on project timelines.",
+  commitment: "LowMedium depending on project timelines.",
   benefits: ["Global service experience", "Project management", "Community impact"]
 },
 {
@@ -4976,23 +4976,23 @@ clubs: [
   sponsor: "Erin Jones",
   category: "Cultural",
   meetingFrequency: "Biweekly",
-  meetingDay: "Twice a month on Fridays from 4:00–5:00 PM in Room 369",
+  meetingDay: "Twice a month on Fridays from 4:005:00 PM in Room 369",
   requirements: "Open to all students.",
   activities: ["Dance sessions", "Music/video discussions", "Showcase events"],
-  commitment: "Low — biweekly meetings.",
+  commitment: "Low  biweekly meetings.",
   benefits: ["Social connection", "Dance practice", "Event participation"]
 },
 {
   id: "logic-strategy-club",
   name: "Logic and Strategy Game Club",
-  description: "Club for fans of logic and strategy games (card games, tabletop, Rubik’s Cubes) with casual play and competitions.",
+  description: "Club for fans of logic and strategy games (card games, tabletop, Rubiks Cubes) with casual play and competitions.",
   sponsor: "CJ Ash",
   category: "Recreational",
   meetingFrequency: "Monthly",
-  meetingDay: "Wednesday once per month in Room 1422 from 3:45–4:30 PM",
+  meetingDay: "Wednesday once per month in Room 1422 from 3:454:30 PM",
   requirements: "Open to all students; bring games if you have them.",
   activities: ["Game nights", "Local competitions", "Strategy workshops"],
-  commitment: "Low — monthly meetups.",
+  commitment: "Low  monthly meetups.",
   benefits: ["Strategic thinking", "Socializing", "Low-pressure competition"]
 },
 {
@@ -5002,10 +5002,10 @@ clubs: [
   sponsor: "Jenna Kasmarik",
   category: "Cultural",
   meetingFrequency: "Monthly",
-  meetingDay: "Once per month after school in Ms. Kasmarik’s room",
+  meetingDay: "Once per month after school in Ms. Kasmariks room",
   requirements: "Open to all students.",
   activities: ["Cultural events", "Interfaith dialogues", "Community service"],
-  commitment: "Low — monthly meetings.",
+  commitment: "Low  monthly meetings.",
   benefits: ["Cultural connection", "Faith-based community", "Interfaith understanding"]
 },
 {
@@ -5018,7 +5018,7 @@ clubs: [
   meetingDay: "Monthly (day/time TBA by sponsor)",
   requirements: "Open to all students; inclusive environment.",
   activities: ["Support meetings", "Awareness events", "Advocacy projects"],
-  commitment: "Low — monthly meetings with optional events.",
+  commitment: "Low  monthly meetings with optional events.",
   benefits: ["Support network", "Advocacy experience", "Safe space"]
 },
 {
@@ -5031,7 +5031,7 @@ clubs: [
   meetingDay: "Monthly (rotates depending on member availability)",
   requirements: "Open to Sikh students and allies.",
   activities: ["Cultural gatherings", "Community service", "Education events"],
-  commitment: "Low — occasional events.",
+  commitment: "Low  occasional events.",
   benefits: ["Faith/cultural community", "Leadership opportunities"]
 },
 {
@@ -5044,7 +5044,7 @@ clubs: [
   meetingDay: "Twice per month in Room 1428 (specific days TBA)",
   requirements: "Open to students who wish to serve.",
   activities: ["Volunteer projects", "Community outreach", "Fundraising"],
-  commitment: "Low–Medium depending on service projects.",
+  commitment: "LowMedium depending on service projects.",
   benefits: ["Service hours", "Community impact", "Leadership"]
 },
 {
@@ -5054,10 +5054,10 @@ clubs: [
   sponsor: "Christine Tuttle, Francesa Higham, Sydney Littleton",
   category: "Recreational",
   meetingFrequency: "Biweekly",
-  meetingDay: "Every other Wednesday starting Sep 10, 2025 from 3:45–4:30 PM (seasonal schedule)",
+  meetingDay: "Every other Wednesday starting Sep 10, 2025 from 3:454:30 PM (seasonal schedule)",
   requirements: "Open to SI program students and general ed supporters.",
   activities: ["Cornhole practice", "Inclusive social events", "Inter-school exhibitions"],
-  commitment: "Low — biweekly participation.",
+  commitment: "Low  biweekly participation.",
   benefits: ["Inclusive recreation", "Social engagement", "Motor skill development"]
 },
 {
@@ -5067,10 +5067,10 @@ clubs: [
   sponsor: "Gina Calvird",
   category: "Athletics",
   meetingFrequency: "Seasonal",
-  meetingDay: "Practices scheduled off-campus (coach arranges; competition season Sept–Jan)",
+  meetingDay: "Practices scheduled off-campus (coach arranges; competition season SeptJan)",
   requirements: "Tryouts or riding proficiency typically required; membership often requires off-campus lesson arrangements.",
   activities: ["Off-site lessons", "IEA competitions", "Team conditioning"],
-  commitment: "High — seasonal competition commitment and off-campus lessons.",
+  commitment: "High  seasonal competition commitment and off-campus lessons.",
   benefits: ["Equestrian competition experience", "College recruiting potential", "Responsibility and horsemanship"]
 },
 {
@@ -5080,10 +5080,10 @@ clubs: [
   sponsor: "Erin Maley",
   category: "Arts",
   meetingFrequency: "Weekly",
-  meetingDay: "Mondays 4:00–6:00 PM in East Commons",
+  meetingDay: "Mondays 4:006:00 PM in East Commons",
   requirements: "Auditions for performance slots possible; open rehearsals available for members.",
   activities: ["Choreography creation", "Showcase rehearsals", "Performance production"],
-  commitment: "Medium — weekly rehearsals plus show tech rehearsals.",
+  commitment: "Medium  weekly rehearsals plus show tech rehearsals.",
   benefits: ["Performance experience", "Choreography skills", "Teamwork"]
 },
 {
@@ -5096,7 +5096,7 @@ clubs: [
   meetingDay: "Wednesday morning, once a month in Room 563",
   requirements: "Interest in sports medicine; some activities require permission/medical clearance.",
   activities: ["Practical training", "Event support for athletics", "First aid workshops"],
-  commitment: "Medium — monthly meetings plus volunteer hours at events.",
+  commitment: "Medium  monthly meetings plus volunteer hours at events.",
   benefits: ["Practical skills", "Volunteer hours", "Healthcare/career exploration"]
 },
 {
@@ -5109,7 +5109,7 @@ clubs: [
   meetingDay: "Last Thursday of each month",
   requirements: "Elected or appointed representatives; some positions require teacher sponsor approval.",
   activities: ["School spirit events", "Project committees", "Service coordination"],
-  commitment: "Medium — monthly meetings and additional work for events.",
+  commitment: "Medium  monthly meetings and additional work for events.",
   benefits: ["Leadership experience", "Event planning skills", "Student advocacy"]
 },
 {
@@ -5122,12 +5122,12 @@ clubs: [
   meetingDay: "TBD (off-campus ice time; sponsor posts schedule)",
   requirements: "Own transport to rink and basic skating proficiency recommended.",
   activities: ["Ice practice", "Skating lessons", "Local events & shows"],
-  commitment: "Medium — regular off-campus practice.",
+  commitment: "Medium  regular off-campus practice.",
   benefits: ["Physical fitness", "Skating skills", "Performance opportunities"]
 },
 {
   id: "womens-student-association",
-  name: "Women’s Student Association",
+  name: "Womens Student Association",
   description: "Safe space for students to celebrate female identity and advocate for improvements across campus.",
   sponsor: "Chelsea Favini, Emma Daklouche, Haley Bean",
   category: "Leadership",
@@ -5135,20 +5135,20 @@ clubs: [
   meetingDay: "Monthly after school in Room 644",
   requirements: "Open to all genders supportive of the club mission.",
   activities: ["Discussion groups", "Advocacy campaigns", "Guest speakers"],
-  commitment: "Low — monthly meetings with optional engagement.",
+  commitment: "Low  monthly meetings with optional engagement.",
   benefits: ["Advocacy experience", "Peer support", "Leadership development"]
 },
 {
   id: "alzheimers-foundation-club",
-  name: "Alzheimer’s Foundation of America Club",
-  description: "Raises awareness about Alzheimer’s and volunteers at events supporting affected families and research.",
+  name: "Alzheimers Foundation of America Club",
+  description: "Raises awareness about Alzheimers and volunteers at events supporting affected families and research.",
   sponsor: "Laura Pearce",
   category: "Service",
   meetingFrequency: "Monthly",
   meetingDay: "Once per month in Room 1428",
-  requirements: "Open to students interested in Alzheimer’s awareness and fundraising.",
+  requirements: "Open to students interested in Alzheimers awareness and fundraising.",
   activities: ["Awareness events", "Volunteer staffing for local events", "Fundraising campaigns"],
-  commitment: "Low — monthly meetings with event involvement.",
+  commitment: "Low  monthly meetings with event involvement.",
   benefits: ["Service hours", "Community impact", "Health education"]
 },
 {
@@ -5161,7 +5161,7 @@ clubs: [
   meetingDay: "Virtual meetings once per month (materials posted to Canvas)",
   requirements: "Academic achievement and teacher recommendations; selection criteria set by sponsor.",
   activities: ["Service projects", "Recognition ceremonies", "Leadership workshops"],
-  commitment: "Medium — service hours required for active members.",
+  commitment: "Medium  service hours required for active members.",
   benefits: ["Academic recognition", "Service leadership", "Scholarship opportunities"]
 },
 {
@@ -5174,7 +5174,7 @@ clubs: [
   meetingDay: "Project dates scheduled with Habitat (check sponsor for calendar)",
   requirements: "Open to volunteers; parental consent required for minors on construction sites.",
   activities: ["Build days", "Fundraisers", "Community outreach"],
-  commitment: "Medium — project participation sometimes requires weekend time.",
+  commitment: "Medium  project participation sometimes requires weekend time.",
   benefits: ["Hands-on service", "Community impact", "Practical skills"]
 },
 {
@@ -5187,7 +5187,7 @@ clubs: [
   meetingDay: "Once a month in Room 641",
   requirements: "Open to students who want to lead community service projects.",
   activities: ["Service drives", "Local projects", "Fundraising"],
-  commitment: "Low–Medium — monthly meetings plus occasional event work.",
+  commitment: "LowMedium  monthly meetings plus occasional event work.",
   benefits: ["Community service hours", "Leadership", "Networking with Rotary"]
 },
 {
@@ -5200,7 +5200,7 @@ clubs: [
   meetingDay: "Meeting schedule posted by sponsor (project dates vary)",
   requirements: "Open to students; consistent volunteer participation encouraged.",
   activities: ["Service projects", "Advocacy", "Social events with service focus"],
-  commitment: "Low–Medium depending on projects.",
+  commitment: "LowMedium depending on projects.",
   benefits: ["Service experience", "Advocacy", "Leadership"]
 },
 {
@@ -5210,23 +5210,23 @@ clubs: [
   sponsor: "Erin Jones",
   category: "Service",
   meetingFrequency: "Biweekly",
-  meetingDay: "Second & fourth Tuesday of the month in Room 369 from 7:45–8:15 AM",
+  meetingDay: "Second & fourth Tuesday of the month in Room 369 from 7:458:15 AM",
   requirements: "Open to students wanting to serve their community.",
   activities: ["Service projects", "Leadership activities", "School events"],
-  commitment: "Low–Medium — biweekly morning meetings.",
+  commitment: "LowMedium  biweekly morning meetings.",
   benefits: ["Service hours", "Leadership experience", "Teamwork"]
 },
 {
   id: "madhatter-knits",
   name: "Madhatter Knits Club",
-  description: "Knits mini beanies for premature babies in NICUs — a creative club with a charitable mission.",
+  description: "Knits mini beanies for premature babies in NICUs  a creative club with a charitable mission.",
   sponsor: "Stacey Anderson",
   category: "Service",
   meetingFrequency: "Monthly (schedule TBA)",
   meetingDay: "TBD (sponsor posts meeting times)",
   requirements: "Open to knitters and beginners welcome.",
   activities: ["Knitting sessions", "Donation drives", "Community partnerships"],
-  commitment: "Low — make and donate items at members' pace.",
+  commitment: "Low  make and donate items at members' pace.",
   benefits: ["Hands-on charity work", "Craft skills", "Community impact"]
 },
 {
@@ -5239,7 +5239,7 @@ clubs: [
   meetingDay: "First Tuesday of the month at 3:45 PM in West Commons",
   requirements: "Interest in medical careers; open to all students.",
   activities: ["Healthcare panels", "Service learning projects", "Clinical exposure info"],
-  commitment: "Low–Medium — monthly meetings and optional volunteering.",
+  commitment: "LowMedium  monthly meetings and optional volunteering.",
   benefits: ["Healthcare exposure", "Mentorship", "Volunteer experience"]
 },
 {
@@ -5252,7 +5252,7 @@ clubs: [
   meetingDay: "First Monday of the month at 7:50 AM in Room 564",
   requirements: "Open to students; training and background checks may be required for certain activities.",
   activities: ["Blood drives", "First aid/CPR workshops", "Disaster-preparedness events"],
-  commitment: "Low–Medium depending on event involvement.",
+  commitment: "LowMedium depending on event involvement.",
   benefits: ["First aid/CPR skills", "Service hours", "Leadership and event management"]
 },
 {
@@ -5265,7 +5265,7 @@ clubs: [
   meetingDay: "TBD (program events scheduled throughout the year)",
   requirements: "Selection or interest in peer-support programming.",
   activities: ["Resilience campaigns", "Peer mentoring", "Awareness events"],
-  commitment: "Low–Medium depending on role.",
+  commitment: "LowMedium depending on role.",
   benefits: ["Mental-health advocacy", "Peer leadership", "Wellness training"]
 },
 {
@@ -5278,7 +5278,7 @@ clubs: [
   meetingDay: "Schedules vary with Special Olympics events; sponsor posts opportunities",
   requirements: "Open to volunteers and student athletes; training may be provided.",
   activities: ["Coaching/volunteering", "Unified sports", "Fundraising"],
-  commitment: "Low–Medium depending on event involvement.",
+  commitment: "LowMedium depending on event involvement.",
   benefits: ["Inclusive service", "Coaching experience", "Community engagement"]
 },
 {
@@ -5291,7 +5291,7 @@ clubs: [
   meetingDay: "Monthly (day/time posted by sponsors)",
   requirements: "Open to students interested in global child welfare.",
   activities: ["Fundraising drives", "Awareness campaigns", "Service projects"],
-  commitment: "Low–Medium — monthly meetings and campaign involvement.",
+  commitment: "LowMedium  monthly meetings and campaign involvement.",
   benefits: ["Global advocacy experience", "Service hours", "Leadership"]
 },
 {
@@ -5304,7 +5304,7 @@ clubs: [
   meetingDay: "3rd Thursday of the month",
   requirements: "Open to students committed to service for children.",
   activities: ["Fundraisers", "Tutoring programs", "Community outreach"],
-  commitment: "Low–Medium depending on project roles.",
+  commitment: "LowMedium depending on project roles.",
   benefits: ["Service experience", "Project management", "Cross-cultural awareness"]
 },
 {
@@ -5317,7 +5317,7 @@ clubs: [
   meetingDay: "Weekly meetings (schedule posted by sponsor)",
   requirements: "Positive attitude and willingness to help; open to all students.",
   activities: ["School cleanups", "Off-campus volunteer events", "Service coordination"],
-  commitment: "Low–Medium — weekly opportunities, flexible participation.",
+  commitment: "LowMedium  weekly opportunities, flexible participation.",
   benefits: ["Regular service hours", "Community impact", "Leadership experience"]
 },
 {
@@ -5330,7 +5330,7 @@ clubs: [
   meetingDay: "Meeting schedule posted with theatre program events (monthly typical)",
   requirements: "Membership by nomination/points system tied to theatre participation.",
   activities: ["Production support", "Theatre honors events", "Community performances"],
-  commitment: "Medium — involvement in productions required for active members.",
+  commitment: "Medium  involvement in productions required for active members.",
   benefits: ["Theatre recognition", "Performance opportunities", "Networking in arts"]
 },
 {
@@ -5343,7 +5343,7 @@ clubs: [
   meetingDay: "Monthly (day/time posted by sponsor)",
   requirements: "Musical and academic achievement required; selection by music faculty.",
   activities: ["Performance service", "Community concerts", "Music outreach"],
-  commitment: "Medium — regular performances and service.",
+  commitment: "Medium  regular performances and service.",
   benefits: ["Music leadership", "Performance opportunities", "Recognition"]
 },
 {
@@ -5356,7 +5356,7 @@ clubs: [
   meetingDay: "Mondays after school",
   requirements: "Interest in cybersecurity/IT; team tryouts for competition rosters.",
   activities: ["System hardening practice", "Virtual lab exercises", "National cyber competitions"],
-  commitment: "Medium–High during competition windows.",
+  commitment: "MediumHigh during competition windows.",
   benefits: ["Technical cybersecurity skills", "Competition credentials", "Career pathways"]
 },
 {
@@ -5369,7 +5369,7 @@ clubs: [
   meetingDay: "Mondays & Thursdays after school",
   requirements: "Team selection; prior experience helpful but not required (roles for all skill levels).",
   activities: ["Robot design & build", "Programming", "Competition travel"],
-  commitment: "High — time-intensive during build season and competitions.",
+  commitment: "High  time-intensive during build season and competitions.",
   benefits: ["Engineering experience", "College/career readiness", "Teamwork & fundraising"]
 },
 {
@@ -5382,7 +5382,7 @@ clubs: [
   meetingDay: "IF or before school once a month",
   requirements: "Open to all skill levels; especially welcoming to girls and non-binary students.",
   activities: ["Coding projects", "Mentorship", "Community outreach"],
-  commitment: "Low–Medium — monthly meetings plus project time.",
+  commitment: "LowMedium  monthly meetings plus project time.",
   benefits: ["Coding skills", "Mentorship", "Community & support"]
 },
 {
@@ -5395,7 +5395,7 @@ clubs: [
   meetingDay: "Virtual meetings beginning in August (schedule announced by sponsor)",
   requirements: "Interest in ML/AI; some sessions may recommend basic Python experience.",
   activities: ["Virtual workshops", "Hands-on tutorials", "Mini-projects"],
-  commitment: "Low–Medium — virtual commitments with optional project work.",
+  commitment: "LowMedium  virtual commitments with optional project work.",
   benefits: ["Intro to ML/AI", "Project portfolio material", "STEM pathway exploration"]
 }
 ],
@@ -5411,9 +5411,9 @@ clubs: [
   category: "Leadership",
   meetingFrequency: "Daily (during school hours)",
   meetingDay: "Daily during Raider Time in JROTC building",
-  requirements: "Open to 9–12 grade students; application and physical fitness expectations apply.",
+  requirements: "Open to 912 grade students; application and physical fitness expectations apply.",
   activities: ["Drill practice", "Leadership training", "Physical fitness", "Ceremonial events"],
-  commitment: "High — daily engagement and weekend events typical.",
+  commitment: "High  daily engagement and weekend events typical.",
   benefits: ["Leadership development", "Discipline", "Service recognition"]
 },
 {
@@ -5423,7 +5423,7 @@ clubs: [
   sponsor: "MCJROTC Program",
   category: "Athletics",
   meetingFrequency: "Weekly training",
-  meetingDay: "Tuesdays after school (3:45–5:00 PM) and optional Saturday practices",
+  meetingDay: "Tuesdays after school (3:455:00 PM) and optional Saturday practices",
   requirements: "Open to JROTC cadets in good standing; physical fitness test required.",
   activities: ["Obstacle course training", "Team endurance workouts", "Competitions"],
   commitment: "High during competition season; Medium otherwise.",
@@ -5432,11 +5432,11 @@ clubs: [
 {
   id: "drill-team",
   name: "Drill Team",
-  description: "Specializes in drill and ceremonies—competing nationally in armed/unarmed events and supporting MCJROTC ceremonies.",
+  description: "Specializes in drill and ceremoniescompeting nationally in armed/unarmed events and supporting MCJROTC ceremonies.",
   sponsor: "MCJROTC Program",
   category: "Leadership",
   meetingFrequency: "Weekly",
-  meetingDay: "Wednesdays after school (3:45–5:00 PM)",
+  meetingDay: "Wednesdays after school (3:455:00 PM)",
   requirements: "Cadets only; precision drill tryouts required.",
   activities: ["Drill routines", "Competition prep", "Ceremonial performances"],
   commitment: "High during competition; Medium otherwise.",
@@ -5445,14 +5445,14 @@ clubs: [
 {
   id: "color-guard",
   name: "Color Guard",
-  description: "Presents the Nation’s Colors at school and community events, requiring professionalism and discipline.",
+  description: "Presents the Nations Colors at school and community events, requiring professionalism and discipline.",
   sponsor: "Cadet Lt. Col. Hencely / MCJROTC Program",
   category: "Leadership",
   meetingFrequency: "Biweekly (plus event days)",
   meetingDay: "Mondays and Fridays during Raider Time or after school, plus event preparation",
   requirements: "Cadet members; tryout or selection based on performance.",
   activities: ["Flag ceremonies", "Rehearsals", "Community and school events"],
-  commitment: "Medium — increases during parade/presentation seasons.",
+  commitment: "Medium  increases during parade/presentation seasons.",
   benefits: ["Public presentation skills", "Discipline", "Civic pride"]
 },
 {
@@ -5462,7 +5462,7 @@ clubs: [
   sponsor: "MCJROTC Program",
   category: "Athletics",
   meetingFrequency: "Weekly",
-  meetingDay: "Fridays before school (7:00–8:00 AM)",
+  meetingDay: "Fridays before school (7:008:00 AM)",
   requirements: "Cadets only; must pass safety training and maintain academic criteria.",
   activities: ["Marksmanship training", "Precision shooting drills", "GHSA competitions"],
   commitment: "High during season; Medium otherwise.",
@@ -5478,7 +5478,7 @@ clubs: [
   meetingDay: "Second Wednesday of each month after school",
   requirements: "Cadet with sufficient GPA/Test scores; selection by instructors.",
   activities: ["Quiz practice", "Team trivia", "Competitive events"],
-  commitment: "Medium — monthly plus competition prep.",
+  commitment: "Medium  monthly plus competition prep.",
   benefits: ["Academic competition", "Knowledge building", "Team confidence"]
 },
 {
@@ -5488,10 +5488,10 @@ clubs: [
   sponsor: "Jessica Younghouse",
   category: "Service",
   meetingFrequency: "Biweekly",
-  meetingDay: "Biweekly Tuesdays after school (3:45–4:30 PM)",
+  meetingDay: "Biweekly Tuesdays after school (3:454:30 PM)",
   requirements: "Open to all students.",
   activities: ["Fundraising drives", "Shelter volunteering", "Community outreach"],
-  commitment: "Medium — flexible project schedule.",
+  commitment: "Medium  flexible project schedule.",
   benefits: ["Community service", "Empathy development", "Leadership"]
 },
 {
@@ -5501,10 +5501,10 @@ clubs: [
   sponsor: "Erica Ford, Ashley Todd",
   category: "Inclusion",
   meetingFrequency: "Weekly",
-  meetingDay: "Fridays after school (3:45–5:00 PM)",
+  meetingDay: "Fridays after school (3:455:00 PM)",
   requirements: "Open to all; commitment to inclusive community values.",
   activities: ["Unified sports", "Peer support events", "Inclusive recreation"],
-  commitment: "Low–Medium — weekly with event participation.",
+  commitment: "LowMedium  weekly with event participation.",
   benefits: ["Inclusion", "Empathy", "Friendship"]
 },
 {
@@ -5517,7 +5517,7 @@ clubs: [
   meetingDay: "Last Thursday morning of each month during Raider Time in Room 1107",
   requirements: "Membership application and $30 dues required; open to all students.",
   activities: ["Service planning", "Youth Assembly prep and participation", "Faith-based events"],
-  commitment: "Medium — monthly plus November conference.",
+  commitment: "Medium  monthly plus November conference.",
   benefits: ["Faith expression", "Civic leadership", "Scholarship opportunities"]
 },
 {
@@ -5530,7 +5530,7 @@ clubs: [
   meetingDay: "Tuesdays after school in Art Room",
   requirements: "Open to all students.",
   activities: ["Collaborative art", "Project work", "NAHS collaboration"],
-  commitment: "Low — project-based participation.",
+  commitment: "Low  project-based participation.",
   benefits: ["Creative expression", "Portfolio building", "Art community"]
 },
 {
@@ -5543,7 +5543,7 @@ clubs: [
   meetingDay: "First Wednesday of each month during Raider Time",
   requirements: "Invitation based on GPA, conduct, and service.",
   activities: ["Service events", "Recognition ceremonies", "Leadership projects"],
-  commitment: "Medium — service hours required.",
+  commitment: "Medium  service hours required.",
   benefits: ["Academic recognition", "Leadership", "College resume value"]
 },
 {
@@ -5556,20 +5556,20 @@ clubs: [
   meetingDay: "First Friday morning of each month during Raider Time",
   requirements: "Open to all students.",
   activities: ["Devotionals", "Peer fellowship", "Speaker sessions"],
-  commitment: "Low — monthly attendance.",
+  commitment: "Low  monthly attendance.",
   benefits: ["Spiritual encouragement", "Community support", "Leadership grounding"]
 },
 {
   id: "science-ambassadors",
   name: "Science Ambassadors",
-  description: "Volunteers lead hands-on STEM activities at elementary STEAM nights—great for future educators and scientists.",
+  description: "Volunteers lead hands-on STEM activities at elementary STEAM nightsgreat for future educators and scientists.",
   sponsor: "Charlotte Stevens",
   category: "STEM",
   meetingFrequency: "Monthly / event-based",
   meetingDay: "Meetings scheduled before STEAM nights (usually Tuesdays after school)",
   requirements: "Interest in STEM and teaching; open to all students.",
   activities: ["STEAM event planning", "Lead activities", "Outreach"],
-  commitment: "Low–Medium as events occur.",
+  commitment: "LowMedium as events occur.",
   benefits: ["STEM communication", "Outreach experience", "Portfolio building"]
 },
 {
@@ -5582,7 +5582,7 @@ clubs: [
   meetingDay: "Second Thursday of each month after school",
   requirements: "Portfolio review and GPA criteria for selection.",
   activities: ["Art exhibitions", "Community art service", "Peer mentoring"],
-  commitment: "Medium — project-based involvement.",
+  commitment: "Medium  project-based involvement.",
   benefits: ["Academic recognition", "Art leadership", "Community engagement"]
 },
 {
@@ -5595,7 +5595,7 @@ clubs: [
   meetingDay: "Thursdays after school in Orchestra Room",
   requirements: "Instrument proficiency required.",
   activities: ["Rehearsal", "Performance events", "Community outreach"],
-  commitment: "Medium — weekly practice and performances.",
+  commitment: "Medium  weekly practice and performances.",
   benefits: ["Musical development", "Performance experience", "Community service"]
 },
 {
@@ -5608,7 +5608,7 @@ clubs: [
   meetingDay: "Alternate Mondays during lunch in Room 212",
   requirements: "Open to all students.",
   activities: ["Poetry workshops", "Open mic sessions", "Publication opportunities"],
-  commitment: "Low — optional participation.",
+  commitment: "Low  optional participation.",
   benefits: ["Creative writing", "Self-expression", "Publication experience"]
 }
 ]

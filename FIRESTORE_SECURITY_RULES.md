@@ -104,32 +104,32 @@ service firebase.storage {
 }
 ```
 
-**⚠️ WARNING: These rules are less secure and should only be used for testing!**
+** WARNING: These rules are less secure and should only be used for testing!**
 
 ## Security Features
 
 ### Firestore Rules:
-- ✅ Users can only read/write their own profile (`users/{uid}`)
-- ✅ Users cannot access other users' profiles
-- ✅ Authentication required for all operations
-- ✅ Public read access for clubs (if needed)
+-  Users can only read/write their own profile (`users/{uid}`)
+-  Users cannot access other users' profiles
+-  Authentication required for all operations
+-  Public read access for clubs (if needed)
 
 ### Storage Rules:
-- ✅ Users can only upload/delete their own profile pictures
-- ✅ Profile pictures are publicly readable (for display)
-- ✅ File path must match user's UID
-- ✅ Authentication required for write operations
+-  Users can only upload/delete their own profile pictures
+-  Profile pictures are publicly readable (for display)
+-  File path must match user's UID
+-  Authentication required for write operations
 
 ## Testing the Rules
 
 Use the Firebase Console Rules Playground to test:
 
 1. **Test Scenarios:**
-   - Authenticated user accessing their own profile ✅
-   - Authenticated user trying to access another user's profile ❌
-   - Unauthenticated user trying to access any profile ❌
-   - User uploading profile picture to their own path ✅
-   - User trying to upload to another user's path ❌
+   - Authenticated user accessing their own profile 
+   - Authenticated user trying to access another user's profile 
+   - Unauthenticated user trying to access any profile 
+   - User uploading profile picture to their own path 
+   - User trying to upload to another user's path 
 
 2. **Test Commands:**
    ```javascript

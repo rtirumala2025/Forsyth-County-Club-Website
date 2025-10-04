@@ -385,7 +385,7 @@ const Events = () => {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <span className="text-sm font-medium text-gray-700">{event.price}</span>
-                <span className="text-sm text-gray-500">•</span>
+                <span className="text-sm text-gray-500"></span>
                 <span className="text-sm text-gray-500">by {event.organizer}</span>
               </div>
               <button className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors">
