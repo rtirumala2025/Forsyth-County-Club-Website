@@ -71,4 +71,4 @@ firestore-debug.log
 
 # Temporary files
 tmp/
-temp/
+temp/__pycache__/
