@@ -78,7 +78,11 @@ const AppRoutes = () => {
       />
       <Route
         path="/app"
-        element={<ClubsWebsite />}
+        element={
+          <ProtectedRoute>
+            <ClubsWebsite />
+          </ProtectedRoute>
+        }
       />
       <Route
         path="/home"
