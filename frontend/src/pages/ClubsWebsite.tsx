@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { Search, Menu, X, Users, ChevronRight, BarChart3, Calendar as CalendarIcon, ChevronDown, BookOpen, MessageCircle, CheckCircle, Loader2 } from 'lucide-react';
+import { Search, Menu, X, Users, ChevronRight, BarChart3, Calendar as CalendarIcon, ChevronDown, BookOpen, MessageCircle, CheckCircle, Loader2, MapPin } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../config/firebase';
 import UserMenu from '../components/auth/userMenu';
@@ -211,10 +211,10 @@ const ClubsWebsite = () => {
   // ── Loading / error states (auth + Supabase) ──────────────
   if (loading || clubsLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-blue-50 to-slate-50 flex items-center justify-center">
+      <div className="min-h-screen bg-stone-100 bg-noise flex items-center justify-center font-body">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">{loading ? 'Loading authentication...' : 'Fetching clubs from database...'}</p>
+          <div className="w-10 h-10 border-2 border-fcs-blue border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-stone-500 text-sm font-medium">{loading ? 'Loading authentication…' : 'Fetching clubs…'}</p>
         </div>
       </div>
     );
@@ -222,14 +222,14 @@ const ClubsWebsite = () => {
 
   if (isError) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-blue-50 to-slate-50 flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-red-600 mb-4">Database Connection Error</h1>
-          <p className="text-gray-600 mb-2">Unable to load club data from the database.</p>
-          <p className="text-sm text-gray-400 mb-4">{clubsError?.message}</p>
+      <div className="min-h-screen bg-stone-100 bg-noise flex items-center justify-center font-body">
+        <div className="text-center max-w-md">
+          <h1 className="font-heading font-bold text-fcs-blue text-2xl mb-3">Connection Error</h1>
+          <p className="text-stone-600 text-sm mb-2">Unable to load club data from the database.</p>
+          <p className="text-xs text-stone-400 mb-5 font-mono">{clubsError?.message}</p>
           <button
             onClick={() => window.location.reload()}
-            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            className="px-5 py-2 bg-fcs-blue text-white text-sm font-semibold rounded-md hover:bg-fcs-blue-600 transition-colors"
           >
             Retry
           </button>
@@ -238,52 +238,50 @@ const ClubsWebsite = () => {
     );
   }
 
-  const CategoryColors = {
-    'Academic': 'bg-blue-100 text-blue-800 border-blue-200',
-    'Arts': 'bg-purple-100 text-purple-800 border-purple-200',
-    'Business': 'bg-green-100 text-green-800 border-green-200',
-    'Career': 'bg-orange-100 text-orange-800 border-orange-200',
-    'Cultural': 'bg-pink-100 text-pink-800 border-pink-200',
-    'Recreation': 'bg-yellow-100 text-yellow-800 border-yellow-200',
-    'Recreational': 'bg-yellow-100 text-yellow-800 border-yellow-200',
-    'Religious': 'bg-indigo-100 text-indigo-800 border-indigo-200',
-    'Faith-Based': 'bg-indigo-100 text-indigo-800 border-indigo-200',
-    'Service': 'bg-red-100 text-red-800 border-red-200',
-    'Sports': 'bg-teal-100 text-teal-800 border-teal-200',
-    'Athletics': 'bg-teal-100 text-teal-800 border-teal-200',
-    'STEM': 'bg-cyan-100 text-cyan-800 border-cyan-200',
-    'Support': 'bg-gray-100 text-gray-800 border-gray-200',
-    'Leadership': 'bg-emerald-100 text-emerald-800 border-emerald-200',
-    'Civic Engagement': 'bg-amber-100 text-amber-800 border-amber-200',
-    'CTAE': 'bg-slate-100 text-slate-800 border-slate-200',
-    'Healthcare': 'bg-rose-100 text-rose-800 border-rose-200',
-    'Honor Society': 'bg-violet-100 text-violet-800 border-violet-200',
-    'Literary': 'bg-fuchsia-100 text-fuchsia-800 border-fuchsia-200',
-    'Inclusion': 'bg-sky-100 text-sky-800 border-sky-200',
-    'Wellness': 'bg-lime-100 text-lime-800 border-lime-200',
+  /* ── Category accent colors (left-border only, rest is white) ─── */
+  const CategoryAccents: Record<string, string> = {
+    'Academic': 'border-l-fcs-blue',
+    'Arts': 'border-l-purple-500',
+    'Business': 'border-l-green-500',
+    'Career': 'border-l-fcs-gold',
+    'Cultural': 'border-l-pink-500',
+    'Recreation': 'border-l-yellow-500',
+    'Recreational': 'border-l-yellow-500',
+    'Religious': 'border-l-indigo-500',
+    'Faith-Based': 'border-l-indigo-500',
+    'Service': 'border-l-red-500',
+    'Sports': 'border-l-teal',
+    'Athletics': 'border-l-teal',
+    'STEM': 'border-l-cyan-500',
+    'Support': 'border-l-stone-400',
+    'Leadership': 'border-l-green-600',
+    'Civic Engagement': 'border-l-fcs-gold',
+    'CTAE': 'border-l-slate-500',
+    'Healthcare': 'border-l-red-500',
+    'Honor Society': 'border-l-purple-600',
+    'Literary': 'border-l-pink-500',
+    'Inclusion': 'border-l-teal-500',
+    'Wellness': 'border-l-green-500',
   };
 
-  // Rename the local CategoryGrid to avoid conflict
-  const LocalCategoryGrid = ({ categories, categoryColors, clubsByCategory, onCategorySelect }) => (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+  // ── Category Grid — white cards with blue left accent ──────────
+  const LocalCategoryGrid = ({ categories, categoryAccents, clubsByCategory, onCategorySelect }) => (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
       {categories.map(category => (
         <button
           key={category}
           onClick={() => onCategorySelect(category)}
-          className={`p-6 rounded-xl border-2 transition-all duration-200 hover:scale-105 hover:shadow-lg text-left ${categoryColors[category] || 'bg-gray-100 text-gray-800 border-gray-200'}`}
+          className={`bg-white border border-stone-200 border-l-4 ${categoryAccents[category] || 'border-l-stone-400'} rounded-md p-4 text-left shadow-sm hover:shadow-md transition-all duration-150 group`}
         >
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-lg font-semibold !text-black">{category}</h3>
-            <ChevronRight size={20} className="!text-black" />
+          <div className="flex items-center justify-between mb-1">
+            <h3 className="font-heading font-bold text-fcs-blue text-sm">{category}</h3>
+            <ChevronRight size={14} className="text-stone-300 group-hover:text-fcs-blue group-hover:translate-x-0.5 transition-all" />
           </div>
-          <p className="text-sm opacity-75 mb-3 !text-black">
-            Explore {category.toLowerCase()} clubs and organizations
-          </p>
-          <div className="flex items-center justify-between">
-            <span className="text-2xl font-bold !text-black">
+          <div className="flex items-baseline gap-1.5">
+            <span className="font-heading font-extrabold text-fcs-gold text-xl leading-none">
               {clubsByCategory[category]?.length || 0}
             </span>
-            <span className="text-xs font-medium !text-black">
+            <span className="text-[11px] text-stone-400 font-medium">
               {clubsByCategory[category]?.length === 1 ? 'Club' : 'Clubs'}
             </span>
           </div>
@@ -292,425 +290,290 @@ const ClubsWebsite = () => {
     </div>
   );
 
+  // ── Search Bar — stone-styled ───────────────────────────────────
   const SearchBar = ({ searchTerm, setSearchTerm }) => (
-    <div className="p-6 border-b border-gray-200">
+    <div className="mb-5">
       <div className="relative">
-        <Search size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+        <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" />
         <input
           type="text"
-          placeholder="Search clubs..."
+          placeholder="Search clubs, activities, or interests…"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="w-full pl-9 pr-4 py-2.5 bg-white border border-stone-300 rounded-md text-sm text-stone-800 placeholder:text-stone-400 focus:ring-2 focus:ring-fcs-blue/20 focus:border-fcs-blue outline-none transition-all font-body"
         />
       </div>
     </div>
   );
 
-  const ClubCard = ({ club, categoryColors, onClick }) => (
+  // ── Club Card — compact, white, tight shadow ───────────────────
+  const ClubCard = ({ club, categoryAccents, onClick }) => (
     <div
       onClick={onClick}
-      className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 cursor-pointer border border-gray-200"
+      className={`bg-white rounded-md border border-stone-200 border-l-4 ${categoryAccents[club.category] || 'border-l-stone-400'} shadow-sm hover:shadow-md transition-all duration-150 cursor-pointer group`}
     >
-      <div className="p-6">
-        <div className="flex items-start justify-between mb-4">
-          <h3 className="text-lg font-semibold !text-black">{club.name}</h3>
-          <span className={`px-3 py-1 rounded-full text-xs font-medium ${categoryColors[club.category] || 'bg-gray-100 !text-black border-gray-200'}`}>
+      <div className="p-4">
+        <div className="flex items-start justify-between gap-2 mb-2">
+          <h3 className="font-heading font-bold text-fcs-blue text-sm leading-snug">{club.name}</h3>
+          <span className="shrink-0 px-2 py-0.5 rounded-md bg-stone-100 text-stone-600 text-[10px] font-semibold uppercase tracking-wide">
             {club.category}
           </span>
         </div>
-        <p className="text-gray-600 text-sm mb-4 line-clamp-3">{club.description}</p>
-        <div className="text-xs text-gray-500">
-          <span className="font-medium">Sponsor:</span> {club.sponsor}
+        <p className="text-stone-500 text-xs leading-relaxed mb-3 line-clamp-2 font-body">{club.description}</p>
+        <div className="flex items-center justify-between">
+          <span className="text-[11px] text-stone-400 font-medium">
+            <span className="text-stone-500 font-semibold">Sponsor:</span> {club.sponsor}
+          </span>
+          <ChevronRight size={14} className="text-stone-300 group-hover:text-fcs-blue group-hover:translate-x-0.5 transition-all" />
         </div>
       </div>
     </div>
   );
 
-  const ClubDetails = ({ club, categoryColors, onBack }) => (
-    <div className="max-w-6xl mx-auto">
-      {/* Back Navigation */}
+  // ── Club Details — Sawnee & Slate ──────────────────────────────
+  const ClubDetails = ({ club, onBack }) => (
+    <div className="max-w-5xl mx-auto">
+      {/* Back */}
       <button
         onClick={onBack}
-        className="mb-6 flex items-center text-blue-600 hover:text-blue-800 transition-all duration-200 hover:translate-x-1"
+        className="mb-5 flex items-center gap-1.5 text-fcs-blue text-sm font-semibold hover:underline underline-offset-2 transition-all"
       >
-        <ChevronRight size={20} className="rotate-180 mr-2" />
-        <span className="font-medium">Back to Clubs</span>
+        <ChevronRight size={16} className="rotate-180" />
+        Back to Clubs
       </button>
 
-      {/* Hero Section */}
-      <div className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl shadow-xl mb-8 overflow-hidden relative">
-        {/* Animated background pattern */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute -top-10 -right-10 w-32 h-32 bg-white rounded-full mix-blend-overlay animate-pulse"></div>
-          <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-white rounded-full mix-blend-overlay animate-pulse animation-delay-1000"></div>
-        </div>
-
-        <div className="relative z-10 p-8 md:p-12 text-white">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-            <div className="flex-1">
-              <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight">
-                {club.name}
-              </h1>
-              <div className="flex flex-wrap items-center gap-4">
-                <span className={`px-4 py-2 rounded-full text-sm font-semibold bg-white/20 backdrop-blur-sm border border-white/30`}>
-                  {club.category}
-                </span>
-                <div className="flex items-center text-white/90">
-                  <Users size={18} className="mr-2" />
-                  <span className="text-sm font-medium">Join Today!</span>
-                </div>
-              </div>
+      {/* Dark Hero */}
+      <div className="bg-fcs-blue rounded-md p-7 md:p-10 mb-6">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-5">
+          <div>
+            <h1 className="font-heading font-extrabold text-white text-3xl md:text-4xl leading-tight mb-3">
+              {club.name}
+            </h1>
+            <div className="flex flex-wrap items-center gap-3">
+              <span className="px-3 py-1 rounded-md text-[11px] font-semibold bg-white/10 text-white/80 uppercase tracking-wide border border-white/10">
+                {club.category}
+              </span>
+              <span className="text-white/50 text-sm font-medium flex items-center gap-1.5">
+                <Users size={14} /> Open to join
+              </span>
             </div>
-
-            {/* Quick Action Buttons */}
-            <div className="flex flex-col gap-3 min-w-[200px]">
-              <button
-                onClick={(e) => { e.stopPropagation(); handleJoinClub(club); }}
-                disabled={joiningClubId === club.id}
-                className="bg-white/20 hover:bg-white/30 backdrop-blur-sm border border-white/30 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 hover:scale-105 disabled:opacity-50 disabled:cursor-wait flex items-center justify-center gap-2"
-              >
-                {joiningClubId === club.id ? (
-                  <><Loader2 size={16} className="animate-spin" /> Joining…</>
-                ) : (
-                  'Join Club'
-                )}
-              </button>
-              <button className="bg-transparent hover:bg-white/10 border-2 border-white/50 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 hover:scale-105">
-                Contact Sponsor
-              </button>
-            </div>
+          </div>
+          <div className="flex gap-3">
+            <button
+              onClick={(e) => { e.stopPropagation(); handleJoinClub(club); }}
+              disabled={joiningClubId === club.id}
+              className="px-5 py-2.5 bg-fcs-gold text-fcs-blue text-sm font-bold rounded-md shadow-hard-sm hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all disabled:opacity-50 disabled:cursor-wait flex items-center gap-2"
+            >
+              {joiningClubId === club.id ? (
+                <><Loader2 size={14} className="animate-spin" /> Joining…</>
+              ) : (
+                'Join Club'
+              )}
+            </button>
+            <button className="px-5 py-2.5 bg-transparent text-white text-sm font-semibold rounded-md border border-white/20 hover:bg-white/5 transition-all">
+              Contact Sponsor
+            </button>
           </div>
         </div>
       </div>
 
-      {/* Main Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Left Column - Main Info */}
-        <div className="lg:col-span-2 space-y-8">
-          {/* About Section */}
-          <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-            <div className="bg-gradient-to-r from-gray-50 to-blue-50 px-8 py-6 border-b border-gray-100">
-              <h2 className="text-2xl font-bold !text-black flex items-center">
-                <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
-                  <Users size={18} className="!text-black" />
-                </div>
-                About This Club
+      {/* Content Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        {/* Left — details */}
+        <div className="lg:col-span-2 space-y-5">
+          {/* About */}
+          <div className="bg-white rounded-md border border-stone-200 shadow-sm">
+            <div className="px-6 py-4 border-b border-stone-100">
+              <h2 className="font-heading font-bold text-fcs-blue text-lg flex items-center gap-2">
+                <Users size={16} className="text-fcs-blue" /> About This Club
               </h2>
             </div>
-            <div className="p-8">
-              <p className="text-gray-700 leading-relaxed text-lg">
-                {club.description}
-              </p>
+            <div className="p-6">
+              <p className="text-stone-600 leading-relaxed text-sm font-body">{club.description}</p>
             </div>
           </div>
 
-          {/* Activities & Highlights Section */}
-          <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-            <div className="bg-gradient-to-r from-green-50 to-emerald-50 px-8 py-6 border-b border-gray-100">
-              <h2 className="text-2xl font-bold !text-black flex items-center">
-                <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center mr-3">
-                  <BarChart3 size={18} className="!text-black" />
-                </div>
-                What We Do
+          {/* What We Do */}
+          <div className="bg-white rounded-md border border-stone-200 shadow-sm">
+            <div className="px-6 py-4 border-b border-stone-100">
+              <h2 className="font-heading font-bold text-fcs-blue text-lg flex items-center gap-2">
+                <BarChart3 size={16} className="text-fcs-blue" /> What We Do
               </h2>
             </div>
-            <div className="p-8">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-xl border border-blue-100">
-                  <h3 className="font-semibold !text-black mb-2 flex items-center">
-                    <div className="w-6 h-6 bg-blue-500 rounded-full mr-2"></div>
-                    Regular Meetings
-                  </h3>
-                  <p className="!text-black text-sm">Connect with fellow members and plan activities</p>
+            <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-3">
+              {[
+                { label: 'Regular Meetings', desc: 'Connect with fellow members and plan activities' },
+                { label: 'Special Events', desc: 'Participate in competitions and showcases' },
+                { label: 'Community Service', desc: 'Make a positive impact in our community' },
+                { label: 'Skill Building', desc: 'Develop leadership and specialized skills' },
+              ].map(item => (
+                <div key={item.label} className="bg-stone-50 border border-stone-100 rounded-md p-4">
+                  <h3 className="font-heading font-semibold text-fcs-blue text-sm mb-1">{item.label}</h3>
+                  <p className="text-stone-500 text-xs font-body">{item.desc}</p>
                 </div>
-                <div className="bg-gradient-to-br from-purple-50 to-pink-50 p-6 rounded-xl border border-purple-100">
-                  <h3 className="font-semibold !text-black mb-2 flex items-center">
-                    <div className="w-6 h-6 bg-purple-500 rounded-full mr-2"></div>
-                    Special Events
-                  </h3>
-                  <p className="!text-black text-sm">Participate in competitions and showcases</p>
-                </div>
-                <div className="bg-gradient-to-br from-green-50 to-emerald-50 p-6 rounded-xl border border-green-100">
-                  <h3 className="font-semibold !text-black mb-2 flex items-center">
-                    <div className="w-6 h-6 bg-green-500 rounded-full mr-2"></div>
-                    Community Service
-                  </h3>
-                  <p className="!text-black text-sm">Make a positive impact in our community</p>
-                </div>
-                <div className="bg-gradient-to-br from-orange-50 to-red-50 p-6 rounded-xl border border-orange-100">
-                  <h3 className="font-semibold !text-black mb-2 flex items-center">
-                    <div className="w-6 h-6 bg-orange-500 rounded-full mr-2"></div>
-                    Skill Building
-                  </h3>
-                  <p className="!text-black text-sm">Develop leadership and specialized skills</p>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </div>
 
-        {/* Right Column - Quick Info */}
-        <div className="space-y-6">
-          {/* Contact Info Card */}
-          <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-            <div className="bg-gradient-to-r from-yellow-50 to-orange-50 px-6 py-4 border-b border-gray-100">
-              <h3 className="text-lg font-bold !text-black">Contact Information</h3>
+        {/* Right column */}
+        <div className="space-y-5">
+          {/* Contact */}
+          <div className="bg-white rounded-md border border-stone-200 shadow-sm">
+            <div className="px-5 py-3 border-b border-stone-100">
+              <h3 className="font-heading font-bold text-fcs-blue text-sm">Contact Information</h3>
             </div>
-            <div className="p-6 space-y-4">
-              <div className="flex items-start">
-                <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mr-3 mt-1">
-                  <Users size={16} className="!text-black" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium !text-black">Club Sponsor</p>
-                  <p className="!text-black">{club.sponsor}</p>
-                </div>
+            <div className="p-5 space-y-3">
+              <div>
+                <p className="text-[11px] text-stone-400 uppercase tracking-wider font-semibold mb-0.5">Sponsor</p>
+                <p className="text-stone-700 text-sm font-medium">{club.sponsor}</p>
               </div>
-
-              <div className="flex items-start">
-                <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center mr-3 mt-1">
-                  <BarChart3 size={16} className="!text-black" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium !text-black">Category</p>
-                  <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${categoryColors[club.category] || 'bg-gray-100 text-gray-800 border-gray-200'} mt-1`}>
-                    {club.category}
-                  </span>
-                </div>
+              <div>
+                <p className="text-[11px] text-stone-400 uppercase tracking-wider font-semibold mb-0.5">Category</p>
+                <span className="inline-block px-2 py-0.5 rounded-md bg-stone-100 text-stone-600 text-[10px] font-semibold uppercase tracking-wide">
+                  {club.category}
+                </span>
               </div>
             </div>
           </div>
 
-          {/* Quick Stats Card */}
-          <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-            <div className="bg-gradient-to-r from-purple-50 to-pink-50 px-6 py-4 border-b border-gray-100">
-              <h3 className="text-lg font-bold !text-black">Quick Facts</h3>
+          {/* Quick Facts */}
+          <div className="bg-white rounded-md border border-stone-200 shadow-sm">
+            <div className="px-5 py-3 border-b border-stone-100">
+              <h3 className="font-heading font-bold text-fcs-blue text-sm">Quick Facts</h3>
             </div>
-            <div className="p-6 space-y-4">
-              <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                <span className="text-sm font-medium !text-black">Meeting Frequency</span>
-                <span className="text-sm font-semibold !text-black">Weekly</span>
-              </div>
-              <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                <span className="text-sm font-medium !text-black">Open to All Grades</span>
-                <span className="text-sm font-semibold !text-black">Yes</span>
-              </div>
-              <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                <span className="text-sm font-medium !text-black">Experience Required</span>
-                <span className="text-sm font-semibold !text-black">No</span>
-              </div>
+            <div className="p-5 space-y-2">
+              {[
+                { label: 'Meeting Frequency', value: 'Weekly' },
+                { label: 'Open to All Grades', value: 'Yes' },
+                { label: 'Experience Required', value: 'No' },
+              ].map(fact => (
+                <div key={fact.label} className="flex justify-between items-center p-2.5 bg-stone-50 rounded-md">
+                  <span className="text-xs text-stone-500 font-medium">{fact.label}</span>
+                  <span className="text-xs text-fcs-blue font-bold">{fact.value}</span>
+                </div>
+              ))}
             </div>
           </div>
 
-          {/* Join Now CTA Card */}
-          <div className="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl shadow-lg overflow-hidden text-white">
-            <div className="p-6">
-              <h3 className="text-xl font-bold mb-3">Ready to Join?</h3>
-              <p className="text-blue-100 text-sm mb-4">
-                Connect with like-minded students and make a difference!
-              </p>
-              <button
-                onClick={(e) => { e.stopPropagation(); handleJoinClub(club); }}
-                disabled={joiningClubId === club.id}
-                className="w-full bg-white text-blue-600 font-semibold py-3 px-4 rounded-xl hover:bg-blue-50 transition-all duration-200 hover:scale-105 disabled:opacity-50 disabled:cursor-wait flex items-center justify-center gap-2"
-              >
-                {joiningClubId === club.id ? (
-                  <><Loader2 size={16} className="animate-spin" /> Joining…</>
-                ) : (
-                  'Get Started Today'
-                )}
-              </button>
-            </div>
+          {/* Join CTA */}
+          <div className="bg-fcs-blue rounded-md p-5">
+            <h3 className="font-heading font-bold text-white text-base mb-2">Ready to Join?</h3>
+            <p className="text-white/50 text-xs mb-4">Connect with like-minded students and make a difference!</p>
+            <button
+              onClick={(e) => { e.stopPropagation(); handleJoinClub(club); }}
+              disabled={joiningClubId === club.id}
+              className="w-full px-4 py-2.5 bg-fcs-gold text-fcs-blue text-sm font-bold rounded-md shadow-hard-sm hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all disabled:opacity-50 disabled:cursor-wait flex items-center justify-center gap-2"
+            >
+              {joiningClubId === club.id ? (
+                <><Loader2 size={14} className="animate-spin" /> Joining…</>
+              ) : (
+                'Get Started Today'
+              )}
+            </button>
           </div>
-
-          {/* Social Media Links (if available) */}
-          {club.socialMedia && (
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-              <div className="bg-gradient-to-r from-indigo-50 to-blue-50 px-6 py-4 border-b border-gray-100">
-                <h3 className="text-lg font-bold !text-black">Follow Us</h3>
-              </div>
-              <div className="p-6 space-y-3">
-                {club.socialMedia.instagram && (
-                  <a href={club.socialMedia.instagram} className="flex items-center p-3 bg-pink-50 hover:bg-pink-100 rounded-lg transition-colors">
-                    <div className="w-8 h-8 bg-pink-500 rounded-lg flex items-center justify-center mr-3">
-                      <span className="text-white text-xs font-bold">IG</span>
-                    </div>
-                    <span className="text-sm font-medium !text-black">Instagram</span>
-                  </a>
-                )}
-                {club.socialMedia.website && (
-                  <a href={club.socialMedia.website} className="flex items-center p-3 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors">
-                    <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center mr-3">
-                      <span className="text-white text-xs font-bold">WEB</span>
-                    </div>
-                    <span className="text-sm font-medium !text-black">Website</span>
-                  </a>
-                )}
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-blue-50 to-slate-50 flex">
-      {/* Sidebar */}
-      <div className={`fixed inset-y-0 left-0 z-40 w-80 shadow-2xl transform transition-transform duration-300 ease-in-out ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        } bg-white pt-0`}>
-        {/* Sidebar Header - White background with black text */}
-        <div className="bg-white px-6 py-6 relative overflow-hidden border-b border-gray-200">
-          <div className="flex items-center justify-between relative z-10">
-            <div>
-              <h1 className="text-xl font-bold text-black !text-black" style={{ color: '#000000 !important', WebkitTextFillColor: '#000000' }}>
-                {selectedSchool === 'Alliance Academy of Innovation' ? 'AAI' : selectedSchool.split(' ').map(word => word[0]).join('')} Clubs
-              </h1>
-              <p className="text-sm font-medium mt-1 text-gray-600">
-                & Organizations
-              </p>
-            </div>
-            {/* Close button for sidebar */}
-            <button
-              onClick={() => setSidebarOpen(false)}
-              className="p-2 rounded-lg bg-white border-2 border-black hover:bg-gray-50 transition-all duration-300"
-            >
-              <X size={20} className="text-black" />
-            </button>
+    <div className="min-h-screen bg-stone-100 bg-noise font-body text-stone-900 flex">
+      {/* ── Sidebar ────────────────────────────────────────────── */}
+      <div className={`fixed inset-y-0 left-0 z-40 w-72 bg-stone-50 border-r border-stone-200 transform transition-transform duration-300 ease-in-out ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+        {/* Sidebar Header */}
+        <div className="h-16 flex items-center justify-between px-6 border-b border-stone-200">
+          <div>
+            <h1 className="font-heading font-bold text-fcs-blue text-lg leading-tight">
+              {selectedSchool === 'Alliance Academy of Innovation' ? 'AAI' : selectedSchool.split(' ').map(word => word[0]).join('')} Clubs
+            </h1>
           </div>
+          <button
+            onClick={() => setSidebarOpen(false)}
+            className="p-1.5 rounded-md hover:bg-stone-200 text-stone-500 transition-colors"
+          >
+            <X size={18} />
+          </button>
         </div>
-        <div className="px-6 py-4 overflow-y-auto">
+
+        {/* Sidebar Content */}
+        <div className="p-4 overflow-y-auto h-[calc(100vh-64px)]">
           <button
             onClick={handleHomeClick}
-            className="w-full text-left p-3 rounded-lg mb-2 transition-colors hover:bg-gray-50"
+            className={`w-full text-left px-3 py-2 rounded-md mb-6 transition-colors flex items-center gap-3 ${!selectedCategory && !selectedClub
+              ? 'bg-fcs-blue/10 text-fcs-blue font-semibold'
+              : 'text-stone-600 hover:bg-stone-100 hover:text-fcs-blue'
+              }`}
           >
-            <div className="flex items-center">
-              <Users size={18} className="mr-3 text-black" />
-              <span className="text-black">All Clubs</span>
-            </div>
+            <Users size={16} />
+            <span className="text-sm">All Clubs</span>
           </button>
-          <div className="mt-4">
-            <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wide mb-3">
+
+          <div>
+            <h3 className="px-3 text-[11px] font-semibold text-stone-400 uppercase tracking-wider mb-2">
               Categories
             </h3>
-            {Object.keys(CategoryColors).map(category => (
-              <button
-                key={category}
-                onClick={() => { setSelectedCategory(category); setSelectedClub(null); }}
-                className={`w-full text-left p-2 rounded-lg mb-1 transition-colors ${selectedCategory === category && !selectedClub
-                  ? 'bg-blue-100 text-blue-800 border border-blue-200'
-                  : 'hover:bg-gray-50 text-black'
-                  }`}
-              >
-                <div className="flex items-center justify-between">
-                  <span className={selectedCategory === category && !selectedClub ? 'text-blue-800' : 'text-black'}>{category}</span>
-                  <span className={`px-2 py-1 rounded-full text-xs ${selectedCategory === category && !selectedClub
-                    ? 'bg-blue-200 text-blue-800'
-                    : 'bg-gray-200 text-gray-700'
+            <div className="space-y-0.5">
+              {Object.keys(CategoryAccents).map(category => (
+                <button
+                  key={category}
+                  onClick={() => { setSelectedCategory(category); setSelectedClub(null); }}
+                  className={`w-full text-left px-3 py-2 rounded-md transition-all flex items-center justify-between group ${selectedCategory === category && !selectedClub
+                    ? 'bg-white shadow-sm border border-stone-200 text-fcs-blue font-medium'
+                    : 'text-stone-600 hover:bg-stone-100 hover:text-fcs-blue'
+                    }`}
+                >
+                  <span className="text-sm">{category}</span>
+                  <span className={`px-1.5 py-0.5 rounded-md text-[10px] font-bold ${selectedCategory === category && !selectedClub
+                    ? 'bg-fcs-blue/10 text-fcs-blue'
+                    : 'bg-stone-100 text-stone-400 group-hover:text-stone-500'
                     }`}>
                     {clubsByCategory[category]?.length || 0}
                   </span>
-                </div>
-              </button>
-            ))}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>
 
+      {/* Overlay */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-30"
+          className="fixed inset-0 bg-fcs-blue/20 backdrop-blur-sm z-30 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
-      {/* Main Content */}
-      <div className={`flex-1 transition-all duration-300 ease-in-out ${sidebarOpen ? 'lg:ml-80' : 'lg:ml-0'}`}>
-        {/* Topbar - White navigation bar */}
-        <div className="w-full bg-white h-[104px] flex items-center justify-between shadow-lg border-b border-gray-200 relative overflow-hidden px-6 z-10">
+      {/* ── Main Content ───────────────────────────────────────── */}
+      <div className={`flex-1 flex flex-col min-h-screen transition-all duration-300 ${sidebarOpen ? 'lg:ml-72' : 'lg:ml-0'}`}>
 
-          {/* Left side - Menu and buttons */}
-          <div className="flex items-center space-x-3 relative z-10">
-            {/* Hamburger Menu Button */}
+        {/* Top Navbar */}
+        <div className="sticky top-0 z-20 bg-stone-50/90 backdrop-blur-md border-b border-stone-200 h-16 px-6 flex items-center justify-between">
+          {/* Left: Menu & School Toggle */}
+          <div className="flex items-center gap-3">
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="p-2 rounded-lg bg-transparent border-2 border-black hover:bg-gray-50 hover:border-gray-600 transition-all duration-200"
+              className="p-2 -ml-2 rounded-md text-stone-500 hover:bg-stone-100 hover:text-fcs-blue transition-colors"
             >
-              {sidebarOpen ? <X size={20} className="text-black" /> : <Menu size={20} className="text-black" />}
+              <Menu size={20} />
             </button>
 
-            {/* Compare Button */}
-            <button
-              onClick={handleCompareClick}
-              className="px-3 py-2 rounded-lg bg-transparent border-2 border-black hover:bg-gray-50 hover:border-gray-600 transition-all duration-200 text-sm font-medium text-black"
-            >
-              Compare
-            </button>
-
-            {/* Events Button */}
-            <button
-              onClick={handleEventsClick}
-              className="px-3 py-2 rounded-lg bg-transparent border-2 border-black hover:bg-gray-50 hover:border-gray-600 transition-all duration-200 text-sm font-medium text-black"
-            >
-              Events
-            </button>
-            {/* About Button */}
-            <button
-              onClick={handleAboutClick}
-              className="px-3 py-2 rounded-lg bg-transparent border-2 border-black hover:bg-gray-50 hover:border-gray-600 transition-all duration-200 text-sm font-medium text-black"
-            >
-              About
-            </button>
-            {/* Calendar Button */}
-            <button
-              onClick={handleCalendarClick}
-              className="flex items-center px-3 py-2 rounded-lg bg-transparent border-2 border-black hover:bg-gray-50 hover:border-gray-600 transition-all duration-200 text-sm font-medium text-black"
-            >
-              <CalendarIcon size={18} className="mr-1 text-black" /> Calendar
-            </button>
-
-            {/* AI Chatbot Button -> Route to full-page Chatbot */}
-            <button
-              onClick={() => navigate('/chatbot')}
-              className="flex items-center px-3 py-2 rounded-lg border-2 transition-all duration-200 text-sm font-medium bg-transparent border-black hover:bg-gray-50 hover:border-gray-600 text-black"
-              title="Get AI-powered club recommendations"
-            >
-              <MessageCircle size={18} className="mr-1" />
-              Club Quiz
-            </button>
-            {/* School Selector Dropdown */}
+            {/* School Dropdown */}
             <div className="relative">
               <button
-                onClick={(e) => {
-                  const rect = e.currentTarget.getBoundingClientRect();
-                  setDropdownPosition({
-                    top: rect.bottom + 8,
-                    left: rect.left
-                  });
-                  setSchoolDropdownOpen(!schoolDropdownOpen);
-                }}
-                className="flex items-center px-3 py-2 rounded-lg bg-transparent border-2 border-black hover:bg-gray-50 hover:border-gray-600 transition-all duration-200 text-sm font-medium text-black"
+                onClick={() => setSchoolDropdownOpen(!schoolDropdownOpen)}
+                className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-white border border-stone-200 shadow-sm hover:border-fcs-blue/30 transition-all text-sm font-semibold text-fcs-blue"
               >
-                <span className="mr-2">{selectedSchool}</span>
-                <ChevronDown size={16} className={`transition-transform duration-200 ${schoolDropdownOpen ? 'rotate-180' : ''}`} />
+                <MapPin size={14} className="text-fcs-gold" />
+                {selectedSchool}
+                <ChevronDown size={14} className={`text-stone-400 transition-transform ${schoolDropdownOpen ? 'rotate-180' : ''}`} />
               </button>
-              {schoolDropdownOpen && createPortal(
+
+              {schoolDropdownOpen && (
                 <>
-                  {/* Backdrop to close dropdown when clicking outside */}
-                  <div
-                    className="fixed inset-0 z-[9998]"
-                    onClick={() => setSchoolDropdownOpen(false)}
-                  />
-                  <div
-                    className="fixed w-80 bg-white border-2 border-black rounded-lg shadow-xl z-[9999] max-h-80 overflow-y-auto"
-                    style={{
-                      top: `${dropdownPosition.top}px`,
-                      left: `${dropdownPosition.left}px`,
-                      scrollbarWidth: 'thin',
-                      scrollbarColor: '#000000 #ffffff'
-                    }}
-                  >
+                  <div className="fixed inset-0 z-30" onClick={() => setSchoolDropdownOpen(false)} />
+                  <div className="absolute top-full left-0 mt-1 w-64 bg-white border border-stone-200 rounded-md shadow-xl py-1 z-40">
                     {availableSchools.map(school => (
                       <button
                         key={school}
@@ -720,183 +583,221 @@ const ClubsWebsite = () => {
                           setSelectedCategory(null);
                           setSelectedClub(null);
                         }}
-                        className={`w-full text-left px-4 py-2 hover:bg-gray-50 transition-colors text-black ${selectedSchool === school ? 'bg-blue-50 text-blue-800' : ''
+                        className={`w-full text-left px-4 py-2 text-sm transition-colors ${selectedSchool === school
+                          ? 'bg-fcs-blue/5 text-fcs-blue font-semibold'
+                          : 'text-stone-600 hover:bg-stone-50'
                           }`}
                       >
                         {school}
                       </button>
                     ))}
                   </div>
-                </>,
-                document.body
+                </>
               )}
             </div>
           </div>
 
-          {/* Center - Title */}
-          <div className="flex-1 text-center relative z-10 px-4">
-            <button
-              onClick={handleHomeClick}
-              className="hover:opacity-80 transition-opacity cursor-pointer"
-            >
-              <h1 className="text-2xl font-bold leading-tight text-black bg-none bg-clip-border" style={{ color: '#000000 !important', WebkitTextFillColor: '#000000' }}>
-                The Club Network @ {selectedSchool === 'Alliance Academy of Innovation' ? 'AAI' : selectedSchool.split(' ').map(word => word[0]).join('')}
-              </h1>
-              <p className="text-sm font-medium mt-1 leading-snug text-gray-600">
-                Explore clubs and organizations at {selectedSchool}
-              </p>
-            </button>
+          {/* Center Title (Desktop only) */}
+          <div className="hidden md:block absolute left-1/2 top-1/2 -translate-x-1/2">
+            <h1 className="font-heading font-bold text-fcs-blue text-lg tracking-tight">
+              The Club Network
+            </h1>
           </div>
 
-          {/* Right side - User menu or Sign In button */}
-          {user ? (
-            <div className="flex items-center relative z-[9999]">
+          {/* Right: Actions */}
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => navigate('/chatbot')}
+              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-white bg-gradient-to-r from-fcs-blue to-blue-900 rounded-md shadow-sm hover:shadow-md transition-all"
+            >
+              <MessageCircle size={14} />
+              <span className="uppercase tracking-wide">Club Quiz</span>
+            </button>
+
+            {user ? (
               <UserMenu user={user} />
-            </div>
-          ) : (
-            <div className="flex items-center space-x-3">
+            ) : (
               <button
                 onClick={() => navigate('/login')}
-                className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium transition-all duration-200 hover:scale-105"
+                className="text-sm font-semibold text-fcs-blue hover:underline underline-offset-2"
               >
                 Sign In
               </button>
-              <button
-                onClick={() => navigate('/create-account')}
-                className="px-4 py-2 rounded-lg bg-transparent border-2 border-blue-600 hover:bg-blue-50 text-blue-600 font-medium transition-all duration-200 hover:scale-105"
-              >
-                Create Account
-              </button>
-            </div>
-          )}
+            )}
+          </div>
         </div>
 
-        <div className="p-6">
+        {/* Page Content */}
+        <main className="flex-1 p-6 md:p-8 max-w-7xl mx-auto w-full">
           {!selectedCategory && !selectedClub ? (
             <>
-              {/* Welcome Section with AI Assistant Info */}
-              <div className="mb-8 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200">
-                <div className="flex items-center justify-between">
-                  <div className="flex-1">
-                    <h2 className="text-2xl font-bold text-blue-900 mb-2">
-                      Welcome to The Club Network!
+              {/* Dark Hero Section */}
+              <div className="bg-fcs-blue rounded-md p-8 md:p-10 mb-8 shadow-lg relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+
+                <div className="relative z-10 flex flex-col md:flex-row items-start md:items-end justify-between gap-6">
+                  <div className="max-w-xl">
+                    <h2 className="font-heading font-extrabold text-white text-3xl md:text-4xl leading-tight mb-4">
+                      Find your people. <br /><span className="text-fcs-gold">Join your club.</span>
                     </h2>
-                    <p className="text-blue-800 mb-4">
-                      Discover amazing clubs and organizations at {selectedSchool}. Browse by category or take a quiz to find clubs that match your interests!
+                    <p className="text-white/70 text-sm md:text-base leading-relaxed mb-6 font-medium">
+                      Discover amazing opportunities at {selectedSchool}.
+                      Browse categories below or use our AI quiz to find your perfect match.
                     </p>
-                    <div className="flex items-center space-x-4">
-                      <div className="flex items-center text-blue-700">
-                        <MessageCircle size={16} className="mr-2" />
-                        <span className="text-sm font-medium">Club Quiz Ready</span>
+
+                    {/* Quick Stats Grid */}
+                    <div className="flex gap-8 border-t border-white/10 pt-6">
+                      <div>
+                        <p className="font-heading font-bold text-2xl text-fcs-gold leading-none mb-1">{filteredClubsData.length}</p>
+                        <p className="text-[10px] text-white/50 uppercase tracking-widest font-semibold">Active Clubs</p>
                       </div>
-                      <div className="flex items-center text-blue-700">
-                        <Users size={16} className="mr-2" />
-                        <span className="text-sm font-medium">{filteredClubsData.length} Clubs Available</span>
-                      </div>
-                      <div className="flex items-center text-blue-700">
-                        <BarChart3 size={16} className="mr-2" />
-                        <span className="text-sm font-medium">{categories.length} Categories</span>
+                      <div>
+                        <p className="font-heading font-bold text-2xl text-white leading-none mb-1">{categories.length}</p>
+                        <p className="text-[10px] text-white/50 uppercase tracking-widest font-semibold">Categories</p>
                       </div>
                     </div>
                   </div>
-                  <button
-                    onClick={() => navigate('/chatbot')}
-                    className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 hover:scale-105 shadow-lg"
-                  >
-                    <MessageCircle size={18} className="mr-2 inline" />
-                    Take Club Quiz
-                  </button>
+
+                  {/* Hero Actions */}
+                  <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+                    <button
+                      onClick={() => navigate('/chatbot')}
+                      className="px-6 py-3 bg-fcs-gold text-fcs-blue text-sm font-bold rounded-md shadow-hard-sm hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all flex items-center justify-center gap-2"
+                    >
+                      <MessageCircle size={16} />
+                      Take Club Quiz
+                    </button>
+                    <button
+                      onClick={handleCalendarClick}
+                      className="px-6 py-3 bg-white/10 text-white text-sm font-semibold rounded-md border border-white/10 hover:bg-white/20 transition-all flex items-center justify-center gap-2"
+                    >
+                      <CalendarIcon size={16} />
+                      Events
+                    </button>
+                  </div>
                 </div>
+              </div>
+
+              {/* Search & Grid */}
+              <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+
+              <div className="mb-4 flex items-center justify-between">
+                <h3 className="font-heading font-bold text-fcs-blue text-lg">Browse by Category</h3>
               </div>
 
               <LocalCategoryGrid
                 categories={categories}
-                categoryColors={CategoryColors}
+                categoryAccents={CategoryAccents}
                 clubsByCategory={clubsByCategory}
                 onCategorySelect={setSelectedCategory}
               />
             </>
           ) : selectedCategory && !selectedClub ? (
-            <div>
-              <button
-                onClick={handleHomeClick}
-                className="mb-6 flex items-center text-blue-600 hover:text-blue-800 transition-colors"
-              >
-                <ChevronRight size={20} className="rotate-180 mr-2" />
-                Home Page
-              </button>
-              <div className="bg-none bg-clip-border">
-                <h2 className="text-3xl font-bold mb-2 flex items-center !text-black" style={{ color: '#000000 !important' }}>
-                  <BookOpen size={28} className="mr-2 !text-black" style={{ color: '#000000 !important' }} />
-                  {selectedCategory} Clubs
-                </h2>
-                <p className="mb-6 !text-black" style={{ color: '#000000 !important' }}>Clubs in the {selectedCategory} category</p>
+            <div className="animate-[fadeUp_0.3s_ease-out]">
+              {/* Category Header */}
+              <div className="mb-6">
+                <button
+                  onClick={handleHomeClick}
+                  className="mb-3 flex items-center gap-1.5 text-stone-500 text-xs font-semibold hover:text-fcs-blue transition-colors uppercase tracking-wide"
+                >
+                  <ChevronRight size={14} className="rotate-180" />
+                  Return Home
+                </button>
+                <div className="flex items-center gap-3 mb-2">
+                  <div className={`w-10 h-10 rounded-md bg-white border border-stone-200 flex items-center justify-center border-l-4 ${CategoryAccents[selectedCategory] || 'border-l-stone-400'}`}>
+                    <BookOpen size={20} className="text-fcs-blue" />
+                  </div>
+                  <h2 className="font-heading font-bold text-3xl text-fcs-blue">
+                    {selectedCategory}
+                  </h2>
+                </div>
+                <p className="text-stone-500 text-sm ml-14">
+                  Showing {filteredClubs[selectedCategory]?.length || 0} clubs in this category
+                </p>
               </div>
-              {/* Category club grid rendering - fix fallback rendering */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+              <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+
+              {/* Club Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {Array.isArray(filteredClubs[selectedCategory]) && filteredClubs[selectedCategory].length > 0 ? (
                   filteredClubs[selectedCategory].map(club => (
                     <ClubCard
                       key={club.id}
                       club={club}
-                      categoryColors={CategoryColors}
+                      categoryAccents={CategoryAccents}
                       onClick={() => setSelectedClub(club.id)}
                     />
                   ))
                 ) : (
-                  <div className="col-span-full text-center py-12">
-                    <p className="text-gray-500">No clubs found in this category.</p>
+                  <div className="col-span-full py-16 text-center bg-white rounded-md border border-stone-200 border-dashed">
+                    <div className="w-12 h-12 bg-stone-50 rounded-full flex items-center justify-center mx-auto mb-3">
+                      <Search size={20} className="text-stone-300" />
+                    </div>
+                    <p className="text-stone-900 font-semibold text-sm">No clubs found.</p>
+                    <p className="text-stone-500 text-xs mt-1">Try adjusting your search terms.</p>
                   </div>
                 )}
               </div>
             </div>
           ) : selectedClubData ? (
-            <ClubDetails
-              club={selectedClubData}
-              categoryColors={CategoryColors}
-              onBack={() => {
-                if (schoolSlug && clubSlug) {
-                  // If we came from a direct URL, navigate back to home
-                  navigate('/home');
-                } else {
-                  // If we selected the club from the UI, just clear selection
-                  setSelectedClub(null);
-                }
-              }}
-            />
+            <div className="animate-[fadeUp_0.3s_ease-out]">
+              <ClubDetails
+                club={selectedClubData}
+                onBack={() => {
+                  if (schoolSlug && clubSlug) {
+                    navigate('/home');
+                  } else {
+                    setSelectedClub(null);
+                  }
+                }}
+              />
+            </div>
           ) : null}
-        </div>
+        </main>
+
+        {/* Footer */}
+        <footer className="bg-stone-50 border-t border-stone-200 py-6 mt-auto">
+          <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-stone-500">
+            <p>&copy; {new Date().getFullYear()} ClubConnect — Forsyth County Schools</p>
+            <div className="flex gap-6">
+              <button onClick={handleAboutClick} className="hover:text-fcs-blue transition-colors">About</button>
+              <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="hover:text-fcs-blue transition-colors">Back to Top</button>
+            </div>
+          </div>
+        </footer>
+
       </div>
 
-      {/* Join Club Toast Notification */}
+      {/* Toast Notification */}
       {joinMessage && (
-        <div className="fixed top-6 right-6 z-50 max-w-sm animate-[slideIn_0.3s_ease-out]">
+        <div className="fixed top-6 right-6 z-50 animate-[slideIn_0.3s_ease-out]">
           <div
             onClick={() => setJoinMessage(null)}
-            className={`flex items-start gap-3 p-4 rounded-xl shadow-2xl border cursor-pointer transition-all hover:scale-[1.02] ${joinMessage.type === 'success'
-              ? 'bg-green-50 border-green-200 text-green-800'
+            className={`flex items-start gap-3 p-4 rounded-md shadow-hard-lg border cursor-pointer transition-all hover:translate-y-px hover:shadow-hard-sm bg-white ${joinMessage.type === 'success'
+              ? 'border-l-4 border-l-green-500'
               : joinMessage.type === 'error'
-                ? 'bg-red-50 border-red-200 text-red-800'
-                : 'bg-blue-50 border-blue-200 text-blue-800'
+                ? 'border-l-4 border-l-red-500'
+                : 'border-l-4 border-l-fcs-blue'
               }`}
           >
             {joinMessage.type === 'success' ? (
-              <CheckCircle size={20} className="text-green-600 mt-0.5 shrink-0" />
+              <CheckCircle size={18} className="text-green-600 mt-0.5" />
             ) : joinMessage.type === 'error' ? (
-              <X size={20} className="text-red-600 mt-0.5 shrink-0" />
+              <X size={18} className="text-red-600 mt-0.5" />
             ) : (
-              <BookOpen size={20} className="text-blue-600 mt-0.5 shrink-0" />
+              <BookOpen size={18} className="text-fcs-blue mt-0.5" />
             )}
-            <p className="text-sm font-medium">{joinMessage.text}</p>
+            <div>
+              <p className="text-sm font-bold text-stone-800 mb-0.5">
+                {joinMessage.type === 'success' ? 'Success' : joinMessage.type === 'error' ? 'Error' : 'Notification'}
+              </p>
+              <p className="text-xs text-stone-500 font-medium">{joinMessage.text}</p>
+            </div>
+            <X size={14} className="text-stone-300 ml-2" />
           </div>
         </div>
       )}
-
-      {/* Simple Credit */}
-      <div className="fixed bottom-0 left-0 right-0 text-center py-2 text-gray-600 text-sm bg-white border-t border-gray-200">
-        Designed & Created by Ritvik Tirumala
-      </div>
-
     </div >
   );
 };
