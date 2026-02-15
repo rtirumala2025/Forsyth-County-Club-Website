@@ -20,6 +20,8 @@ const LazyAbout = lazy(() => import('../../pages/About'));
 const LazyProfile = lazy(() => import('../../pages/Profile'));
 const LazyCalendar = lazy(() => import('../../pages/Calendar'));
 const LazyClubQuiz = lazy(() => import('../../pages/ClubQuiz'));
+const LazyProfileSetup = lazy(() => import('../../pages/ProfileSetup'));
+const LazyParentVerify = lazy(() => import('../../pages/ParentVerify'));
 
 // Wrapped components with Suspense
 export const ClubsWebsite = (props) => (
@@ -73,5 +75,17 @@ export const Calendar = (props) => (
 export const ClubQuiz = (props) => (
   <Suspense fallback={<LoadingSpinner />}>
     <LazyClubQuiz {...props} />
+  </Suspense>
+);
+
+export const ProfileSetup = (props) => (
+  <Suspense fallback={<LoadingSpinner />}>
+    <LazyProfileSetup {...props} />
+  </Suspense>
+);
+
+export const ParentVerify = (props) => (
+  <Suspense fallback={<LoadingSpinner />}>
+    <LazyParentVerify {...props} />
   </Suspense>
 );

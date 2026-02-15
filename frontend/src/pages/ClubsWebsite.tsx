@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { Search, Menu, X, Users, ChevronRight, BarChart3, Calendar as CalendarIcon, ChevronDown, BookOpen, MessageCircle } from 'lucide-react';
+import { Search, Menu, X, Users, ChevronRight, BarChart3, Calendar as CalendarIcon, ChevronDown, BookOpen, MessageCircle, CheckCircle, Loader2 } from 'lucide-react';
+import { supabase } from '../lib/supabase';
 import { useAuth } from '../config/firebase';
 import UserMenu from '../components/auth/userMenu';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -129,6 +130,82 @@ const ClubsWebsite = () => {
   // Add handler for Calendar button
   const handleCalendarClick = () => {
     navigate('/calendar');
+  };
+
+  // ── Join Club Logic ───────────────────────────────────────────
+  const [joiningClubId, setJoiningClubId] = useState<string | null>(null);
+  const [joinMessage, setJoinMessage] = useState<{ type: 'success' | 'error' | 'info'; text: string } | null>(null);
+
+  // Auto-dismiss join message after 5 seconds
+  useEffect(() => {
+    if (joinMessage) {
+      const timer = setTimeout(() => setJoinMessage(null), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [joinMessage]);
+
+  const handleJoinClub = async (club: any) => {
+    // 1. Check auth
+    if (!user) {
+      setJoinMessage({ type: 'info', text: 'Please log in to join a club.' });
+      navigate('/login');
+      return;
+    }
+
+    setJoiningClubId(club.id);
+    setJoinMessage(null);
+
+    try {
+      // 2. Check profile
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('id, full_name')
+        .eq('firebase_uid', user.uid)
+        .maybeSingle();
+
+      if (profileError) throw profileError;
+
+      if (!profile) {
+        setJoinMessage({ type: 'info', text: 'Please complete your profile before joining a club.' });
+        navigate('/profile-setup');
+        return;
+      }
+
+      // 3. Check for duplicate application
+      const { data: existing } = await supabase
+        .from('signatures')
+        .select('id')
+        .eq('profile_id', profile.id)
+        .eq('club_id', club.id)
+        .maybeSingle();
+
+      if (existing) {
+        setJoinMessage({ type: 'info', text: `You've already applied to ${club.name}.` });
+        return;
+      }
+
+      // 4. Insert signature
+      const { error: insertError } = await supabase.from('signatures').insert({
+        profile_id: profile.id,
+        club_id: club.id,
+        club_name: club.name,
+        school_name: selectedSchool,
+        student_name: profile.full_name,
+        status: 'PENDING_PARENT',
+      });
+
+      if (insertError) throw insertError;
+
+      setJoinMessage({
+        type: 'success',
+        text: `Application submitted for ${club.name}! Your parent will receive a verification link.`,
+      });
+    } catch (err: any) {
+      console.error('Join club error:', err);
+      setJoinMessage({ type: 'error', text: err.message || 'Failed to submit application.' });
+    } finally {
+      setJoiningClubId(null);
+    }
   };
 
   // ── Loading / error states (auth + Supabase) ──────────────
@@ -288,8 +365,16 @@ const ClubsWebsite = () => {
 
             {/* Quick Action Buttons */}
             <div className="flex flex-col gap-3 min-w-[200px]">
-              <button className="bg-white/20 hover:bg-white/30 backdrop-blur-sm border border-white/30 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 hover:scale-105">
-                Join Club
+              <button
+                onClick={(e) => { e.stopPropagation(); handleJoinClub(club); }}
+                disabled={joiningClubId === club.id}
+                className="bg-white/20 hover:bg-white/30 backdrop-blur-sm border border-white/30 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 hover:scale-105 disabled:opacity-50 disabled:cursor-wait flex items-center justify-center gap-2"
+              >
+                {joiningClubId === club.id ? (
+                  <><Loader2 size={16} className="animate-spin" /> Joining…</>
+                ) : (
+                  'Join Club'
+                )}
               </button>
               <button className="bg-transparent hover:bg-white/10 border-2 border-white/50 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 hover:scale-105">
                 Contact Sponsor
@@ -425,8 +510,16 @@ const ClubsWebsite = () => {
               <p className="text-blue-100 text-sm mb-4">
                 Connect with like-minded students and make a difference!
               </p>
-              <button className="w-full bg-white text-blue-600 font-semibold py-3 px-4 rounded-xl hover:bg-blue-50 transition-all duration-200 hover:scale-105">
-                Get Started Today
+              <button
+                onClick={(e) => { e.stopPropagation(); handleJoinClub(club); }}
+                disabled={joiningClubId === club.id}
+                className="w-full bg-white text-blue-600 font-semibold py-3 px-4 rounded-xl hover:bg-blue-50 transition-all duration-200 hover:scale-105 disabled:opacity-50 disabled:cursor-wait flex items-center justify-center gap-2"
+              >
+                {joiningClubId === club.id ? (
+                  <><Loader2 size={16} className="animate-spin" /> Joining…</>
+                ) : (
+                  'Get Started Today'
+                )}
               </button>
             </div>
           </div>
@@ -775,7 +868,29 @@ const ClubsWebsite = () => {
         </div>
       </div>
 
-      {/* Legacy AI chatbot UI removed; global floating Chatbot is used (App.jsx) */}
+      {/* Join Club Toast Notification */}
+      {joinMessage && (
+        <div className="fixed top-6 right-6 z-50 max-w-sm animate-[slideIn_0.3s_ease-out]">
+          <div
+            onClick={() => setJoinMessage(null)}
+            className={`flex items-start gap-3 p-4 rounded-xl shadow-2xl border cursor-pointer transition-all hover:scale-[1.02] ${joinMessage.type === 'success'
+                ? 'bg-green-50 border-green-200 text-green-800'
+                : joinMessage.type === 'error'
+                  ? 'bg-red-50 border-red-200 text-red-800'
+                  : 'bg-blue-50 border-blue-200 text-blue-800'
+              }`}
+          >
+            {joinMessage.type === 'success' ? (
+              <CheckCircle size={20} className="text-green-600 mt-0.5 shrink-0" />
+            ) : joinMessage.type === 'error' ? (
+              <X size={20} className="text-red-600 mt-0.5 shrink-0" />
+            ) : (
+              <BookOpen size={20} className="text-blue-600 mt-0.5 shrink-0" />
+            )}
+            <p className="text-sm font-medium">{joinMessage.text}</p>
+          </div>
+        </div>
+      )}
 
       {/* Simple Credit */}
       <div className="fixed bottom-0 left-0 right-0 text-center py-2 text-gray-600 text-sm bg-white border-t border-gray-200">

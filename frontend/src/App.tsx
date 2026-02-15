@@ -13,7 +13,9 @@ import {
   About,
   Profile,
   Calendar,
-  ClubQuiz
+  ClubQuiz,
+  ProfileSetup,
+  ParentVerify,
 } from './components/lazy/LazyPages';
 import AdminDashboard from './pages/AdminDashboard';
 import Chatbot from './components/Chatbot'; // Step 2: Import the Chatbot component
@@ -59,99 +61,111 @@ const PublicRoute = ({ children }) => {
 
 const AppRoutes = () => {
   return (
-      <Routes>
-        {/* Removed insecure bypass routes for security */}
-        <Route 
-          path="/login" 
-          element={
-            <PublicRoute>
-              <Login />
-            </PublicRoute>
-          } 
-        />
-        <Route 
-          path="/" 
-          element={<Navigate to="/home" replace />} 
-        />
-        <Route 
-          path="/home" 
-          element={<ClubsWebsite />} 
-        />
-        <Route 
-          path="/clubs/:schoolSlug/:clubSlug" 
-          element={<ClubsWebsite />} 
-        />
-        <Route 
-          path="/compare" 
-          element={
-            <AuthGuard>
-              <Compare />
-            </AuthGuard>
-          } 
-        />
-        <Route 
-          path="/events" 
-          element={
-            <AuthGuard>
-              <Events />
-            </AuthGuard>
-          } 
-        />
-        <Route 
-          path="/create-account" 
-          element={
-            <PublicRoute>
-              <CreateAccount />
-            </PublicRoute>
-          } 
-        />
-        <Route 
-          path="/about" 
-          element={
-            <AuthGuard>
-              <About />
-            </AuthGuard>
-          } 
-        />
-        <Route 
-          path="/profile" 
-          element={
-            <AuthGuard>
-              <Profile />
-            </AuthGuard>
-          } 
-        />
-        <Route 
-          path="/calendar" 
-          element={
-            <AuthGuard>
-              <Calendar />
-            </AuthGuard>
-          } 
-        />
-        <Route 
-          path="/club-quiz" 
-          element={
-            <AuthGuard>
-              <ClubQuiz />
-            </AuthGuard>
-          } 
-        />
-        <Route 
-          path="/admin" 
-          element={
-            <AuthGuard requiredRole="admin">
-              <AdminDashboard />
-            </AuthGuard>
-          } 
-        />
-        {/* Full-page Chatbot route: uses same component with fullPage layout */}
-        <Route
-          path="/chatbot"
-          element={<ChatbotPage />}
-        />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+    <Routes>
+      {/* Removed insecure bypass routes for security */}
+      <Route
+        path="/login"
+        element={
+          <PublicRoute>
+            <Login />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/"
+        element={<Navigate to="/home" replace />}
+      />
+      <Route
+        path="/home"
+        element={<ClubsWebsite />}
+      />
+      <Route
+        path="/clubs/:schoolSlug/:clubSlug"
+        element={<ClubsWebsite />}
+      />
+      <Route
+        path="/compare"
+        element={
+          <AuthGuard>
+            <Compare />
+          </AuthGuard>
+        }
+      />
+      <Route
+        path="/events"
+        element={
+          <AuthGuard>
+            <Events />
+          </AuthGuard>
+        }
+      />
+      <Route
+        path="/create-account"
+        element={
+          <PublicRoute>
+            <CreateAccount />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/about"
+        element={
+          <AuthGuard>
+            <About />
+          </AuthGuard>
+        }
+      />
+      <Route
+        path="/profile"
+        element={
+          <AuthGuard>
+            <Profile />
+          </AuthGuard>
+        }
+      />
+      <Route
+        path="/calendar"
+        element={
+          <AuthGuard>
+            <Calendar />
+          </AuthGuard>
+        }
+      />
+      <Route
+        path="/club-quiz"
+        element={
+          <AuthGuard>
+            <ClubQuiz />
+          </AuthGuard>
+        }
+      />
+      <Route
+        path="/admin"
+        element={
+          <AuthGuard requiredRole="admin">
+            <AdminDashboard />
+          </AuthGuard>
+        }
+      />
+      <Route
+        path="/profile-setup"
+        element={
+          <AuthGuard>
+            <ProfileSetup />
+          </AuthGuard>
+        }
+      />
+      <Route
+        path="/verify/:signatureId"
+        element={<ParentVerify />}
+      />
+      {/* Full-page Chatbot route: uses same component with fullPage layout */}
+      <Route
+        path="/chatbot"
+        element={<ChatbotPage />}
+      />
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   );
 };
 
@@ -201,6 +215,6 @@ const App = () => {
     </Router>
   );
 }
-;
+  ;
 
 export default App;

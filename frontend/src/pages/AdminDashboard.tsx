@@ -10,11 +10,25 @@ import {
   Trash2,
   Eye,
   Download,
-  Upload
+  Upload,
+  FileSignature,
+  Loader2,
 } from 'lucide-react';
 import { useClubs, useCategories, useSchools } from '../hooks/useClubs';
 import { isAdmin, getCurrentUserRole, logAdminAction } from '../utils/adminUtils';
 import { createAccessibleButton, createAccessibleTable } from '../utils/accessibility';
+import { supabase } from '../lib/supabase';
+
+interface SignatureRecord {
+  id: string;
+  student_name: string;
+  club_name: string;
+  school_name: string;
+  status: string;
+  parent_ip: string | null;
+  parent_signed_at: string | null;
+  created_at: string;
+}
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -22,6 +36,31 @@ const AdminDashboard = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedClub, setSelectedClub] = useState(null);
   const [showClubModal, setShowClubModal] = useState(false);
+
+  // Signatures audit data
+  const [signatures, setSignatures] = useState<SignatureRecord[]>([]);
+  const [signaturesLoading, setSignaturesLoading] = useState(false);
+
+  useEffect(() => {
+    if (activeTab === 'signatures') {
+      const fetchSignatures = async () => {
+        setSignaturesLoading(true);
+        try {
+          const { data, error } = await supabase
+            .from('signatures')
+            .select('*')
+            .order('created_at', { ascending: false });
+          if (error) throw error;
+          setSignatures((data ?? []) as SignatureRecord[]);
+        } catch (err) {
+          console.error('Error fetching signatures:', err);
+        } finally {
+          setSignaturesLoading(false);
+        }
+      };
+      fetchSignatures();
+    }
+  }, [activeTab]);
 
   // Data hooks
   const { data: clubs, loading: clubsLoading } = useClubs({ pageSize: 100 });
@@ -108,10 +147,26 @@ const AdminDashboard = () => {
   const tabs = [
     { id: 'overview', label: 'Overview', icon: BarChart3 },
     { id: 'clubs', label: 'Clubs', icon: BookOpen },
+    { id: 'signatures', label: 'Signatures', icon: FileSignature },
     { id: 'users', label: 'Users', icon: Users },
     { id: 'events', label: 'Events', icon: Calendar },
     { id: 'settings', label: 'Settings', icon: Settings }
   ];
+
+  const formatDate = (iso: string | null) => {
+    if (!iso) return '—';
+    try {
+      return new Date(iso).toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+    } catch {
+      return iso;
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -326,6 +381,85 @@ const AdminDashboard = () => {
                           No clubs found
                         </td>
                       </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'signatures' && (
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-xl font-semibold text-gray-900">Parent Signature Audit Log</h2>
+                <span className="text-sm text-gray-500">
+                  {signatures.length} total application{signatures.length !== 1 ? 's' : ''}
+                </span>
+              </div>
+
+              <div className="overflow-x-auto">
+                <table
+                  className="min-w-full divide-y divide-gray-200"
+                  {...createAccessibleTable('Signatures audit table')}
+                >
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Club</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">School</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Parent IP</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Submitted</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Signed</th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {signaturesLoading ? (
+                      <tr>
+                        <td colSpan={7} className="px-6 py-8 text-center text-gray-500">
+                          <Loader2 className="h-5 w-5 animate-spin inline-block mr-2" />
+                          Loading signatures…
+                        </td>
+                      </tr>
+                    ) : signatures.length === 0 ? (
+                      <tr>
+                        <td colSpan={7} className="px-6 py-8 text-center text-gray-500">
+                          No club applications yet.
+                        </td>
+                      </tr>
+                    ) : (
+                      signatures.map((sig) => (
+                        <tr key={sig.id} className="hover:bg-gray-50">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                            {sig.student_name}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {sig.club_name}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                            {sig.school_name}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span
+                              className={`px-2.5 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${sig.status === 'APPROVED'
+                                  ? 'bg-green-100 text-green-800'
+                                  : 'bg-yellow-100 text-yellow-800'
+                                }`}
+                            >
+                              {sig.status === 'APPROVED' ? '✓ Approved' : '⏳ Pending'}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono">
+                            {sig.parent_ip || '—'}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {formatDate(sig.created_at)}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {formatDate(sig.parent_signed_at)}
+                          </td>
+                        </tr>
+                      ))
                     )}
                   </tbody>
                 </table>
