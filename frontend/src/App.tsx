@@ -16,6 +16,7 @@ import {
   ClubQuiz,
   ProfileSetup,
   ParentVerify,
+  LandingPage,
 } from './components/lazy/LazyPages';
 import AdminDashboard from './pages/AdminDashboard';
 import Chatbot from './components/Chatbot'; // Step 2: Import the Chatbot component
@@ -56,7 +57,7 @@ const PublicRoute = ({ children }) => {
     );
   }
 
-  return user ? <Navigate to="/" replace /> : children;
+  return user ? <Navigate to="/app" replace /> : children;
 };
 
 const AppRoutes = () => {
@@ -73,11 +74,15 @@ const AppRoutes = () => {
       />
       <Route
         path="/"
-        element={<Navigate to="/home" replace />}
+        element={<LandingPage />}
+      />
+      <Route
+        path="/app"
+        element={<ClubsWebsite />}
       />
       <Route
         path="/home"
-        element={<ClubsWebsite />}
+        element={<Navigate to="/app" replace />}
       />
       <Route
         path="/clubs/:schoolSlug/:clubSlug"

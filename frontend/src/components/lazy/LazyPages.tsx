@@ -89,3 +89,10 @@ export const ParentVerify = (props) => (
     <LazyParentVerify {...props} />
   </Suspense>
 );
+
+const LazyLandingPage = lazy(() => import('../../pages/LandingPage'));
+export const LandingPage = (props) => (
+  <Suspense fallback={<LoadingSpinner />}>
+    <LazyLandingPage {...props} />
+  </Suspense>
+);
