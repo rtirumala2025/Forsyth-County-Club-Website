@@ -1,8 +1,8 @@
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+export default {
   content: [
-    "./src/**/*.{js,jsx,ts,tsx}",
-    "./public/index.html"
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     extend: {
@@ -183,7 +183,7 @@ module.exports = {
   },
   plugins: [
     // Custom plugin for design system utilities
-    function({ addUtilities, theme }) {
+    function ({ addUtilities, theme }) {
       const newUtilities = {
         // Text utilities
         '.text-gradient': {
@@ -282,7 +282,7 @@ module.exports = {
           'background-color': theme('colors.gray.400'),
         },
       };
-      
+
       addUtilities(newUtilities);
     }
   ],

@@ -2,30 +2,20 @@
   "name": "forsyth-county-club-website",
   "version": "1.0.0",
   "description": "Forsyth County Club Website - React Application",
-  "main": "src/index.js",
+  "type": "module",
+  "main": "src/index.tsx",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "test:coverage": "react-scripts test --coverage --watchAll=false",
-    "test:a11y": "jest --testPathPattern=accessibility",
-    "eject": "react-scripts eject",
-    "lint": "eslint src --ext .js,.jsx,.ts,.tsx",
-    "lint:fix": "eslint src --ext .js,.jsx,.ts,.tsx --fix",
-    "format": "prettier --write src/**/*.{js,jsx,ts,tsx,json,css,md}",
-    "format:check": "prettier --check src/**/*.{js,jsx,ts,tsx,json,css,md}",
-    "type-check": "tsc --noEmit",
-    "analyze": "npm run build && npx webpack-bundle-analyzer build/static/js/*.js",
-    "migrate:clubs": "node src/utils/migrateClubData.js",
-    "verify:migration": "node src/utils/verifyMigration.js",
-    "lighthouse": "lighthouse http://localhost:3000 --output html --output-path ./lighthouse-report.html",
-    "lighthouse:ci": "lhci autorun",
-    "precommit": "lint-staged",
-    "prepare": "husky install"
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview",
+    "data:migrate": "npx tsx scripts/migrate-to-supabase.ts"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.95.3",
     "@tanstack/react-query": "^4.24.0",
     "autoprefixer": "^10.4.0",
+    "dotenv": "^17.3.1",
     "firebase": "^9.17.0",
     "framer-motion": "^12.23.16",
     "fuse.js": "^6.6.2",
@@ -37,11 +27,9 @@
     "react-firebase-hooks": "^5.1.1",
     "react-rnd": "^10.5.2",
     "react-router-dom": "^6.8.0",
-    "react-scripts": "5.0.1",
     "react-window": "^1.8.8",
     "react-window-infinite-loader": "^1.0.9",
     "tailwindcss": "^3.2.0",
-    "workbox-webpack-plugin": "^6.5.4",
     "workbox-window": "^6.5.4"
   },
   "devDependencies": {
@@ -49,23 +37,24 @@
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^14.4.3",
-    "@types/jest": "^29.4.0",
-    "@types/react": "^18.0.28",
-    "@types/react-dom": "^18.0.11",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^25.2.3",
+    "@types/react": "^18.3.28",
+    "@types/react-dom": "^18.3.7",
     "@types/react-window": "^1.8.5",
+    "@vitejs/plugin-react": "^5.1.4",
     "axe-core": "^4.6.0",
     "eslint": "^8.35.0",
-    "eslint-config-react-app": "^7.0.1",
     "eslint-plugin-jsx-a11y": "^6.7.1",
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-react-hooks": "^4.6.0",
-    "husky": "^8.0.3",
     "jest-axe": "^7.0.0",
     "lighthouse": "^10.2.0",
     "lint-staged": "^13.1.2",
     "prettier": "^2.8.4",
-    "typescript": "^4.9.5",
-    "webpack-bundle-analyzer": "^4.7.0"
+    "typescript": "^5.9.3",
+    "vite": "^7.3.1",
+    "vite-tsconfig-paths": "^6.1.1"
   },
   "browserslist": {
     "production": [
@@ -86,20 +75,5 @@
     "website"
   ],
   "author": "Forsyth County Club Website",
-  "license": "MIT",
-  "lint-staged": {
-    "src/**/*.{js,jsx,ts,tsx}": [
-      "eslint --fix",
-      "prettier --write"
-    ],
-    "src/**/*.{json,css,md}": [
-      "prettier --write"
-    ]
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged",
-      "pre-push": "npm run test:coverage"
-    }
-  }
+  "license": "MIT"
 }
