@@ -7,20 +7,25 @@
  * Usage: npm run data:migrate
  */
 
-import 'dotenv/config';
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const { createClient } = require('@supabase/supabase-js');
+import dotenv from 'dotenv';
+import { createClient } from '@supabase/supabase-js';
+
+// Load both .env files — frontend for URL, backend for service_role key
+dotenv.config({ path: '.env' });
+dotenv.config({ path: '../backend/.env' });
 
 // -------------------------------------------------------------------
 // Env Setup
 // -------------------------------------------------------------------
 const SUPABASE_URL = process.env.VITE_SUPABASE_URL;
-const SUPABASE_KEY = process.env.VITE_SUPABASE_ANON_KEY;
+const SUPABASE_KEY = process.env.VITE_SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY;
 
 if (!SUPABASE_URL || !SUPABASE_KEY) {
-    console.error('❌ Missing VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY in .env');
+    console.error('❌ Missing VITE_SUPABASE_URL or VITE_SUPABASE_SERVICE_ROLE_KEY in .env');
     process.exit(1);
 }
+
+console.log(`🔑 Using ${process.env.VITE_SUPABASE_SERVICE_ROLE_KEY ? 'service_role' : 'anon'} key`);
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
