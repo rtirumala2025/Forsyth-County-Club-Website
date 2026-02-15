@@ -1,190 +1,267 @@
 import React, { useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Search, FileSignature, Calendar, ArrowRight, Users } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Search, FileSignature, Calendar, ArrowRight, Users, MapPin, BookOpen, Trophy } from 'lucide-react';
 import { useAuth } from '../config/firebase';
+
+/* ── Animation Orchestration ─────────────────────────────── */
+
+const stagger = {
+    hidden: {},
+    show: {
+        transition: { staggerChildren: 0.08, delayChildren: 0.15 },
+    },
+};
+
+const fadeUp = {
+    hidden: { opacity: 0, y: 18 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] as const } },
+};
+
+const snapIn = {
+    hidden: { opacity: 0, scale: 0.96 },
+    show: { opacity: 1, scale: 1, transition: { duration: 0.35, ease: 'easeOut' as const } },
+};
+
+/* ── Component ───────────────────────────────────────────── */
 
 const LandingPage = () => {
     const { user, loading } = useAuth();
     const navigate = useNavigate();
 
-    // Auto-redirect logged-in users to the app dashboard
     useEffect(() => {
-        if (!loading && user) {
-            navigate('/app', { replace: true });
-        }
+        if (!loading && user) navigate('/app', { replace: true });
     }, [user, loading, navigate]);
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-white flex items-center justify-center">
-                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600" />
+            <div className="min-h-screen bg-stone-100 flex items-center justify-center">
+                <div className="w-8 h-8 border-2 border-fcs-blue border-t-transparent rounded-full animate-spin" />
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-white">
-            {/* ── Simplified Navbar ────────────────────────────────── */}
-            <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
-                <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-                    <Link to="/" className="flex items-center gap-2.5 no-underline">
-                        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center shadow-sm">
-                            <Users className="w-5 h-5 text-white" />
+        <div className="min-h-screen bg-stone-100 bg-noise font-body">
+
+            {/* ── Navbar ──────────────────────────────────────── */}
+            <nav className="sticky top-0 z-50 bg-stone-50/90 backdrop-blur-md border-b border-stone-200">
+                <div className="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between">
+                    <Link to="/" className="flex items-center gap-2 no-underline">
+                        <div className="w-7 h-7 bg-fcs-blue rounded-md flex items-center justify-center">
+                            <BookOpen className="w-4 h-4 text-white" />
                         </div>
-                        <span className="text-lg font-bold text-gray-900 tracking-tight">
-                            ClubConnect
+                        <span className="font-heading font-bold text-fcs-blue text-[15px] tracking-tight">
+                            FCS&nbsp;ClubConnect
                         </span>
                     </Link>
 
                     <Link
                         to="/login"
-                        className="px-5 py-2 text-sm font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors shadow-sm no-underline"
+                        className="px-4 py-1.5 text-xs font-semibold text-white bg-fcs-blue rounded-md hover:bg-fcs-blue-600 transition-colors no-underline tracking-wide uppercase"
                     >
                         Student Login
                     </Link>
                 </div>
             </nav>
 
-            {/* ── Hero Section ─────────────────────────────────────── */}
-            <section className="relative overflow-hidden">
-                {/* Subtle background pattern */}
-                <div className="absolute inset-0 bg-gradient-to-b from-blue-50/60 to-white pointer-events-none" />
-                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-100/40 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none" />
-                <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-indigo-100/30 rounded-full blur-3xl translate-y-1/2 -translate-x-1/3 pointer-events-none" />
+            {/* ── Hero ───────────────────────────────────────── */}
+            <motion.section
+                variants={stagger}
+                initial="hidden"
+                animate="show"
+                className="max-w-7xl mx-auto px-6 pt-20 pb-12"
+            >
+                <motion.div variants={fadeUp} className="mb-3">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-fcs-blue/5 border border-fcs-blue/10 rounded-md text-[11px] font-semibold text-fcs-blue uppercase tracking-widest">
+                        <MapPin className="w-3 h-3" />
+                        Forsyth County Schools District
+                    </span>
+                </motion.div>
 
-                <div className="relative max-w-4xl mx-auto px-6 pt-24 pb-20 text-center">
-                    <div className="inline-flex items-center gap-2 px-4 py-1.5 mb-6 bg-blue-50 text-blue-700 rounded-full text-xs font-semibold tracking-wide uppercase border border-blue-100">
-                        <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse" />
-                        Forsyth County&apos;s Student Hub
-                    </div>
+                <motion.h1
+                    variants={fadeUp}
+                    className="font-heading font-extrabold text-fcs-blue text-5xl sm:text-6xl lg:text-7xl leading-[0.95] tracking-tight max-w-4xl"
+                >
+                    Find your people.
+                    <br />
+                    <span className="text-fcs-gold">Join your club.</span>
+                </motion.h1>
 
-                    <h1 className="text-5xl sm:text-6xl font-extrabold text-gray-900 leading-[1.1] tracking-tight mb-6">
-                        Discover Your Community
-                        <br />
-                        <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                            at Forsyth County.
-                        </span>
-                    </h1>
+                <motion.p
+                    variants={fadeUp}
+                    className="mt-5 text-stone-500 text-base sm:text-lg max-w-xl leading-relaxed"
+                >
+                    The central hub for 300+ clubs, student organizations, and leadership
+                    opportunities across all eight Forsyth County high schools.
+                </motion.p>
 
-                    <p className="text-lg sm:text-xl text-gray-500 max-w-2xl mx-auto mb-10 leading-relaxed">
-                        The central hub for all 300+ clubs, student organizations, and leadership
-                        opportunities across every Forsyth County high school.
-                    </p>
-
-                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                        <Link
-                            to="/app"
-                            className="group inline-flex items-center gap-2 px-8 py-3.5 text-base font-semibold text-white bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl hover:shadow-lg hover:shadow-blue-500/25 transition-all duration-200 no-underline"
-                        >
-                            Browse Clubs
-                            <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-                        </Link>
-
-                        <Link
-                            to="/login"
-                            className="inline-flex items-center gap-2 px-8 py-3.5 text-base font-semibold text-gray-700 bg-white border-2 border-gray-200 rounded-xl hover:border-blue-300 hover:text-blue-600 transition-all duration-200 no-underline"
-                        >
-                            Student Login
-                        </Link>
-                    </div>
-
-                    {/* Stats row */}
-                    <div className="mt-16 flex items-center justify-center gap-12 text-center">
-                        <div>
-                            <p className="text-4xl font-bold text-gray-900">300+</p>
-                            <p className="text-sm text-gray-400 mt-1">Active Clubs</p>
-                        </div>
-                        <div className="w-px h-10 bg-gray-200" />
-                        <div>
-                            <p className="text-4xl font-bold text-gray-900">8</p>
-                            <p className="text-sm text-gray-400 mt-1">High Schools</p>
-                        </div>
-                        <div className="w-px h-10 bg-gray-200" />
-                        <div>
-                            <p className="text-4xl font-bold text-gray-900">100%</p>
-                            <p className="text-sm text-gray-400 mt-1">Paperless</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* ── Feature Grid ─────────────────────────────────────── */}
-            <section className="max-w-5xl mx-auto px-6 py-20">
-                <div className="text-center mb-14">
-                    <h2 className="text-3xl font-bold text-gray-900 mb-3">
-                        Everything in One Place
-                    </h2>
-                    <p className="text-gray-500 max-w-lg mx-auto">
-                        Built for students, by students — making school involvement effortless.
-                    </p>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {/* Card 1 — Smart Discovery */}
-                    <div className="group p-8 bg-gray-50 rounded-2xl border border-gray-100 hover:border-blue-200 hover:bg-blue-50/40 transition-all duration-300">
-                        <div className="w-12 h-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
-                            <Search className="w-6 h-6" />
-                        </div>
-                        <h3 className="text-lg font-semibold text-gray-900 mb-2">Smart Discovery</h3>
-                        <p className="text-gray-500 text-sm leading-relaxed">
-                            Search and filter across 300+ clubs by interest, category, or school.
-                            Find the perfect fit in seconds.
-                        </p>
-                    </div>
-
-                    {/* Card 2 — Digital Permissions */}
-                    <div className="group p-8 bg-gray-50 rounded-2xl border border-gray-100 hover:border-indigo-200 hover:bg-indigo-50/40 transition-all duration-300">
-                        <div className="w-12 h-12 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
-                            <FileSignature className="w-6 h-6" />
-                        </div>
-                        <h3 className="text-lg font-semibold text-gray-900 mb-2">Digital Permissions</h3>
-                        <p className="text-gray-500 text-sm leading-relaxed">
-                            No more paper forms. Parents verify and sign electronically
-                            with a single click.
-                        </p>
-                    </div>
-
-                    {/* Card 3 — Live Schedules */}
-                    <div className="group p-8 bg-gray-50 rounded-2xl border border-gray-100 hover:border-purple-200 hover:bg-purple-50/40 transition-all duration-300">
-                        <div className="w-12 h-12 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
-                            <Calendar className="w-6 h-6" />
-                        </div>
-                        <h3 className="text-lg font-semibold text-gray-900 mb-2">Live Schedules</h3>
-                        <p className="text-gray-500 text-sm leading-relaxed">
-                            Stay up to date with meeting times, events, and deadlines.
-                            Never miss a moment.
-                        </p>
-                    </div>
-                </div>
-            </section>
-
-            {/* ── CTA Footer ───────────────────────────────────────── */}
-            <section className="bg-gradient-to-r from-blue-600 to-indigo-600">
-                <div className="max-w-4xl mx-auto px-6 py-16 text-center">
-                    <h2 className="text-3xl font-bold text-white mb-4">
-                        Ready to get involved?
-                    </h2>
-                    <p className="text-blue-100 mb-8 max-w-lg mx-auto">
-                        Join thousands of Forsyth County students already using ClubConnect
-                        to find their community.
-                    </p>
+                <motion.div variants={fadeUp} className="mt-8 flex flex-wrap gap-3">
                     <Link
-                        to="/app"
-                        className="inline-flex items-center gap-2 px-8 py-3.5 text-base font-semibold text-blue-600 bg-white rounded-xl hover:shadow-lg transition-all duration-200 no-underline"
+                        to="/login"
+                        className="group inline-flex items-center gap-2 px-6 py-2.5 text-sm font-semibold text-white bg-fcs-blue rounded-md shadow-hard-sm hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all no-underline"
                     >
-                        Explore All Clubs
-                        <ArrowRight className="w-4 h-4" />
+                        Get Started
+                        <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
                     </Link>
-                </div>
-            </section>
+                    <Link
+                        to="/about"
+                        className="inline-flex items-center gap-2 px-6 py-2.5 text-sm font-semibold text-fcs-blue bg-transparent border border-fcs-blue/20 rounded-md hover:bg-fcs-blue/5 transition-all no-underline"
+                    >
+                        Learn More
+                    </Link>
+                </motion.div>
+            </motion.section>
 
-            {/* ── Footer ───────────────────────────────────────────── */}
-            <footer className="bg-gray-50 border-t border-gray-100">
-                <div className="max-w-6xl mx-auto px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-400">
+            {/* ── Bento Grid ─────────────────────────────────── */}
+            <motion.section
+                variants={stagger}
+                initial="hidden"
+                whileInView="show"
+                viewport={{ once: true, amount: 0.15 }}
+                className="max-w-7xl mx-auto px-6 pb-20"
+            >
+                <div className="grid grid-cols-1 md:grid-cols-6 gap-3">
+
+                    {/* ─ Stats Card (spans 2 cols) ─ */}
+                    <motion.div
+                        variants={snapIn}
+                        className="md:col-span-2 bg-fcs-blue text-white p-7 rounded-md border border-fcs-blue"
+                    >
+                        <div className="flex items-center gap-2 mb-6">
+                            <Trophy className="w-4 h-4 text-fcs-gold" />
+                            <span className="text-[11px] font-semibold uppercase tracking-widest text-fcs-gold">
+                                By the Numbers
+                            </span>
+                        </div>
+                        <div className="space-y-5">
+                            <div>
+                                <p className="font-heading font-extrabold text-4xl leading-none">300+</p>
+                                <p className="text-[13px] text-white/60 mt-1">Active Clubs</p>
+                            </div>
+                            <div className="w-full h-px bg-white/10" />
+                            <div className="flex gap-8">
+                                <div>
+                                    <p className="font-heading font-bold text-2xl leading-none">8</p>
+                                    <p className="text-[13px] text-white/60 mt-1">Schools</p>
+                                </div>
+                                <div>
+                                    <p className="font-heading font-bold text-2xl leading-none">12</p>
+                                    <p className="text-[13px] text-white/60 mt-1">Categories</p>
+                                </div>
+                            </div>
+                        </div>
+                    </motion.div>
+
+                    {/* ─ Smart Discovery (spans 4 cols) ─ */}
+                    <motion.div
+                        variants={snapIn}
+                        className="md:col-span-4 bg-stone-50 p-7 rounded-md border border-stone-200 flex flex-col justify-between"
+                    >
+                        <div>
+                            <div className="w-10 h-10 bg-fcs-blue/5 border border-fcs-blue/10 rounded-md flex items-center justify-center mb-4">
+                                <Search className="w-5 h-5 text-fcs-blue" />
+                            </div>
+                            <h3 className="font-heading font-bold text-fcs-blue text-xl mb-2">
+                                Smart Discovery
+                            </h3>
+                            <p className="text-stone-500 text-sm leading-relaxed max-w-md">
+                                Filter across all 300+ clubs by interest, category, or school.
+                                Our recommendation engine matches you with clubs that fit — instantly.
+                            </p>
+                        </div>
+                        <div className="mt-6 flex flex-wrap gap-2">
+                            {['Academic', 'STEM', 'Arts', 'Service', 'Sports', 'Leadership'].map((tag) => (
+                                <span key={tag} className="px-3 py-1 text-[11px] font-semibold text-fcs-blue bg-fcs-blue/5 border border-fcs-blue/10 rounded-md uppercase tracking-wide">
+                                    {tag}
+                                </span>
+                            ))}
+                        </div>
+                    </motion.div>
+
+                    {/* ─ Digital Permissions (spans 3 cols) ─ */}
+                    <motion.div
+                        variants={snapIn}
+                        className="md:col-span-3 bg-stone-50 p-7 rounded-md border border-stone-200"
+                    >
+                        <div className="w-10 h-10 bg-fcs-gold/10 border border-fcs-gold/20 rounded-md flex items-center justify-center mb-4">
+                            <FileSignature className="w-5 h-5 text-fcs-gold-700" />
+                        </div>
+                        <h3 className="font-heading font-bold text-fcs-blue text-xl mb-2">
+                            Digital Permissions
+                        </h3>
+                        <p className="text-stone-500 text-sm leading-relaxed">
+                            No more paper forms. Students apply, parents verify,
+                            and club sponsors approve — all electronically with a single workflow.
+                        </p>
+                        <div className="mt-5 flex items-center gap-3">
+                            <div className="flex -space-x-2">
+                                <div className="w-7 h-7 bg-fcs-blue/10 border border-stone-200 rounded-md flex items-center justify-center text-[10px] font-bold text-fcs-blue">S</div>
+                                <div className="w-7 h-7 bg-fcs-gold/10 border border-stone-200 rounded-md flex items-center justify-center text-[10px] font-bold text-fcs-gold-700">P</div>
+                                <div className="w-7 h-7 bg-teal-50 border border-stone-200 rounded-md flex items-center justify-center text-[10px] font-bold text-teal">A</div>
+                            </div>
+                            <span className="text-[11px] text-stone-400 font-medium">
+                                Student → Parent → Advisor
+                            </span>
+                        </div>
+                    </motion.div>
+
+                    {/* ─ Live Schedules (spans 3 cols) ─ */}
+                    <motion.div
+                        variants={snapIn}
+                        className="md:col-span-3 bg-stone-50 p-7 rounded-md border border-stone-200"
+                    >
+                        <div className="w-10 h-10 bg-teal-50 border border-teal-200 rounded-md flex items-center justify-center mb-4">
+                            <Calendar className="w-5 h-5 text-teal" />
+                        </div>
+                        <h3 className="font-heading font-bold text-fcs-blue text-xl mb-2">
+                            Live Schedules
+                        </h3>
+                        <p className="text-stone-500 text-sm leading-relaxed">
+                            Never miss a meeting. Sync club events to your calendar,
+                            get reminders, and stay on top of deadlines and competitions.
+                        </p>
+                        <div className="mt-5 flex gap-2">
+                            {['Mon 3:30', 'Wed 4:00', 'Fri 3:15'].map((t) => (
+                                <span key={t} className="px-2.5 py-1 text-[11px] font-mono font-medium text-teal bg-teal-50 border border-teal-200 rounded-md">
+                                    {t}
+                                </span>
+                            ))}
+                        </div>
+                    </motion.div>
+
+                    {/* ─ CTA Card (full width) ─ */}
+                    <motion.div
+                        variants={snapIn}
+                        className="md:col-span-6 bg-fcs-blue p-8 rounded-md border border-fcs-blue flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5"
+                    >
+                        <div>
+                            <h3 className="font-heading font-bold text-white text-xl mb-1.5">
+                                Ready to get involved?
+                            </h3>
+                            <p className="text-white/50 text-sm">
+                                Create a free student account and join your first club in minutes.
+                            </p>
+                        </div>
+                        <Link
+                            to="/create-account"
+                            className="group inline-flex items-center gap-2 px-6 py-2.5 text-sm font-semibold text-fcs-blue bg-fcs-gold rounded-md shadow-hard-sm hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all no-underline whitespace-nowrap"
+                        >
+                            Create Account
+                            <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                        </Link>
+                    </motion.div>
+
+                </div>
+            </motion.section>
+
+            {/* ── Footer ─────────────────────────────────────── */}
+            <footer className="border-t border-stone-200 bg-stone-50">
+                <div className="max-w-7xl mx-auto px-6 py-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-[12px] text-stone-400">
                     <p>&copy; {new Date().getFullYear()} ClubConnect &mdash; Forsyth County Schools</p>
-                    <div className="flex gap-6">
-                        <Link to="/about" className="hover:text-gray-600 transition-colors no-underline text-gray-400">About</Link>
-                        <Link to="/login" className="hover:text-gray-600 transition-colors no-underline text-gray-400">Login</Link>
+                    <div className="flex gap-5">
+                        <Link to="/about" className="hover:text-fcs-blue transition-colors no-underline text-stone-400">About</Link>
+                        <Link to="/login" className="hover:text-fcs-blue transition-colors no-underline text-stone-400">Login</Link>
                     </div>
                 </div>
             </footer>
