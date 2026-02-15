@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../config/firebase';
-import { db } from '../config/firebase';
-import { doc, updateDoc } from 'firebase/firestore';
+import { supabase } from '../lib/supabase';
 import { motion } from 'framer-motion';
 import { ArrowLeft, ArrowRight, CheckCircle, Award, Users, BookOpen, Palette, Code, Music, Camera, Gamepad2 } from 'lucide-react';
 
@@ -179,8 +178,8 @@ const ClubQuiz = () => {
         answeredQuestions: Object.keys(answers).length
       };
 
-      const docRef = doc(db, "users", user.uid);
-      await updateDoc(docRef, { quizResults });
+      // TODO: migrate quiz result persistence to Supabase
+      console.log('Quiz results to persist:', quizResults);
 
       setIsComplete(true);
     } catch (error) {

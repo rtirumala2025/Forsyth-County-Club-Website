@@ -160,7 +160,7 @@ const ClubsWebsite = () => {
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('id, full_name')
-        .eq('firebase_uid', user.uid)
+        .eq('firebase_uid', user.id)
         .maybeSingle();
 
       if (profileError) throw profileError;
@@ -874,10 +874,10 @@ const ClubsWebsite = () => {
           <div
             onClick={() => setJoinMessage(null)}
             className={`flex items-start gap-3 p-4 rounded-xl shadow-2xl border cursor-pointer transition-all hover:scale-[1.02] ${joinMessage.type === 'success'
-                ? 'bg-green-50 border-green-200 text-green-800'
-                : joinMessage.type === 'error'
-                  ? 'bg-red-50 border-red-200 text-red-800'
-                  : 'bg-blue-50 border-blue-200 text-blue-800'
+              ? 'bg-green-50 border-green-200 text-green-800'
+              : joinMessage.type === 'error'
+                ? 'bg-red-50 border-red-200 text-red-800'
+                : 'bg-blue-50 border-blue-200 text-blue-800'
               }`}
           >
             {joinMessage.type === 'success' ? (

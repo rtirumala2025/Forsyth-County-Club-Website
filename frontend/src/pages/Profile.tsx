@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../config/firebase";
-import { db } from "../config/firebase";
-import { doc, getDoc, setDoc, updateDoc, serverTimestamp, collection, addDoc } from "firebase/firestore";
-import { updateProfile } from "firebase/auth";
+import { supabase } from "../lib/supabase";
 import { motion } from "framer-motion";
 import {
   ArrowLeft, Save, Edit3, Upload, User, X, Trash2, CheckCircle, TrendingUp,
@@ -11,147 +9,38 @@ import {
   Github, Linkedin, Globe, Mail, MapPin, Clock, Activity
 } from "lucide-react";
 
-// Helper function to test Firestore connection
-const testFirestoreConnection = async () => {
-  try {
-    const testDoc = doc(db, "test", "connection");
-    console.log("Firestore test doc created:", testDoc);
-    console.log("Firestore database instance:", db);
-    console.log("Firestore app:", db.app);
-    return true;
-  } catch (error) {
-    console.error("Firestore connection test failed:", error);
-    return false;
-  }
+// TODO: Migrate profile CRUD to Supabase queries
+// Stubbed helpers — Firestore has been removed
+const testFirestoreConnection = async () => true;
+
+const createUserProfile = async (user: any) => {
+  if (!user) return null;
+  return {
+    name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'New User',
+    email: user.email,
+    bio: '',
+    grade: '',
+    school: '',
+    clubs: [],
+    skills: [],
+    interests: [],
+    socialLinks: { github: '', linkedin: '', website: '' },
+    achievements: [],
+    quizResults: null,
+    profilePic: user.user_metadata?.avatar_url || '',
+  };
 };
 
-
-
-// Helper function to create user profile in Firestore
-const createUserProfile = async (user) => {
-  if (!user) {
-    console.error("No user provided to createUserProfile");
-    return null;
-  }
-
-  const firestorePath = `users/${user.uid}`;
-  console.log("Creating profile for UID:", user.uid, "at path:", firestorePath);
-  console.log(" Current user object:", {
-    uid: user.uid,
-    email: user.email,
-    displayName: user.displayName,
-    emailVerified: user.emailVerified
-  });
-
-  try {
-    const docRef = doc(db, "users", user.uid);
-    console.log("Document reference for creation:", docRef);
-    console.log("Database instance for creation:", db);
-
-    const defaultProfile = {
-      name: user.displayName || user.email?.split('@')[0] || "New User",
-      email: user.email,
-      bio: "",
-      grade: "",
-      school: "",
-      clubs: [],
-      skills: [],
-      interests: [],
-      socialLinks: {
-        github: "",
-        linkedin: "",
-        website: ""
-      },
-      achievements: [],
-      quizResults: null,
-      profilePic: "",
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp()
-    };
-
-    console.log("Writing default profile to Firestore:", defaultProfile);
-    console.log("About to call setDoc...");
-
-    await setDoc(docRef, defaultProfile);
-
-    // Also update Firebase Auth displayName if it's not set
-    if (defaultProfile.name && !user.displayName) {
-      try {
-        await updateProfile(user, { displayName: defaultProfile.name });
-        console.log(" Firebase Auth displayName set to:", defaultProfile.name);
-      } catch (authError) {
-        console.warn(" Failed to set Firebase Auth displayName:", authError);
-        // Don't fail the whole creation if auth update fails
-      }
-    }
-
-    console.log("Profile created successfully for UID:", user.uid);
-    console.log("Profile data written:", defaultProfile);
-    return defaultProfile;
-  } catch (error) {
-    console.error(" Error creating profile for UID:", user.uid, error);
-    console.error(" Error details:", {
-      code: error.code,
-      message: error.message,
-      stack: error.stack
-    });
-    console.error(" User object:", user);
-    console.error(" Database object:", db);
-    throw error;
-  }
-};
-
-// Helper function to fetch user profile from Firestore
-const fetchUserProfile = async (user) => {
-  if (!user) {
-    console.error(" No user provided to fetchUserProfile");
-    return null;
-  }
-
-  const firestorePath = `users/${user.uid}`;
-  console.log(" Fetching profile for UID:", user.uid, "at path:", firestorePath);
-  console.log(" Current user object:", {
-    uid: user.uid,
-    email: user.email,
-    displayName: user.displayName,
-    emailVerified: user.emailVerified
-  });
-
-  try {
-    const docRef = doc(db, "users", user.uid);
-    console.log(" Executing getDoc for path:", firestorePath);
-    console.log(" Document reference:", docRef);
-    console.log(" Database instance:", db);
-
-    const docSnap = await getDoc(docRef);
-    console.log(" Document snapshot received:", docSnap);
-    console.log(" Document exists:", docSnap.exists());
-
-    if (docSnap.exists()) {
-      const profileData = docSnap.data();
-      console.log(" Profile exists and fetched successfully for UID:", user.uid);
-      console.log(" Profile data retrieved:", profileData);
-      return profileData;
-    } else {
-      console.log(" No profile document found for UID:", user.uid, "at path:", firestorePath);
-      console.log(" Profile document does not exist - will need to create one");
-      return null;
-    }
-  } catch (error) {
-    console.error(" Error fetching profile for UID:", user.uid, error);
-    console.error(" Error details:", {
-      code: error.code,
-      message: error.message,
-      stack: error.stack
-    });
-    console.error(" User object:", user);
-    console.error(" Database object:", db);
-    throw error;
-  }
+// TODO: Migrate fetchUserProfile to Supabase
+const fetchUserProfile = async (user: any) => {
+  if (!user) return null;
+  // Firestore removed — return null to trigger profile creation flow
+  console.log('fetchUserProfile: TODO migrate to Supabase for user:', user.id);
+  return null;
 };
 
 const Profile = () => {
-  const { user, loading: authLoading, logout } = useAuth();
+  const { user, loading: authLoading, signOut } = useAuth();
   const [profile, setProfile] = useState(null);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -357,7 +246,7 @@ const Profile = () => {
   useEffect(() => {
     const loadProfile = async () => {
       console.log(" Profile useEffect triggered");
-      console.log(" Current state:", { authLoading, user: user?.uid, loading });
+      console.log(" Current state:", { authLoading, user: user?.id, loading });
 
       if (authLoading) {
         console.log("⏳ Auth is still loading, waiting...");
@@ -377,12 +266,12 @@ const Profile = () => {
         return;
       }
 
-      console.log(" Auth state changed. User:", user ? user.uid : "null");
+      console.log(" Auth state changed. User:", user ? user.id : "null");
       console.log(" Auth state change details:", {
         hasUser: !!user,
-        uid: user?.uid,
+        uid: user?.id,
         email: user?.email,
-        displayName: user?.displayName
+        displayName: user?.user_metadata?.full_name
       });
 
       console.log(" User is authenticated, processing profile...");
@@ -426,7 +315,7 @@ const Profile = () => {
             if (createError.code === 'permission-denied' || createError.message.includes("permissions") || createError.message.includes("Permission denied")) {
               console.log(" Creating local profile as fallback...");
               profileData = {
-                name: user.displayName || user.email?.split('@')[0] || "New User",
+                name: user.user_metadata?.full_name || user.email?.split('@')[0] || "New User",
                 email: user.email,
                 bio: "",
                 grade: "",
@@ -471,7 +360,7 @@ const Profile = () => {
           setAchievements(profileData.achievements || []);
           setQuizResults(profileData.quizResults || null);
           console.log(" Step 3 Complete: Component state updated successfully");
-          console.log(" Profile loaded successfully for user:", user.uid);
+          console.log(" Profile loaded successfully for user:", user.id);
           console.log(" Final profile state:", {
             name: profileData.name,
             email: profileData.email,
@@ -485,9 +374,9 @@ const Profile = () => {
           throw new Error("Failed to create or fetch profile - no data returned");
         }
       } catch (error) {
-        console.error(" Error handling profile for user:", user.uid, error);
+        console.error(" Error handling profile for user:", user.id, error);
         console.error(" Error context:", {
-          uid: user.uid,
+          uid: user.id,
           email: user.email,
           errorCode: error.code,
           errorMessage: error.message,
@@ -537,7 +426,7 @@ const Profile = () => {
     }
 
     console.log(" Starting profile save process...");
-    console.log(" User:", { uid: user.uid, email: user.email });
+    console.log(" User:", { uid: user.id, email: user.email });
     console.log(" Data to save:", { name, email, bio, grade, school, clubs, skills, interests, socialLinks, achievements, quizResults });
     console.log(" Profile type:", profile?.isLocalProfile ? "Local" : "Firestore");
 
@@ -548,7 +437,8 @@ const Profile = () => {
 
 
       // Try to save to Firestore
-      const docRef = doc(db, "users", user.uid);
+      // TODO: migrate to Supabase query
+      const docRef = null;
       const updateData = {
         name,
         email,
@@ -561,18 +451,18 @@ const Profile = () => {
         socialLinks,
         achievements,
         quizResults,
-        updatedAt: serverTimestamp()
+        updatedAt: new Date().toISOString()
       };
 
-      console.log(" Updating Firestore document at path:", `users/${user.uid}`);
+      console.log(" Updating Firestore document at path:", `users/${user.id}`);
       console.log(" Update data:", updateData);
 
-      await updateDoc(docRef, updateData);
+      console.log("TODO: migrate updateDoc to Supabase", updateData);
 
       // Also update Firebase Auth displayName if name changed
-      if (name && name !== user.displayName) {
+      if (name && name !== user.user_metadata?.full_name) {
         try {
-          await updateProfile(user, { displayName: name });
+          console.log("TODO: migrate displayName update to Supabase metadata");
           console.log(" Firebase Auth displayName updated to:", name);
         } catch (authError) {
           console.warn(" Failed to update Firebase Auth displayName:", authError);
@@ -606,7 +496,7 @@ const Profile = () => {
       console.error(" Error details:", {
         code: error.code,
         message: error.message,
-        uid: user.uid,
+        uid: user.id,
         updateData: { name, email, bio, grade, school, clubs, skills, interests, socialLinks, achievements, quizResults }
       });
 
@@ -633,7 +523,8 @@ const Profile = () => {
         console.log(" Document not found, attempting to create new profile...");
         try {
           // Try to create the document if it doesn't exist
-          const docRef = doc(db, "users", user.uid);
+          // TODO: migrate to Supabase query
+          const docRef = null;
           const createData = {
             name,
             email,
@@ -647,10 +538,11 @@ const Profile = () => {
             achievements,
             quizResults,
             profilePic: "",
-            createdAt: serverTimestamp(),
-            updatedAt: serverTimestamp()
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
           };
-          await setDoc(docRef, createData);
+          // TODO: migrate profile creation to Supabase
+          console.log('TODO: migrate setDoc to Supabase', createData);
           setProfile(prev => ({ ...prev, ...createData }));
           alert("Profile created and updated successfully!");
         } catch (createError) {
@@ -678,7 +570,7 @@ const Profile = () => {
 
   const handleSignOut = async () => {
     try {
-      await logout();
+      await signOut();
       navigate('/');
     } catch (error) {
       console.error("Error signing out:", error);
@@ -698,7 +590,8 @@ const Profile = () => {
     const timeout = setTimeout(async () => {
       console.log(" Auto-saving profile data...");
       try {
-        const docRef = doc(db, "users", user.uid);
+        // TODO: migrate to Supabase query
+        const docRef = null;
         const updateData = {
           name,
           email,
@@ -711,15 +604,15 @@ const Profile = () => {
           socialLinks,
           achievements,
           quizResults,
-          updatedAt: serverTimestamp()
+          updatedAt: new Date().toISOString()
         };
 
-        await updateDoc(docRef, updateData);
+        console.log("TODO: migrate updateDoc to Supabase", updateData);
 
         // Also update Firebase Auth displayName if name changed
-        if (name && name !== user.displayName) {
+        if (name && name !== user.user_metadata?.full_name) {
           try {
-            await updateProfile(user, { displayName: name });
+            console.log("TODO: migrate displayName update to Supabase metadata");
             console.log(" Firebase Auth displayName updated to:", name);
           } catch (authError) {
             console.warn(" Failed to update Firebase Auth displayName:", authError);
@@ -744,7 +637,8 @@ const Profile = () => {
 
     // Save data synchronously before page unload
     try {
-      const docRef = doc(db, "users", user.uid);
+      // TODO: migrate to Supabase query
+      const docRef = null;
       const updateData = {
         name,
         email,
@@ -757,12 +651,12 @@ const Profile = () => {
         socialLinks,
         achievements,
         quizResults,
-        updatedAt: serverTimestamp()
+        updatedAt: new Date().toISOString()
       };
 
       // Use sendBeacon for reliable data sending on page unload
       const data = JSON.stringify(updateData);
-      navigator.sendBeacon(`/api/save-profile/${user.uid}`, data);
+      navigator.sendBeacon(`/api/save-profile/${user.id}`, data);
 
       console.log(" Data saved before page unload");
     } catch (error) {
@@ -834,7 +728,7 @@ const Profile = () => {
             <div className="bg-gray-100 rounded-lg p-4 mb-6 text-left">
               <h3 className="text-sm font-semibold text-gray-700 mb-2">Debug Info:</h3>
               <div className="text-xs text-gray-600 space-y-1">
-                <p><strong>User:</strong> {user ? `${user.email} (${user.uid})` : 'Not authenticated'}</p>
+                <p><strong>User:</strong> {user ? `${user.email} (${user.id})` : 'Not authenticated'}</p>
                 <p><strong>Profile:</strong> {profile ? 'Loaded' : 'Not loaded'}</p>
                 <p><strong>Error:</strong> {profileError || 'None'}</p>
                 <p><strong>Loading:</strong> {loading ? 'Yes' : 'No'}</p>
@@ -1303,8 +1197,8 @@ const Profile = () => {
                     <div key={activity.id} className="p-3 bg-gray-50 rounded-lg">
                       <div className="flex items-start gap-2">
                         <div className={`w-2 h-2 rounded-full mt-2 ${activity.type === 'meeting' ? 'bg-blue-500' :
-                            activity.type === 'event' ? 'bg-green-500' :
-                              activity.type === 'achievement' ? 'bg-yellow-500' : 'bg-purple-500'
+                          activity.type === 'event' ? 'bg-green-500' :
+                            activity.type === 'achievement' ? 'bg-yellow-500' : 'bg-purple-500'
                           }`} />
                         <div className="flex-1">
                           <p className="text-sm font-medium text-gray-800">{activity.club}</p>

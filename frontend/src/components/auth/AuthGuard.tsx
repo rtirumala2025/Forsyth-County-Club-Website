@@ -1,57 +1,44 @@
 import React, { useEffect, useState } from 'react';
-import { auth, db } from '../../config/firebaseConfig';
-import { doc, getDoc } from 'firebase/firestore';
 import { Navigate, useLocation } from 'react-router-dom';
-import { onAuthStateChanged } from 'firebase/auth';
+import { supabase } from '../../lib/supabase';
+import type { User } from '@supabase/supabase-js';
 
-const AuthGuard = ({ children, requiredRole = null, fallback = null }) => {
-  const [user, setUser] = useState(null);
+const AuthGuard = ({ children, requiredRole = null, fallback = null }: {
+  children: React.ReactNode;
+  requiredRole?: string | null;
+  fallback?: React.ReactNode | null;
+}) => {
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [userRole, setUserRole] = useState(null);
-  const [roleLoading, setRoleLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
   const location = useLocation();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
       setLoading(false);
-      setError(null);
-    }, (error) => {
-      setError(error);
+    }).catch((err) => {
+      setError(err);
       setLoading(false);
     });
 
-    return () => unsubscribe();
+    // Listen for auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setUser(session?.user ?? null);
+        setLoading(false);
+      }
+    );
+
+    return () => subscription.unsubscribe();
   }, []);
 
-  useEffect(() => {
-    const fetchUserRole = async () => {
-      if (user) {
-        try {
-          const userDoc = await getDoc(doc(db, 'users', user.uid));
-          if (userDoc.exists()) {
-            const userData = userDoc.data();
-            setUserRole(userData.role || 'user');
-          } else {
-            setUserRole('user');
-          }
-        } catch (err) {
-          console.error('Error fetching user role:', err);
-          setUserRole('user');
-        }
-      }
-      setRoleLoading(false);
-    };
-
-    fetchUserRole();
-  }, [user]);
-
   // Show loading state
-  if (loading || roleLoading) {
+  if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-900">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500"></div>
+      <div className="min-h-screen flex items-center justify-center bg-stone-100">
+        <div className="w-8 h-8 border-2 border-fcs-blue border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -59,13 +46,13 @@ const AuthGuard = ({ children, requiredRole = null, fallback = null }) => {
   // Handle authentication error
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-900">
+      <div className="min-h-screen flex items-center justify-center bg-stone-100">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-red-500 mb-4">Authentication Error</h2>
-          <p className="text-gray-300 mb-4">There was an error with authentication.</p>
-          <button 
-            onClick={() => window.location.reload()} 
-            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+          <h2 className="text-2xl font-heading font-bold text-red-600 mb-4">Authentication Error</h2>
+          <p className="text-stone-600 mb-4">There was an error with authentication.</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="bg-fcs-blue hover:bg-fcs-blue-600 text-white px-4 py-2 rounded-md transition-colors"
           >
             Retry
           </button>
@@ -79,23 +66,23 @@ const AuthGuard = ({ children, requiredRole = null, fallback = null }) => {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // Check role-based access
-  if (requiredRole && userRole !== requiredRole) {
+  // Role-based access (stubbed — roles will come from Supabase profiles later)
+  if (requiredRole && requiredRole !== 'user') {
     if (fallback) {
-      return fallback;
+      return <>{fallback}</>;
     }
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-900">
+      <div className="min-h-screen flex items-center justify-center bg-stone-100">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-red-500 mb-4">Access Denied</h2>
-          <p className="text-gray-300 mb-4">You don't have permission to access this page.</p>
+          <h2 className="text-2xl font-heading font-bold text-red-600 mb-4">Access Denied</h2>
+          <p className="text-stone-600 mb-4">You don't have permission to access this page.</p>
           <Navigate to="/" replace />
         </div>
       </div>
     );
   }
 
-  return children;
+  return <>{children}</>;
 };
 
 export default AuthGuard;

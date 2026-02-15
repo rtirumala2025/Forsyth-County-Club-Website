@@ -1,108 +1,31 @@
-import { auth, db } from '../config/firebaseConfig';
-import { doc, getDoc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
+/**
+ * Admin Utilities — Stubbed
+ *
+ * Firebase Firestore removed. These functions will be migrated to
+ * Supabase RLS + server-side role checks. Stubs kept for compile.
+ */
 
-// Admin role verification
-export const isAdmin = async (userId) => {
-  try {
-    const userDoc = await getDoc(doc(db, 'users', userId));
-    if (userDoc.exists()) {
-      const userData = userDoc.data();
-      return userData.role === 'admin';
-    }
-    return false;
-  } catch (error) {
-    console.error('Error checking admin status:', error);
-    return false;
-  }
+import { supabase } from '../lib/supabase';
+
+export const isAdmin = async (_userId: string) => {
+  console.warn('adminUtils.isAdmin: TODO migrate to Supabase');
+  return false;
 };
 
-// Get current user's role
 export const getCurrentUserRole = async () => {
-  const user = auth.currentUser;
-  if (!user) return null;
-
-  try {
-    const userDoc = await getDoc(doc(db, 'users', user.uid));
-    if (userDoc.exists()) {
-      const userData = userDoc.data();
-      return userData.role || 'user';
-    }
-    return 'user';
-  } catch (error) {
-    console.error('Error getting user role:', error);
-    return 'user';
-  }
+  console.warn('adminUtils.getCurrentUserRole: TODO migrate to Supabase');
+  return 'user';
 };
 
-// Promote user to admin (admin only)
-export const promoteToAdmin = async (userId) => {
-  const currentUser = auth.currentUser;
-  if (!currentUser) throw new Error('Not authenticated');
-
-  const isCurrentUserAdmin = await isAdmin(currentUser.uid);
-  if (!isCurrentUserAdmin) throw new Error('Insufficient permissions');
-
-  try {
-    await updateDoc(doc(db, 'users', userId), {
-      role: 'admin',
-      promotedBy: currentUser.uid,
-      promotedAt: new Date().toISOString()
-    });
-    return true;
-  } catch (error) {
-    console.error('Error promoting user to admin:', error);
-    throw error;
-  }
+export const promoteToAdmin = async (_userId: string) => {
+  throw new Error('adminUtils.promoteToAdmin: TODO migrate to Supabase');
 };
 
-// Audit log for admin actions
-export const logAdminAction = async (action, details = {}) => {
-  const user = auth.currentUser;
-  if (!user) return;
-
-  try {
-    const auditLog = {
-      action,
-      details,
-      userId: user.uid,
-      userEmail: user.email,
-      timestamp: new Date().toISOString(),
-      ipAddress: await getClientIP()
-    };
-
-    await updateDoc(doc(db, 'audit_logs', Date.now().toString()), auditLog);
-  } catch (error) {
-    console.error('Error logging admin action:', error);
-  }
+export const logAdminAction = async (_action: string, _details = {}) => {
+  console.warn('adminUtils.logAdminAction: TODO migrate to Supabase');
 };
 
-// Get client IP (simplified version)
-const getClientIP = async () => {
-  try {
-    const response = await fetch('https://api.ipify.org?format=json');
-    const data = await response.json();
-    return data.ip;
-  } catch (error) {
-    return 'unknown';
-  }
-};
-
-// Admin dashboard data
 export const getAdminDashboardData = async () => {
-  const isCurrentUserAdmin = await isAdmin(auth.currentUser?.uid);
-  if (!isCurrentUserAdmin) throw new Error('Insufficient permissions');
-
-  try {
-    // This would typically involve multiple Firestore queries
-    // For now, returning a placeholder structure
-    return {
-      totalUsers: 0,
-      totalClubs: 0,
-      totalEvents: 0,
-      recentActivity: []
-    };
-  } catch (error) {
-    console.error('Error fetching admin dashboard data:', error);
-    throw error;
-  }
+  console.warn('adminUtils.getAdminDashboardData: TODO migrate to Supabase');
+  return { totalUsers: 0, totalClubs: 0, totalEvents: 0, recentActivity: [] };
 };

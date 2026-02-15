@@ -58,7 +58,7 @@ const ProfileSetup = () => {
                 const { data, error: fetchError } = await supabase
                     .from('profiles')
                     .select('*')
-                    .eq('firebase_uid', user.uid)
+                    .eq('firebase_uid', user.id)
                     .maybeSingle();
 
                 if (fetchError) throw fetchError;
@@ -126,7 +126,7 @@ const ProfileSetup = () => {
             } else {
                 // Insert new profile
                 const { error: insertError } = await supabase.from('profiles').insert({
-                    firebase_uid: user.uid,
+                    firebase_uid: user.id,
                     ...form,
                 });
 

@@ -1,15 +1,18 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { auth, db, signInWithGooglePopup, storage } from './firebaseConfig';
-import type { User } from 'firebase/auth';
-import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { supabase } from '../lib/supabase';
+import type { User, Session } from '@supabase/supabase-js';
+
+/* ── Types ──────────────────────────────────────────────── */
 
 interface AuthContextType {
   user: User | null;
+  session: Session | null;
   loading: boolean;
-  login: (email: string, password: string) => Promise<any>;
-  logout: () => Promise<void>;
-  signInWithGoogle: () => Promise<any>;
+  signInWithGoogle: () => Promise<void>;
+  signOut: () => Promise<void>;
 }
+
+/* ── Context ────────────────────────────────────────────── */
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -21,7 +24,7 @@ export const useAuth = (): AuthContextType => {
   return context;
 };
 
-export { auth, db, storage };
+/* ── Provider ───────────────────────────────────────────── */
 
 interface AuthProviderProps {
   children: ReactNode;
@@ -29,46 +32,53 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    try {
-      const unsubscribe = auth.onAuthStateChanged((firebaseUser) => {
-        console.log("Auth state changed:", firebaseUser); // Debug log
-        if (firebaseUser) {
-          console.log("User is authenticated:", firebaseUser.email);
-        } else {
-          console.log("User is not authenticated");
-        }
-        setUser(firebaseUser);
-        setLoading(false);
-      });
-      return () => unsubscribe();
-    } catch (error) {
-      console.error("Firebase auth error:", error);
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
+      setSession(currentSession);
+      setUser(currentSession?.user ?? null);
       setLoading(false);
-    }
+    });
+
+    // Listen for auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (_event, newSession) => {
+        setSession(newSession);
+        setUser(newSession?.user ?? null);
+        setLoading(false);
+      }
+    );
+
+    return () => subscription.unsubscribe();
   }, []);
 
-  const login = async (email, password) => {
-    return signInWithEmailAndPassword(auth, email, password);
-  };
-
-  const logout = async () => {
-    await signOut(auth);
-    setUser(null);
-  };
-
   const signInWithGoogle = async () => {
-    return signInWithGooglePopup();
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        queryParams: { access_type: 'offline', prompt: 'consent' },
+        redirectTo: `${window.location.origin}/app`,
+      },
+    });
+    if (error) throw error;
   };
 
-  const value = {
+  const handleSignOut = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
+    setUser(null);
+    setSession(null);
+  };
+
+  const value: AuthContextType = {
     user,
-    login,
-    logout,
-    signInWithGoogle,
+    session,
     loading,
+    signInWithGoogle,
+    signOut: handleSignOut,
   };
 
   return (
@@ -76,4 +86,4 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       {children}
     </AuthContext.Provider>
   );
-}; 
+};

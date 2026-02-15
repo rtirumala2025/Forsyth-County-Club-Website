@@ -6,18 +6,18 @@ import { useNavigate } from 'react-router-dom';
 
 const UserMenu = ({ user }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [displayName, setDisplayName] = useState(user?.displayName || user?.email || 'User');
-  const { logout } = useAuth();
+  const [displayName, setDisplayName] = useState(user?.user_metadata?.full_name || user?.email || 'User');
+  const { signOut } = useAuth();
   const navigate = useNavigate();
 
   // Update display name when user changes
   useEffect(() => {
-    setDisplayName(user?.displayName || user?.email || 'User');
-  }, [user?.displayName, user?.email]);
+    setDisplayName(user?.user_metadata?.full_name || user?.email || 'User');
+  }, [user?.user_metadata?.full_name, user?.email]);
 
   const handleLogout = async () => {
     try {
-      await logout();
+      await signOut();
       setIsOpen(false);
       navigate('/login');
     } catch (error) {
@@ -39,7 +39,7 @@ const UserMenu = ({ user }) => {
       </button>
 
       {isOpen && ReactDOM.createPortal(
-        <div style={{position: 'fixed', right: '2.5rem', top: '6.5rem', zIndex: 99999, minWidth: '12rem'}} className="w-48 bg-white rounded-lg shadow-xl border-2 border-black py-2">
+        <div style={{ position: 'fixed', right: '2.5rem', top: '6.5rem', zIndex: 99999, minWidth: '12rem' }} className="w-48 bg-white rounded-lg shadow-xl border-2 border-black py-2">
           <div className="px-4 py-2 border-b border-gray-200">
             <p className="text-sm font-medium text-gray-900">
               {displayName}
