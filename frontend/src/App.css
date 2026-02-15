@@ -10,7 +10,7 @@
   --neon-green: #00FF88;
   --neon-purple: #BD00FF;
   --cyber-pink: #FF0080;
-  
+
   /* Dark Theme Colors */
   --bg-primary: #0F172A;
   --bg-secondary: #1E293B;
@@ -19,12 +19,12 @@
   --text-secondary: #E2E8F0;
   --text-muted: #94A3B8;
   --text-accent: #00D9FF;
-  
+
   /* Glassmorphism */
   --glass-bg: rgba(255, 255, 255, 0.1);
   --glass-border: rgba(255, 255, 255, 0.2);
   --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  
+
   /* Spacing System */
   --space-xs: 0.5rem;
   --space-sm: 1rem;
@@ -32,12 +32,12 @@
   --space-lg: 2rem;
   --space-xl: 3rem;
   --space-2xl: 4rem;
-  
+
   /* Typography */
   --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-display: 'Plus Jakarta Sans', 'Inter', sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
-  
+
   /* Animation Timing */
   --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-normal: 300ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -82,14 +82,20 @@ body {
 }
 
 /* Typography System */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: var(--font-display);
   font-weight: 700;
   line-height: 1.2;
   letter-spacing: -0.025em;
 }
 
-h1 {
+/* Gradient heading only inside the app layout, not on landing page */
+.app-layout h1 {
   font-size: clamp(2.5rem, 5vw, 4.5rem);
   background: linear-gradient(135deg, var(--text-primary) 0%, var(--neon-blue) 100%);
   -webkit-background-clip: text;
@@ -129,7 +135,7 @@ h3 {
   left: 0;
   right: 0;
   bottom: 0;
-  background: 
+  background:
     radial-gradient(circle at 20% 80%, rgba(0, 217, 255, 0.1) 0%, transparent 50%),
     radial-gradient(circle at 80% 20%, rgba(189, 0, 255, 0.1) 0%, transparent 50%),
     radial-gradient(circle at 40% 40%, rgba(0, 255, 136, 0.05) 0%, transparent 50%);
@@ -137,10 +143,23 @@ h3 {
 }
 
 @keyframes backgroundShift {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  25% { transform: translate(-10px, -10px) scale(1.1); }
-  50% { transform: translate(10px, -5px) scale(0.9); }
-  75% { transform: translate(-5px, 10px) scale(1.05); }
+
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  25% {
+    transform: translate(-10px, -10px) scale(1.1);
+  }
+
+  50% {
+    transform: translate(10px, -5px) scale(0.9);
+  }
+
+  75% {
+    transform: translate(-5px, 10px) scale(1.05);
+  }
 }
 
 /* Glassmorphism Components */
@@ -158,7 +177,7 @@ h3 {
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 24px;
-  box-shadow: 
+  box-shadow:
     0 8px 32px rgba(0, 0, 0, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
   transition: all var(--transition-normal);
@@ -166,7 +185,7 @@ h3 {
 
 .glass-card:hover {
   transform: translateY(-8px) scale(1.02);
-  box-shadow: 
+  box-shadow:
     0 20px 40px rgba(0, 0, 0, 0.4),
     0 0 0 1px rgba(255, 255, 255, 0.2),
     inset 0 1px 0 rgba(255, 255, 255, 0.2);
@@ -185,7 +204,7 @@ h3 {
   cursor: pointer;
   overflow: hidden;
   transition: all var(--transition-normal);
-  box-shadow: 
+  box-shadow:
     0 8px 32px rgba(0, 217, 255, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
@@ -207,7 +226,7 @@ h3 {
 
 .btn-modern:hover {
   transform: translateY(-2px) scale(1.05);
-  box-shadow: 
+  box-shadow:
     0 12px 40px rgba(0, 217, 255, 0.4),
     0 0 0 1px rgba(255, 255, 255, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.3);
@@ -292,12 +311,12 @@ h3 {
   font-weight: 900;
   line-height: 1.1;
   margin-bottom: var(--space-lg);
-  background: linear-gradient(135deg, 
-    var(--text-primary) 0%, 
-    var(--neon-blue) 25%, 
-    var(--neon-green) 50%, 
-    var(--neon-purple) 75%, 
-    var(--cyber-pink) 100%);
+  background: linear-gradient(135deg,
+      var(--text-primary) 0%,
+      var(--neon-blue) 25%,
+      var(--neon-green) 50%,
+      var(--neon-purple) 75%,
+      var(--cyber-pink) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -305,8 +324,15 @@ h3 {
 }
 
 @keyframes gradientFlow {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
+
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
 }
 
 .hero-subtitle {
@@ -352,9 +378,19 @@ h3 {
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  33% { transform: translateY(-20px) rotate(120deg); }
-  66% { transform: translateY(10px) rotate(240deg); }
+
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+
+  33% {
+    transform: translateY(-20px) rotate(120deg);
+  }
+
+  66% {
+    transform: translateY(10px) rotate(240deg);
+  }
 }
 
 /* Stats Cards */
@@ -390,7 +426,7 @@ h3 {
 
 .stat-card:hover {
   transform: translateY(-8px);
-  box-shadow: 
+  box-shadow:
     0 20px 40px rgba(0, 0, 0, 0.4),
     0 0 0 1px rgba(255, 255, 255, 0.2);
 }
@@ -438,9 +474,9 @@ h3 {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, 
-    rgba(0, 217, 255, 0.1) 0%, 
-    rgba(189, 0, 255, 0.1) 100%);
+  background: linear-gradient(135deg,
+      rgba(0, 217, 255, 0.1) 0%,
+      rgba(189, 0, 255, 0.1) 100%);
   opacity: 0;
   transition: opacity var(--transition-normal);
 }
@@ -451,7 +487,7 @@ h3 {
 
 .service-card:hover {
   transform: translateY(-8px) scale(1.02);
-  box-shadow: 
+  box-shadow:
     0 20px 40px rgba(0, 0, 0, 0.4),
     0 0 0 1px rgba(255, 255, 255, 0.2);
 }
@@ -491,6 +527,7 @@ h3 {
     opacity: 0;
     transform: translateY(30px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -502,6 +539,7 @@ h3 {
     opacity: 0;
     transform: translateX(-30px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -513,6 +551,7 @@ h3 {
     opacity: 0;
     transform: translateX(30px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -524,6 +563,7 @@ h3 {
     opacity: 0;
     transform: scale(0.8);
   }
+
   to {
     opacity: 1;
     transform: scale(1);
@@ -551,15 +591,15 @@ h3 {
   .hero-title {
     font-size: clamp(2.5rem, 10vw, 4rem);
   }
-  
+
   .stats-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .services-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .btn-modern {
     padding: 14px 24px;
     font-size: 0.9rem;
@@ -573,7 +613,7 @@ h3 {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-  
+
   .floating-element {
     display: none;
   }
@@ -581,12 +621,13 @@ h3 {
 
 /* High Contrast Mode */
 @media (prefers-contrast: high) {
+
   .glass-card,
   .service-card,
   .stat-card {
     border: 2px solid var(--text-primary);
   }
-  
+
   .btn-modern {
     border: 2px solid var(--text-primary);
   }
@@ -594,11 +635,12 @@ h3 {
 
 /* Print Styles */
 @media print {
+
   .animated-bg::before,
   .floating-element {
     display: none;
   }
-  
+
   .glass-card,
   .service-card,
   .stat-card {
@@ -623,13 +665,13 @@ h3 {
 }
 
 .shadow-glow {
-  box-shadow: 
+  box-shadow:
     0 0 20px rgba(0, 217, 255, 0.3),
     0 0 40px rgba(0, 217, 255, 0.1);
 }
 
 .shadow-glow:hover {
-  box-shadow: 
+  box-shadow:
     0 0 30px rgba(0, 217, 255, 0.5),
     0 0 60px rgba(0, 217, 255, 0.2);
 }
@@ -648,9 +690,9 @@ h3 {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, 
-    rgba(0, 217, 255, 0.1) 0%, 
-    rgba(189, 0, 255, 0.1) 100%);
+  background: linear-gradient(135deg,
+      rgba(0, 217, 255, 0.1) 0%,
+      rgba(189, 0, 255, 0.1) 100%);
   opacity: 0;
   transition: opacity var(--transition-normal);
   pointer-events: none;
@@ -671,10 +713,13 @@ h3 {
 }
 
 @keyframes particleFloat {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0) scale(1);
     opacity: 0;
   }
+
   50% {
     transform: translateY(-20px) scale(1.5);
     opacity: 1;
@@ -693,7 +738,9 @@ h3 {
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Cursor Effects */
@@ -763,11 +810,11 @@ html {
 }
 
 /* Spacing Utilities */
-.space-y-modern > * + * {
+.space-y-modern>*+* {
   margin-top: var(--space-lg);
 }
 
-.space-x-modern > * + * {
+.space-x-modern>*+* {
   margin-left: var(--space-lg);
 }
 
