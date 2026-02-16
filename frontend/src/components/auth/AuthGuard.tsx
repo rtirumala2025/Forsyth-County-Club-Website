@@ -10,28 +10,77 @@ const AuthGuard = ({ children, requiredRole = null, fallback = null }: {
 }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [hasProfile, setHasProfile] = useState<boolean | null>(null); // null = not checked yet
   const [error, setError] = useState<Error | null>(null);
   const location = useLocation();
 
   useEffect(() => {
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-      setLoading(false);
-    }).catch((err) => {
-      setError(err);
-      setLoading(false);
-    });
+    let mounted = true;
+
+    const checkAuthAndProfile = async () => {
+      try {
+        // 1. Get Session & User
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        if (sessionError) throw sessionError;
+
+        const currentUser = session?.user ?? null;
+
+        if (currentUser) {
+          // 2. Check Profile Existence
+          const { data, error: profileError } = await supabase
+            .from('profiles')
+            .select('id')
+            .eq('firebase_uid', currentUser.id)
+            .maybeSingle();
+
+          if (profileError) {
+            console.error("AuthGuard profile check error:", profileError);
+            // In case of error (e.g. network), we might want to fail safe or block. 
+            // For now, let's assume no profile to be safe and force check again or let error boundary catch.
+            // But to prevent blocking valid users on network blip, we might retry.
+            // Here we just set hasProfile false to force setup if strictly needed, or maybe handle error.
+            // Simplest: treat error as "no profile found" for safety? Or throw?
+            // Let's set user but keep hasProfile null if error? No, let's set hasProfile false.
+            if (mounted) setHasProfile(false);
+          } else {
+            if (mounted) setHasProfile(!!data);
+          }
+        }
+
+        if (mounted) {
+          setUser(currentUser);
+          setLoading(false);
+        }
+
+      } catch (err: any) {
+        if (mounted) {
+          setError(err);
+          setLoading(false);
+        }
+      }
+    };
+
+    checkAuthAndProfile();
 
     // Listen for auth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (_event, session) => {
-        setUser(session?.user ?? null);
-        setLoading(false);
+        // Re-run check on auth change implies possible user change
+        // For simplicity, we can just reload logic or set user directly. 
+        // But profile check is async. 
+        // Best to rely on the functional update or separate effect if user changes.
+        // Since this is a simple guard, full re-check is safer.
+        if (mounted) {
+          setLoading(true); // Reset loading to force wait for profile check
+          checkAuthAndProfile();
+        }
       }
     );
 
-    return () => subscription.unsubscribe();
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   // Show loading state
@@ -65,6 +114,14 @@ const AuthGuard = ({ children, requiredRole = null, fallback = null }: {
   if (!user) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
+
+  // ── PROFILE GATEKEEPER ─────────────────────────────────────────
+  // If user is logged in but has no profile, force redirect to Profile Setup.
+  // Exception: If they are ALREADY on /profile-setup, allow access (prevent loop).
+  if (hasProfile === false && location.pathname !== '/profile-setup') {
+    return <Navigate to="/profile-setup" replace />;
+  }
+  // ───────────────────────────────────────────────────────────────
 
   // Role-based access (stubbed — roles will come from Supabase profiles later)
   if (requiredRole && requiredRole !== 'user') {

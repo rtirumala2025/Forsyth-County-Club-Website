@@ -7,7 +7,6 @@ import {
     Phone,
     Shield,
     CheckCircle,
-    ArrowLeft,
     Loader2,
     AlertTriangle,
 } from 'lucide-react';
@@ -72,6 +71,9 @@ const ProfileSetup = () => {
                         parent_email: data.parent_email || '',
                         emergency_contact: data.emergency_contact || '',
                     });
+                } else if (user.user_metadata?.full_name) {
+                    // Pre-fill name from auth metadata if available
+                    setForm(prev => ({ ...prev, full_name: user.user_metadata.full_name }));
                 }
             } catch (err: any) {
                 console.error('Error loading profile:', err);
@@ -92,10 +94,10 @@ const ProfileSetup = () => {
         if (!form.full_name.trim()) return 'Full name is required.';
         if (!form.grade) return 'Please select your grade.';
         if (!form.student_id.trim()) return 'Student ID is required.';
+        if (!/^\d{5,7}$/.test(form.student_id.trim())) return 'Student ID must be 5-7 digits.';
         if (!form.parent_email.trim()) return 'Parent email is required.';
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.parent_email))
             return 'Please enter a valid parent email.';
-        if (!form.emergency_contact.trim()) return 'Emergency contact is required.';
         return null;
     };
 
@@ -112,29 +114,37 @@ const ProfileSetup = () => {
         setError(null);
 
         try {
+            const profileData = {
+                firebase_uid: user.id,
+                email: user.email, // Ensure email is synced
+                ...form,
+                updated_at: new Date().toISOString(),
+            };
+
             if (existingProfileId) {
                 // Update existing profile
                 const { error: updateError } = await supabase
                     .from('profiles')
-                    .update({
-                        ...form,
-                        updated_at: new Date().toISOString(),
-                    })
+                    .update(profileData)
                     .eq('id', existingProfileId);
 
                 if (updateError) throw updateError;
             } else {
                 // Insert new profile
-                const { error: insertError } = await supabase.from('profiles').insert({
-                    firebase_uid: user.id,
-                    ...form,
-                });
+                const { error: insertError } = await supabase.from('profiles').insert(profileData);
 
                 if (insertError) throw insertError;
             }
 
             setSuccess(true);
-            setTimeout(() => navigate('/home'), 2000);
+
+            // Short delay to show success message before redirect
+            setTimeout(() => {
+                // If we have a stored redirect path, use it, otherwise go to app
+                // For now, defaulting to /app as requested
+                navigate('/app', { replace: true });
+            }, 1500);
+
         } catch (err: any) {
             console.error('Error saving profile:', err);
             setError(err.message || 'Failed to save profile. Please try again.');
@@ -145,10 +155,10 @@ const ProfileSetup = () => {
 
     if (authLoading || loadingProfile) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-blue-50 to-slate-50 flex items-center justify-center">
+            <div className="min-h-screen bg-stone-50 bg-noise flex items-center justify-center">
                 <div className="text-center">
-                    <Loader2 className="h-10 w-10 text-blue-600 animate-spin mx-auto mb-3" />
-                    <p className="text-gray-600">Loading your profile…</p>
+                    <Loader2 className="h-10 w-10 text-fcs-blue animate-spin mx-auto mb-3" />
+                    <p className="text-stone-600 font-medium">Loading your profile…</p>
                 </div>
             </div>
         );
@@ -156,14 +166,14 @@ const ProfileSetup = () => {
 
     if (success) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-blue-50 to-slate-50 flex items-center justify-center">
-                <div className="bg-white rounded-2xl shadow-xl p-10 text-center max-w-md mx-4">
+            <div className="min-h-screen bg-stone-50 bg-noise flex items-center justify-center p-4">
+                <div className="bg-white rounded-xl shadow-xl border-t-4 border-fcs-blue p-10 text-center max-w-md w-full animate-fade-in-up">
                     <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                         <CheckCircle className="h-8 w-8 text-green-600" />
                     </div>
-                    <h2 className="text-2xl font-bold text-gray-900 mb-2">Profile Saved!</h2>
-                    <p className="text-gray-600">
-                        Your student profile is complete. You can now join clubs with one click.
+                    <h2 className="text-2xl font-heading font-bold text-stone-900 mb-2">Profile Saved!</h2>
+                    <p className="text-stone-600">
+                        Redirecting you to the dashboard...
                     </p>
                 </div>
             </div>
@@ -171,151 +181,170 @@ const ProfileSetup = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-blue-50 to-slate-50 py-10 px-4">
-            <div className="max-w-2xl mx-auto">
-                {/* Back button */}
-                <button
-                    onClick={() => navigate('/home')}
-                    className="flex items-center text-blue-600 hover:text-blue-800 mb-6 transition-colors"
-                >
-                    <ArrowLeft size={18} className="mr-1" />
-                    <span className="font-medium">Back to Clubs</span>
-                </button>
-
-                {/* Header */}
-                <div className="text-center mb-8">
-                    <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                        <User className="h-8 w-8 text-blue-600" />
-                    </div>
-                    <h1 className="text-3xl font-bold text-gray-900 mb-2">Student Profile</h1>
-                    <p className="text-gray-600">
-                        {existingProfileId
-                            ? 'Update your information below.'
-                            : 'Complete your profile to join clubs with one click.'}
-                    </p>
+        <div className="min-h-screen bg-stone-50 bg-noise flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
+            <div className="sm:mx-auto sm:w-full sm:max-w-md text-center mb-8">
+                <div className="mx-auto h-16 w-16 bg-white rounded-2xl flex items-center justify-center shadow-md mb-4">
+                    <User className="h-8 w-8 text-fcs-blue" />
                 </div>
+                <h2 className="font-heading text-3xl font-bold text-stone-900">
+                    Student Registration
+                </h2>
+                <p className="mt-2 text-stone-600">
+                    Complete your profile to join clubs.
+                </p>
+            </div>
 
-                {/* Form Card */}
-                <form
-                    onSubmit={handleSubmit}
-                    className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden"
-                >
-                    <div className="p-8 space-y-6">
-                        {/* Error */}
+            <div className="sm:mx-auto sm:w-full sm:max-w-[40rem]">
+                <div className="bg-white py-8 px-4 shadow-xl rounded-xl border-t-4 border-fcs-blue sm:px-10">
+                    <form className="space-y-6" onSubmit={handleSubmit}>
+                        {/* Error Alert */}
                         {error && (
-                            <div className="flex items-center gap-3 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700">
-                                <AlertTriangle size={18} />
-                                <span className="text-sm">{error}</span>
+                            <div className="rounded-md bg-red-50 p-4 border border-red-200">
+                                <div className="flex">
+                                    <div className="flex-shrink-0">
+                                        <AlertTriangle className="h-5 w-5 text-red-400" aria-hidden="true" />
+                                    </div>
+                                    <div className="ml-3">
+                                        <h3 className="text-sm font-medium text-red-800">Submission Error</h3>
+                                        <div className="mt-1 text-sm text-red-700">{error}</div>
+                                    </div>
+                                </div>
                             </div>
                         )}
 
-                        {/* Full Name */}
-                        <div>
-                            <label className="flex items-center text-sm font-semibold text-gray-700 mb-2">
-                                <User size={15} className="mr-2 text-blue-500" />
-                                Full Name
-                            </label>
-                            <input
-                                type="text"
-                                name="full_name"
-                                value={form.full_name}
-                                onChange={handleChange}
-                                placeholder="John Smith"
-                                className="w-full px-4 py-3 rounded-xl border border-gray-300 bg-gray-50 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                            />
+                        <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+                            {/* Full Name */}
+                            <div className="sm:col-span-4">
+                                <label htmlFor="full_name" className="block text-sm font-semibold text-stone-700">
+                                    Full Name
+                                </label>
+                                <div className="mt-1 relative rounded-md shadow-sm">
+                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <User className="h-4 w-4 text-stone-400" />
+                                    </div>
+                                    <input
+                                        type="text"
+                                        name="full_name"
+                                        id="full_name"
+                                        value={form.full_name}
+                                        onChange={handleChange}
+                                        className="focus:ring-fcs-blue focus:border-fcs-blue block w-full pl-10 sm:text-sm border-stone-300 rounded-md py-2.5"
+                                        placeholder="John Doe"
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Grade */}
+                            <div className="sm:col-span-2">
+                                <label htmlFor="grade" className="block text-sm font-semibold text-stone-700">
+                                    Grade
+                                </label>
+                                <div className="mt-1 relative rounded-md shadow-sm">
+                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <GraduationCap className="h-4 w-4 text-stone-400" />
+                                    </div>
+                                    <select
+                                        id="grade"
+                                        name="grade"
+                                        value={form.grade}
+                                        onChange={handleChange}
+                                        className="focus:ring-fcs-blue focus:border-fcs-blue block w-full pl-10 sm:text-sm border-stone-300 rounded-md py-2.5 bg-white"
+                                    >
+                                        <option value="">Select...</option>
+                                        {GRADES.map((g) => (
+                                            <option key={g} value={g}>
+                                                {g}th
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </div>
+
+                            {/* Student ID */}
+                            <div className="sm:col-span-3">
+                                <label htmlFor="student_id" className="block text-sm font-semibold text-stone-700">
+                                    Student ID
+                                </label>
+                                <div className="mt-1 relative rounded-md shadow-sm">
+                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <Shield className="h-4 w-4 text-stone-400" />
+                                    </div>
+                                    <input
+                                        type="text"
+                                        name="student_id"
+                                        id="student_id"
+                                        value={form.student_id}
+                                        onChange={handleChange}
+                                        className="focus:ring-fcs-blue focus:border-fcs-blue block w-full pl-10 sm:text-sm border-stone-300 rounded-md py-2.5"
+                                        placeholder="123456"
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Emergency Contact */}
+                            <div className="sm:col-span-3">
+                                <label htmlFor="emergency_contact" className="block text-sm font-semibold text-stone-700">
+                                    Emergency Phone
+                                </label>
+                                <div className="mt-1 relative rounded-md shadow-sm">
+                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <Phone className="h-4 w-4 text-stone-400" />
+                                    </div>
+                                    <input
+                                        type="tel"
+                                        name="emergency_contact"
+                                        id="emergency_contact"
+                                        value={form.emergency_contact}
+                                        onChange={handleChange}
+                                        className="focus:ring-fcs-blue focus:border-fcs-blue block w-full pl-10 sm:text-sm border-stone-300 rounded-md py-2.5"
+                                        placeholder="(555) 123-4567"
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Parent Email */}
+                            <div className="sm:col-span-6">
+                                <label htmlFor="parent_email" className="block text-sm font-semibold text-stone-700">
+                                    Parent / Guardian Email
+                                </label>
+                                <div className="mt-1 relative rounded-md shadow-sm">
+                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <Mail className="h-4 w-4 text-stone-400" />
+                                    </div>
+                                    <input
+                                        type="email"
+                                        name="parent_email"
+                                        id="parent_email"
+                                        value={form.parent_email}
+                                        onChange={handleChange}
+                                        className="focus:ring-fcs-blue focus:border-fcs-blue block w-full pl-10 sm:text-sm border-stone-300 rounded-md py-2.5"
+                                        placeholder="parent@example.com"
+                                    />
+                                    <p className="mt-1 text-xs text-stone-500">
+                                        Used for permission slips and official communications.
+                                    </p>
+                                </div>
+                            </div>
                         </div>
 
-                        {/* Grade */}
-                        <div>
-                            <label className="flex items-center text-sm font-semibold text-gray-700 mb-2">
-                                <GraduationCap size={15} className="mr-2 text-indigo-500" />
-                                Grade
-                            </label>
-                            <select
-                                name="grade"
-                                value={form.grade}
-                                onChange={handleChange}
-                                className="w-full px-4 py-3 rounded-xl border border-gray-300 bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                        <div className="pt-4">
+                            <button
+                                type="submit"
+                                disabled={saving}
+                                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-bold text-white bg-fcs-blue hover:bg-fcs-blue/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-fcs-blue disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                             >
-                                <option value="">Select grade…</option>
-                                {GRADES.map((g) => (
-                                    <option key={g} value={g}>
-                                        Grade {g}
-                                    </option>
-                                ))}
-                            </select>
+                                {saving ? (
+                                    <>
+                                        <Loader2 className="animate-spin -ml-1 mr-2 h-4 w-4" />
+                                        Saving Profile...
+                                    </>
+                                ) : (
+                                    'Complete Registration'
+                                )}
+                            </button>
                         </div>
-
-                        {/* Student ID */}
-                        <div>
-                            <label className="flex items-center text-sm font-semibold text-gray-700 mb-2">
-                                <Shield size={15} className="mr-2 text-green-500" />
-                                Student ID
-                            </label>
-                            <input
-                                type="text"
-                                name="student_id"
-                                value={form.student_id}
-                                onChange={handleChange}
-                                placeholder="e.g. 123456"
-                                className="w-full px-4 py-3 rounded-xl border border-gray-300 bg-gray-50 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                            />
-                        </div>
-
-                        {/* Parent Email */}
-                        <div>
-                            <label className="flex items-center text-sm font-semibold text-gray-700 mb-2">
-                                <Mail size={15} className="mr-2 text-orange-500" />
-                                Parent / Guardian Email
-                            </label>
-                            <input
-                                type="email"
-                                name="parent_email"
-                                value={form.parent_email}
-                                onChange={handleChange}
-                                placeholder="parent@email.com"
-                                className="w-full px-4 py-3 rounded-xl border border-gray-300 bg-gray-50 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                            />
-                        </div>
-
-                        {/* Emergency Contact */}
-                        <div>
-                            <label className="flex items-center text-sm font-semibold text-gray-700 mb-2">
-                                <Phone size={15} className="mr-2 text-red-500" />
-                                Emergency Contact (Phone)
-                            </label>
-                            <input
-                                type="tel"
-                                name="emergency_contact"
-                                value={form.emergency_contact}
-                                onChange={handleChange}
-                                placeholder="(770) 555-0123"
-                                className="w-full px-4 py-3 rounded-xl border border-gray-300 bg-gray-50 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                            />
-                        </div>
-                    </div>
-
-                    {/* Submit */}
-                    <div className="bg-gray-50 border-t border-gray-100 px-8 py-5">
-                        <button
-                            type="submit"
-                            disabled={saving}
-                            className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-200 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-                        >
-                            {saving ? (
-                                <>
-                                    <Loader2 size={18} className="animate-spin" />
-                                    Saving…
-                                </>
-                            ) : (
-                                <>
-                                    <CheckCircle size={18} />
-                                    {existingProfileId ? 'Update Profile' : 'Save Profile'}
-                                </>
-                            )}
-                        </button>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
     );
