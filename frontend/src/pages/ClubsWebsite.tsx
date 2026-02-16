@@ -264,27 +264,30 @@ const ClubsWebsite = () => {
     'Wellness': 'border-l-green-500',
   };
 
-  // ── Category Grid — white cards with blue left accent ──────────
+  // ── Category Grid — Refined with larger text ───────────────────
   const LocalCategoryGrid = ({ categories, categoryAccents, clubsByCategory, onCategorySelect }) => (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
       {categories.map(category => (
         <button
           key={category}
           onClick={() => onCategorySelect(category)}
-          className={`bg-white border border-stone-200 border-l-4 ${categoryAccents[category] || 'border-l-stone-400'} rounded-md p-4 text-left shadow-sm hover:shadow-md transition-all duration-150 group`}
+          className={`group relative h-28 bg-white border border-stone-200 border-l-[6px] ${categoryAccents[category] || 'border-l-stone-400'} rounded-xl p-5 text-left shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 overflow-hidden`}
         >
-          <div className="flex items-center justify-between mb-1">
-            <h3 className="font-heading font-bold text-fcs-blue text-sm">{category}</h3>
-            <ChevronRight size={14} className="text-stone-300 group-hover:text-fcs-blue group-hover:translate-x-0.5 transition-all" />
+          <div className="relative z-10 flex flex-col h-full justify-between">
+            <div className="flex items-start justify-between">
+              <h3 className="font-heading font-bold text-stone-800 text-lg group-hover:text-fcs-blue transition-colors">{category}</h3>
+            </div>
+            <div className="flex items-end justify-end gap-1.5">
+              <span className="font-heading font-black text-stone-200 group-hover:text-fcs-gold transition-colors duration-300 text-4xl leading-none -mb-1">
+                {clubsByCategory[category]?.length || 0}
+              </span>
+              <span className="text-[10px] text-stone-400 font-bold uppercase tracking-wider mb-1">
+                Clubs
+              </span>
+            </div>
           </div>
-          <div className="flex items-baseline gap-1.5">
-            <span className="font-heading font-extrabold text-fcs-gold text-xl leading-none">
-              {clubsByCategory[category]?.length || 0}
-            </span>
-            <span className="text-[11px] text-stone-400 font-medium">
-              {clubsByCategory[category]?.length === 1 ? 'Club' : 'Clubs'}
-            </span>
-          </div>
+          {/* Subtle bg hover effect */}
+          <div className="absolute inset-0 bg-gradient-to-br from-transparent to-stone-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         </button>
       ))}
     </div>
@@ -548,13 +551,13 @@ const ClubsWebsite = () => {
       {/* ── Main Content ───────────────────────────────────────── */}
       <div className={`flex-1 flex flex-col min-h-screen transition-all duration-300 ${sidebarOpen ? 'lg:ml-72' : 'lg:ml-0'}`}>
 
-        {/* Top Navbar */}
-        <div className="sticky top-0 z-20 bg-stone-50/90 backdrop-blur-md border-b border-stone-200 h-16 px-6 flex items-center justify-between">
+        {/* Top Navbar — Merged with Hero (Prussian Blue) */}
+        <div className="sticky top-0 z-30 bg-fcs-blue h-16 px-6 flex items-center justify-between">
           {/* Left: Menu & School Toggle */}
           <div className="flex items-center gap-3">
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="p-2 -ml-2 rounded-md text-stone-500 hover:bg-stone-100 hover:text-fcs-blue transition-colors"
+              className="p-2 -ml-2 rounded-md text-white/80 hover:bg-white/10 hover:text-white transition-colors"
             >
               <Menu size={20} />
             </button>
@@ -563,11 +566,11 @@ const ClubsWebsite = () => {
             <div className="relative">
               <button
                 onClick={() => setSchoolDropdownOpen(!schoolDropdownOpen)}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-white border border-stone-200 shadow-sm hover:border-fcs-blue/30 transition-all text-sm font-semibold text-fcs-blue"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-white/10 border border-white/10 hover:bg-white/20 transition-all text-sm font-semibold text-white"
               >
                 <MapPin size={14} className="text-fcs-gold" />
                 {selectedSchool}
-                <ChevronDown size={14} className={`text-stone-400 transition-transform ${schoolDropdownOpen ? 'rotate-180' : ''}`} />
+                <ChevronDown size={14} className={`text-white/60 transition-transform ${schoolDropdownOpen ? 'rotate-180' : ''}`} />
               </button>
 
               {schoolDropdownOpen && (
@@ -599,7 +602,7 @@ const ClubsWebsite = () => {
 
           {/* Center Title (Desktop only) */}
           <div className="hidden md:block absolute left-1/2 top-1/2 -translate-x-1/2">
-            <h1 className="font-heading font-bold text-fcs-blue text-lg tracking-tight">
+            <h1 className="font-heading font-bold text-white text-lg tracking-tight">
               The Club Network
             </h1>
           </div>
@@ -608,7 +611,7 @@ const ClubsWebsite = () => {
           <div className="flex items-center gap-3">
             <button
               onClick={() => navigate('/chatbot')}
-              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-white bg-gradient-to-r from-fcs-blue to-blue-900 rounded-md shadow-sm hover:shadow-md transition-all"
+              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-fcs-blue bg-white rounded-md shadow-sm hover:shadow-md transition-all"
             >
               <MessageCircle size={14} />
               <span className="uppercase tracking-wide">Club Quiz</span>
@@ -619,7 +622,7 @@ const ClubsWebsite = () => {
             ) : (
               <button
                 onClick={() => navigate('/login')}
-                className="text-sm font-semibold text-fcs-blue hover:underline underline-offset-2"
+                className="text-sm font-semibold text-white/90 hover:text-white hover:underline underline-offset-2"
               >
                 Sign In
               </button>
@@ -631,55 +634,54 @@ const ClubsWebsite = () => {
         <main className="flex-1 p-6 md:p-8 max-w-7xl mx-auto w-full">
           {!selectedCategory && !selectedClub ? (
             <>
-              {/* Dark Hero Section */}
-              <div className="bg-fcs-blue rounded-md p-8 md:p-10 mb-8 shadow-lg relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+              {/* Dark Hero Section — Merged with Header set to bg-fcs-blue */}
+              <div className="bg-fcs-blue rounded-b-3xl p-8 md:p-12 mb-16 shadow-xl relative overflow-visible -mt-6">
+                <div className="absolute top-0 right-0 w-96 h-96 bg-fcs-gold/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none" />
 
-                <div className="relative z-10 flex flex-col md:flex-row items-start md:items-end justify-between gap-6">
-                  <div className="max-w-xl">
-                    <h2 className="font-heading font-extrabold text-white text-3xl md:text-4xl leading-tight mb-4">
-                      Find your people. <br /><span className="text-fcs-gold">Join your club.</span>
-                    </h2>
-                    <p className="text-white/70 text-sm md:text-base leading-relaxed mb-6 font-medium">
-                      Discover amazing opportunities at {selectedSchool}.
-                      Browse categories below or use our AI quiz to find your perfect match.
-                    </p>
-
-                    {/* Quick Stats Grid */}
-                    <div className="flex gap-8 border-t border-white/10 pt-6">
-                      <div>
-                        <p className="font-heading font-bold text-2xl text-fcs-gold leading-none mb-1">{filteredClubsData.length}</p>
-                        <p className="text-[10px] text-white/50 uppercase tracking-widest font-semibold">Active Clubs</p>
-                      </div>
-                      <div>
-                        <p className="font-heading font-bold text-2xl text-white leading-none mb-1">{categories.length}</p>
-                        <p className="text-[10px] text-white/50 uppercase tracking-widest font-semibold">Categories</p>
-                      </div>
-                    </div>
-                  </div>
+                <div className="relative z-10 flex flex-col items-center text-center gap-6 max-w-2xl mx-auto">
+                  <h2 className="font-heading font-extrabold text-white text-4xl md:text-5xl leading-tight">
+                    Find your people. <br /><span className="text-fcs-gold">Join your club.</span>
+                  </h2>
+                  <p className="text-white/80 text-lg leading-relaxed font-medium">
+                    Discover amazing opportunities at {selectedSchool}.
+                  </p>
 
                   {/* Hero Actions */}
-                  <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+                  <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
                     <button
                       onClick={() => navigate('/chatbot')}
-                      className="px-6 py-3 bg-fcs-gold text-fcs-blue text-sm font-bold rounded-md shadow-hard-sm hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all flex items-center justify-center gap-2"
+                      className="px-8 py-3.5 bg-fcs-gold text-fcs-blue text-sm font-bold rounded-lg shadow-hard-lg hover:-translate-y-1 hover:shadow-hard-xl transition-all flex items-center justify-center gap-2"
                     >
-                      <MessageCircle size={16} />
+                      <MessageCircle size={18} />
                       Take Club Quiz
                     </button>
                     <button
                       onClick={handleCalendarClick}
-                      className="px-6 py-3 bg-white/10 text-white text-sm font-semibold rounded-md border border-white/10 hover:bg-white/20 transition-all flex items-center justify-center gap-2"
+                      className="px-8 py-3.5 bg-white/10 text-white text-sm font-semibold rounded-lg border border-white/20 hover:bg-white/20 backdrop-blur-sm transition-all flex items-center justify-center gap-2"
                     >
-                      <CalendarIcon size={16} />
-                      Events
+                      <CalendarIcon size={18} />
+                      Events Calendar
                     </button>
                   </div>
                 </div>
-              </div>
 
-              {/* Search & Grid */}
-              <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+                {/* Floating Search Bar (Pill) — Integrated into Hero */}
+                <div className="absolute -bottom-7 left-1/2 -translate-x-1/2 w-full max-w-2xl px-6 z-20">
+                  <div className="relative group">
+                    <div className="absolute -inset-1 bg-gradient-to-r from-fcs-gold to-fcs-blue rounded-2xl opacity-20 blur group-hover:opacity-40 transition duration-500"></div>
+                    <div className="relative">
+                      <Search size={22} className="absolute left-5 top-1/2 -translate-y-1/2 text-fcs-blue" />
+                      <input
+                        type="text"
+                        placeholder="Search clubs (e.g. 'Robotics', 'Chess', 'Debate')…"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="w-full pl-14 pr-6 h-14 bg-white rounded-xl shadow-2xl text-stone-900 placeholder:text-stone-400 font-medium text-base focus:scale-[1.01] focus:-translate-y-1 transition-all duration-300 outline-none"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
 
               <div className="mb-4 flex items-center justify-between">
                 <h3 className="font-heading font-bold text-fcs-blue text-lg">Browse by Category</h3>
