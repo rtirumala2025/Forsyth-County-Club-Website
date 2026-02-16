@@ -266,12 +266,12 @@ const ClubsWebsite = () => {
 
   // ── Category Grid — Refined with larger text ───────────────────
   const LocalCategoryGrid = ({ categories, categoryAccents, clubsByCategory, onCategorySelect }) => (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
       {categories.map(category => (
         <button
           key={category}
           onClick={() => onCategorySelect(category)}
-          className={`group relative h-28 bg-white border border-stone-200 border-l-[6px] ${categoryAccents[category] || 'border-l-stone-400'} rounded-xl p-5 text-left shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 overflow-hidden`}
+          className={`group relative h-28 bg-white border border-stone-200 border-l-4 ${categoryAccents[category] || 'border-l-stone-400'} rounded-xl p-5 text-left shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 overflow-hidden`}
         >
           <div className="relative z-10 flex flex-col h-full justify-between">
             <div className="flex items-start justify-between">
@@ -483,7 +483,7 @@ const ClubsWebsite = () => {
   return (
     <div className="min-h-screen bg-stone-100 bg-noise font-body text-stone-900 flex">
       {/* ── Sidebar ────────────────────────────────────────────── */}
-      <div className={`fixed inset-y-0 left-0 z-40 w-72 bg-stone-50 border-r border-stone-200 transform transition-transform duration-300 ease-in-out ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+      <div className={`fixed inset-y-0 left-0 z-40 w-72 bg-stone-50 border-r border-stone-200 transform transition-all duration-300 ease-in-out ${sidebarOpen ? 'translate-x-0 lg:ml-0' : '-translate-x-full lg:translate-x-0 lg:-ml-72'} lg:static lg:inset-auto`}>
         {/* Sidebar Header */}
         <div className="h-16 flex items-center justify-between px-6 border-b border-stone-200">
           <div>
@@ -540,7 +540,7 @@ const ClubsWebsite = () => {
         </div>
       </div>
 
-      {/* Overlay */}
+      {/* Overlay (Mobile Only) */}
       {sidebarOpen && (
         <div
           className="fixed inset-0 bg-fcs-blue/20 backdrop-blur-sm z-30 lg:hidden"
@@ -549,7 +549,7 @@ const ClubsWebsite = () => {
       )}
 
       {/* ── Main Content ───────────────────────────────────────── */}
-      <div className={`flex-1 flex flex-col min-h-screen transition-all duration-300 ${sidebarOpen ? 'lg:ml-72' : 'lg:ml-0'}`}>
+      <div className="flex-1 min-w-0 w-full flex flex-col min-h-screen">
 
         {/* Top Navbar — Merged with Hero (Prussian Blue) */}
         <div className="sticky top-0 z-30 bg-fcs-blue h-16 px-6 flex items-center justify-between">
