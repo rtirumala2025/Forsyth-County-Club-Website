@@ -151,7 +151,7 @@ const AppRoutes = () => {
       <Route
         path="/admin"
         element={
-          <AuthGuard requiredRole="admin">
+          <AuthGuard>
             <AdminDashboard />
           </AuthGuard>
         }
@@ -164,9 +164,16 @@ const AppRoutes = () => {
           </AuthGuard>
         }
       />
+
+      {/* Public Parent Verification Route */}
+      <Route
+        path="/parent-verify"
+        element={<ParentVerify />}
+      />
+
       <Route
         path="/verify/:signatureId"
-        element={<ParentVerify />}
+        element={<Navigate to={`/parent-verify?id=:signatureId`} replace />}
       />
       {/* Full-page Chatbot route: uses same component with fullPage layout */}
       <Route
