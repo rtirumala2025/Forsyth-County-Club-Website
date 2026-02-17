@@ -22,6 +22,7 @@ const ParentVerify = () => {
     const [signing, setSigning] = useState(false);
     const [success, setSuccess] = useState(false);
     const [isAgreed, setIsAgreed] = useState(false);
+    const [parentName, setParentName] = useState('');
 
     useEffect(() => {
         const fetchSignature = async () => {
@@ -99,7 +100,7 @@ const ParentVerify = () => {
     }, [signatureId]);
 
     const handleSign = async () => {
-        if (!details || !isAgreed) return;
+        if (!details || !isAgreed || !parentName.trim()) return;
         setSigning(true);
         setError(null);
 
@@ -108,6 +109,7 @@ const ParentVerify = () => {
                 .from('signatures')
                 .update({
                     status: 'approved',
+                    parent_signature: parentName,
                     signed_at: new Date().toISOString(),
                     // ip_address: '...' // Schema might not have this column yet, skipping for now unless error tells me otherwise.
                 })
@@ -223,6 +225,20 @@ const ParentVerify = () => {
                             Digital Signature
                         </h3>
 
+                        <div className="mb-6">
+                            <label htmlFor="parentName" className="block text-sm font-semibold text-stone-700 mb-2">
+                                Full Name of Parent/Guardian
+                            </label>
+                            <input
+                                id="parentName"
+                                type="text"
+                                value={parentName}
+                                onChange={(e) => setParentName(e.target.value)}
+                                placeholder="Type your full legal name"
+                                className="w-full px-4 py-3 border border-stone-300 rounded-md focus:ring-2 focus:ring-fcs-blue focus:border-fcs-blue outline-none transition-all font-sans"
+                            />
+                        </div>
+
                         <div className="flex items-start gap-4 mb-6">
                             <div className="pt-1">
                                 <input
@@ -234,15 +250,15 @@ const ParentVerify = () => {
                                 />
                             </div>
                             <label htmlFor="consent" className="text-base text-stone-800 cursor-pointer select-none">
-                                I, <span className="font-semibold underline decoration-dotted">{details?.parent_email}</span>, accept these terms and electronically sign this permission slip.
+                                I, <span className="font-semibold">{parentName || '[Parent Name]'}</span>, ({details?.parent_email}), accept these terms and electronically sign this permission slip.
                             </label>
                         </div>
 
                         <button
                             onClick={handleSign}
-                            disabled={!isAgreed || signing}
+                            disabled={!isAgreed || !parentName.trim() || signing}
                             className={`w-full sm:w-auto px-8 py-3 rounded-md font-sans font-bold text-white shadow-md transition-all
-                                ${isAgreed && !signing
+                                ${isAgreed && parentName.trim() && !signing
                                     ? 'bg-green-700 hover:bg-green-800 shadow-lg transform hover:-translate-y-0.5'
                                     : 'bg-stone-400 cursor-not-allowed opacity-70'}`}
                         >
