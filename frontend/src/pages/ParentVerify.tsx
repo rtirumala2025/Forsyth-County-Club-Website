@@ -34,8 +34,8 @@ const ParentVerify = () => {
             try {
                 // Fetch signature with joins
                 // Note: deeply nested joins can be tricky in Supabase depending on foreign keys.
-                // Assuming reliable FKs: signatures.user_id -> profiles.firebase_uid (or id?), signatures.club_id -> clubs.id
-                // But profiles usually keyed by firebase_uid or id? Let's assume user_id in signatures matches firebase_uid in profiles.
+                // Assuming reliable FKs: signatures.user_id -> profiles.id, signatures.club_id -> clubs.id
+                // profiles is keyed by id (auth.uid).
 
                 // Define interface for the join query result
                 interface SignatureJoinResult {

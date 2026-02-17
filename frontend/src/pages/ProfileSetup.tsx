@@ -57,7 +57,7 @@ const ProfileSetup = () => {
                 const { data, error: fetchError } = await supabase
                     .from('profiles')
                     .select('*')
-                    .eq('firebase_uid', user.id)
+                    .eq('id', user.id)
                     .maybeSingle();
 
                 if (fetchError) throw fetchError;
@@ -119,7 +119,7 @@ const ProfileSetup = () => {
                 .from('profiles')
                 .select('id')
                 .eq('student_id', form.student_id)
-                .neq('firebase_uid', user.id) // Allow current user to keep their ID
+                .neq('id', user.id) // Allow current user to keep their ID
                 .maybeSingle();
 
             if (duplicate) {
@@ -129,7 +129,7 @@ const ProfileSetup = () => {
             }
 
             const profileData = {
-                firebase_uid: user.id,
+
                 email: user.email, // Ensure email is synced
                 ...form,
                 updated_at: new Date().toISOString(),

@@ -59,7 +59,7 @@ const ClubCard = memo(({ club, onSelectClub, CategoryColors }: ClubCardProps) =>
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('parent_email')
-        .eq('firebase_uid', user.id)
+        .eq('id', user.id)
         .single();
 
       if (profileError || !profile?.parent_email) {

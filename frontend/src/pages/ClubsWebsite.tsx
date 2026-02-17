@@ -175,7 +175,7 @@ const ClubsWebsite = () => {
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('id, full_name')
-        .eq('firebase_uid', user.id)
+        .eq('id', user.id)
         .maybeSingle();
 
       if (profileError) throw profileError;

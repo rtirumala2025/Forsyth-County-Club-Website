@@ -31,7 +31,7 @@ const AuthGuard = ({ children, requiredRole = null, fallback = null }: {
           const { data: profile } = await supabase
             .from('profiles')
             .select('id')
-            .eq('firebase_uid', currentUser.id)
+            .eq('id', currentUser.id)
             .maybeSingle();
 
           if (!profile && location.pathname !== '/profile-setup') {
