@@ -53,7 +53,6 @@ export const useClubMembership = () => {
                     club_id: clubId,
                     parent_email: parentEmail,
                     status: 'pending_parent',
-                    signed_at: new Date().toISOString(),
                 })
                 .select('id')
                 .single();
