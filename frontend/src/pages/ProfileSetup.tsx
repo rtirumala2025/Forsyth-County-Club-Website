@@ -114,6 +114,20 @@ const ProfileSetup = () => {
         setError(null);
 
         try {
+            // Check for duplicate Student ID
+            const { data: duplicate } = await supabase
+                .from('profiles')
+                .select('id')
+                .eq('student_id', form.student_id)
+                .neq('firebase_uid', user.id) // Allow current user to keep their ID
+                .maybeSingle();
+
+            if (duplicate) {
+                setError('This Student ID is already registered to another user.');
+                setSaving(false);
+                return;
+            }
+
             const profileData = {
                 firebase_uid: user.id,
                 email: user.email, // Ensure email is synced

@@ -2,11 +2,11 @@ import React from 'react';
 import { Search, Menu, X, Calendar as CalendarIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-const Header = ({ 
-  sidebarOpen, 
-  setSidebarOpen, 
-  searchTerm, 
-  setSearchTerm, 
+const Header = ({
+  sidebarOpen,
+  setSidebarOpen,
+  searchTerm,
+  setSearchTerm,
   showSearch = true,
   title = "WFHS Clubs",
   subtitle = "& Organizations"
@@ -31,9 +31,9 @@ const Header = ({
         </div>
         <div className="flex items-center space-x-4">
           <Link to="/about" className="text-white hover:text-yellow-300 font-medium text-lg transition-colors">About</Link>
-          <Link to="/calendar" className="flex items-center text-white hover:text-yellow-300 font-medium text-lg transition-colors">
+          {/* <Link to="/calendar" className="flex items-center text-white hover:text-yellow-300 font-medium text-lg transition-colors">
             <CalendarIcon size={20} className="mr-1" /> Calendar
-          </Link>
+          </Link> */}
         </div>
       </div>
 

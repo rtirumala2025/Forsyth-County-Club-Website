@@ -8,7 +8,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useClubFilter } from '../hooks/useClubFilter';
 import { useSupabaseClubs } from '../hooks/useSupabaseClubs';
 import type { ClubRecord } from '../hooks/useSupabaseClubs';
-// Removed legacy chatbot import; using global floating Chatbot in App.jsx instead
+import { ClubCard } from '../components/club/ClubCard';
 
 const ClubsWebsite = () => {
   // ── Supabase data feed ──────────────────────────────────────
@@ -187,6 +187,7 @@ const ClubsWebsite = () => {
       // 4. Insert signature
       const { error: insertError } = await supabase.from('signatures').insert({
         profile_id: profile.id,
+        user_id: user.id, // Critical fix for data consistency
         club_id: club.id,
         club_name: club.name,
         school_name: selectedSchool,
@@ -309,29 +310,7 @@ const ClubsWebsite = () => {
     </div>
   );
 
-  // ── Club Card — compact, white, tight shadow ───────────────────
-  const ClubCard = ({ club, categoryAccents, onClick }) => (
-    <div
-      onClick={onClick}
-      className={`bg-white rounded-md border border-stone-200 border-l-4 ${categoryAccents[club.category] || 'border-l-stone-400'} shadow-sm hover:shadow-md transition-all duration-150 cursor-pointer group`}
-    >
-      <div className="p-4">
-        <div className="flex items-start justify-between gap-2 mb-2">
-          <h3 className="font-heading font-bold text-fcs-blue text-sm leading-snug">{club.name}</h3>
-          <span className="shrink-0 px-2 py-0.5 rounded-md bg-stone-100 text-stone-600 text-[10px] font-semibold uppercase tracking-wide">
-            {club.category}
-          </span>
-        </div>
-        <p className="text-stone-500 text-xs leading-relaxed mb-3 line-clamp-2 font-body">{club.description}</p>
-        <div className="flex items-center justify-between">
-          <span className="text-[11px] text-stone-400 font-medium">
-            <span className="text-stone-500 font-semibold">Sponsor:</span> {club.sponsor}
-          </span>
-          <ChevronRight size={14} className="text-stone-300 group-hover:text-fcs-blue group-hover:translate-x-0.5 transition-all" />
-        </div>
-      </div>
-    </div>
-  );
+
 
   // ── Club Details — Sawnee & Slate ──────────────────────────────
   const ClubDetails = ({ club, onBack }) => (
@@ -609,6 +588,7 @@ const ClubsWebsite = () => {
 
           {/* Right: Actions */}
           <div className="flex items-center gap-3">
+            {/* Hidden for Demo
             <button
               onClick={() => navigate('/chatbot')}
               className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-fcs-blue bg-white rounded-md shadow-sm hover:shadow-md transition-all"
@@ -616,6 +596,7 @@ const ClubsWebsite = () => {
               <MessageCircle size={14} />
               <span className="uppercase tracking-wide">Club Quiz</span>
             </button>
+            */}
 
             {user ? (
               <UserMenu user={user} />
@@ -648,7 +629,8 @@ const ClubsWebsite = () => {
 
                   {/* Hero Actions */}
                   <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
-                    <button
+                    {/* Hidden for Demo
+                     <button
                       onClick={() => navigate('/chatbot')}
                       className="px-8 py-3.5 bg-fcs-gold text-fcs-blue text-sm font-bold rounded-lg shadow-hard-lg hover:-translate-y-1 hover:shadow-hard-xl transition-all flex items-center justify-center gap-2"
                     >
@@ -662,6 +644,7 @@ const ClubsWebsite = () => {
                       <CalendarIcon size={18} />
                       Events Calendar
                     </button>
+                    */}
                   </div>
                 </div>
 
@@ -727,8 +710,8 @@ const ClubsWebsite = () => {
                     <ClubCard
                       key={club.id}
                       club={club}
-                      categoryAccents={CategoryAccents}
-                      onClick={() => setSelectedClub(club.id)}
+                      CategoryColors={CategoryAccents}
+                      onSelectClub={setSelectedClub}
                     />
                   ))
                 ) : (

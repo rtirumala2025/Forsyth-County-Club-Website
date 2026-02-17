@@ -92,6 +92,7 @@ const AppRoutes = () => {
         path="/clubs/:schoolSlug/:clubSlug"
         element={<ClubsWebsite />}
       />
+      {/* Hidden for Demo
       <Route
         path="/compare"
         element={
@@ -100,6 +101,8 @@ const AppRoutes = () => {
           </AuthGuard>
         }
       />
+      */}
+      {/* Hidden for Demo
       <Route
         path="/events"
         element={
@@ -108,6 +111,7 @@ const AppRoutes = () => {
           </AuthGuard>
         }
       />
+      */}
       <Route
         path="/create-account"
         element={
@@ -132,6 +136,7 @@ const AppRoutes = () => {
           </AuthGuard>
         }
       />
+      {/* Hidden for Demo
       <Route
         path="/calendar"
         element={
@@ -140,6 +145,8 @@ const AppRoutes = () => {
           </AuthGuard>
         }
       />
+      */}
+      {/* Hidden for Demo
       <Route
         path="/club-quiz"
         element={
@@ -148,6 +155,7 @@ const AppRoutes = () => {
           </AuthGuard>
         }
       />
+      */}
       <Route
         path="/admin"
         element={
