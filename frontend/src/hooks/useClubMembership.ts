@@ -73,10 +73,10 @@ export const useClubMembership = () => {
             }
             return data; // Returns { id: ... }
         },
-        onSuccess: () => {
+        onSuccess: async () => {
             // Invalidate query to refresh UI
-            queryClient.invalidateQueries({ queryKey: ['user-signatures'] });
-            queryClient.invalidateQueries({ queryKey: ['signatures'] });
+            await queryClient.invalidateQueries({ queryKey: ['user-signatures'] });
+            await queryClient.invalidateQueries({ queryKey: ['signatures'] });
         },
     });
 

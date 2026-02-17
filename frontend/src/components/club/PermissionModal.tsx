@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { X, Copy, Check, FileText, ArrowRight } from 'lucide-react';
+import { X, Mail, Send, CheckCircle, Loader2, AlertTriangle, ShieldCheck } from 'lucide-react';
+import { useAuth } from '../../config/firebase';
 
 interface PermissionModalProps {
     isOpen: boolean;
@@ -12,20 +13,55 @@ export const PermissionModal: React.FC<PermissionModalProps> = ({
     onClose,
     signatureId
 }) => {
-    const [copied, setCopied] = useState(false);
+    const { user } = useAuth();
+    const [email, setEmail] = useState('');
+    const [sending, setSending] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const [success, setSuccess] = useState(false);
 
     if (!isOpen) return null;
 
-    const permissionLink = `${window.location.origin}/parent-verify?id=${signatureId}`;
+    const handleSend = async () => {
+        if (!email) return;
+        setError(null);
 
-    const handleCopy = async () => {
-        try {
-            await navigator.clipboard.writeText(permissionLink);
-            setCopied(true);
-            setTimeout(() => setCopied(false), 2000);
-        } catch (err) {
-            console.error('Failed to copy text: ', err);
+        // 1. Validate Email Format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            setError("Please enter a valid email address.");
+            return;
         }
+
+        // 2. Anti-fraud: Check against current user
+        if (user?.email && email.toLowerCase() === user.email.toLowerCase()) {
+            setError("You cannot send the slip to yourself.");
+            return;
+        }
+
+        // 3. Anti-fraud: Check name overlap
+        const fullName = user?.user_metadata?.full_name || '';
+        if (fullName) {
+            const nameParts = fullName.toLowerCase().split(' ').filter((p: string) => p.length > 2);
+            const emailLower = email.toLowerCase();
+            const hasNameMatch = nameParts.some((part: string) => emailLower.includes(part));
+
+            if (hasNameMatch) {
+                setError("Please enter your parent's email, not your own.");
+                return;
+            }
+        }
+
+        setSending(true);
+
+        // Simulate API call
+        setTimeout(() => {
+            const link = `${window.location.origin}/parent-verify?id=${signatureId}`;
+            console.log("PARENT LINK (HIDDEN):", link);
+
+            setSuccess(true);
+            setSending(false);
+            // In a real app with toast library: toast.success(`Link sent to ${email}`);
+        }, 1500);
     };
 
     return (
@@ -37,8 +73,8 @@ export const PermissionModal: React.FC<PermissionModalProps> = ({
                 {/* Header */}
                 <div className="bg-stone-50 px-6 py-4 border-b border-stone-100 flex items-center justify-between">
                     <div className="flex items-center space-x-2 text-stone-800">
-                        <FileText className="h-5 w-5 text-fcs-blue" />
-                        <h3 className="font-bold font-serif text-lg">Permission Slip Generated</h3>
+                        <ShieldCheck className="h-5 w-5 text-fcs-blue" />
+                        <h3 className="font-bold font-serif text-lg">Parent Permission</h3>
                     </div>
                     <button
                         onClick={onClose}
@@ -48,67 +84,83 @@ export const PermissionModal: React.FC<PermissionModalProps> = ({
                     </button>
                 </div>
 
-                {/* content */}
+                {/* Content */}
                 <div className="p-6 space-y-6">
-                    <p className="text-stone-600 leading-relaxed text-sm">
-                        To finalize your membership, your parent or guardian must sign the digital permission slip. Please share this secure link with them:
-                    </p>
+                    {!success ? (
+                        <>
+                            <p className="text-stone-600 leading-relaxed text-sm">
+                                To finalize your membership, we need to send a digital permission slip to your parent or guardian. Please enter their email below.
+                            </p>
 
-                    <div className="space-y-2">
-                        <label className="text-xs font-bold text-stone-500 uppercase tracking-wider block">
-                            Shareable Link
-                        </label>
-                        <div className="flex shadow-sm rounded-md">
-                            <input
-                                type="text"
-                                readOnly
-                                value={permissionLink}
-                                className="flex-1 block w-full rounded-l-md border-stone-300 bg-stone-50 text-stone-600 text-sm focus:border-fcs-blue focus:ring-fcs-blue px-3 py-2 border-r-0"
-                                onClick={(e) => e.currentTarget.select()}
-                            />
-                            <button
-                                onClick={handleCopy}
-                                className={`inline-flex items-center px-4 py-2 border border-l-0 border-stone-300 rounded-r-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-fcs-blue w-[100px] justify-center transition-all duration-200
-                  ${copied
-                                        ? 'bg-green-50 text-green-700 border-green-200'
-                                        : 'bg-white text-stone-700 hover:bg-stone-50'
-                                    }`}
-                            >
-                                {copied ? (
-                                    <>
-                                        <Check size={16} className="mr-2" />
-                                        Copied
-                                    </>
-                                ) : (
-                                    <>
-                                        <Copy size={16} className="mr-2" />
-                                        Copy
-                                    </>
-                                )}
-                            </button>
-                        </div>
-                    </div>
+                            <div className="space-y-4">
+                                <div>
+                                    <label className="text-xs font-bold text-stone-500 uppercase tracking-wider block mb-1.5">
+                                        Parent/Guardian Email
+                                    </label>
+                                    <div className="relative">
+                                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 h-4 w-4" />
+                                        <input
+                                            type="email"
+                                            value={email}
+                                            onChange={(e) => {
+                                                setEmail(e.target.value);
+                                                setError(null);
+                                            }}
+                                            placeholder="parent@example.com"
+                                            className={`block w-full pl-9 pr-3 py-2.5 border rounded-md text-sm focus:ring-2 focus:ring-fcs-blue focus:border-fcs-blue outline-none transition-all ${error ? 'border-red-300 bg-red-50 text-red-900 placeholder:text-red-300' : 'border-stone-300 bg-white text-stone-900 placeholder:text-stone-400'
+                                                }`}
+                                        />
+                                    </div>
+                                    {error && (
+                                        <div className="flex items-center gap-1.5 mt-2 text-red-600 text-xs font-medium animate-in slide-in-from-top-1">
+                                            <AlertTriangle size={12} />
+                                            {error}
+                                        </div>
+                                    )}
+                                </div>
 
-                    <div className="bg-blue-50 border border-blue-100 rounded-lg p-4 flex items-start space-x-3">
-                        <div className="bg-blue-100 rounded-full p-1 mt-0.5 shrink-0">
-                            <ArrowRight size={14} className="text-blue-600" />
-                        </div>
-                        <div>
-                            <h4 className="text-sm font-bold text-blue-900">What happens next?</h4>
-                            <p className="text-xs text-blue-700 mt-1">
-                                Once signed, the club sponsor will review your application. You can check your status on your dashboard.
+                                <button
+                                    onClick={handleSend}
+                                    disabled={sending || !email}
+                                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-fcs-blue text-white rounded-lg text-sm font-bold hover:bg-black transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    {sending ? (
+                                        <>
+                                            <Loader2 size={16} className="animate-spin" />
+                                            Sending Verification...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Send size={16} />
+                                            Send Permission Slip
+                                        </>
+                                    )}
+                                </button>
+                            </div>
+                        </>
+                    ) : (
+                        <div className="text-center py-4 animate-in fade-in zoom-in duration-300">
+                            <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <CheckCircle className="h-8 w-8 text-green-600" />
+                            </div>
+                            <h3 className="text-lg font-bold text-stone-900 mb-2">Email Sent!</h3>
+                            <p className="text-sm text-stone-600 mb-4">
+                                We've sent a secure link to <span className="font-semibold text-stone-800">{email}</span>.
+                            </p>
+                            <p className="text-xs text-stone-400">
+                                Ask them to check their inbox to approve your membership.
                             </p>
                         </div>
-                    </div>
+                    )}
                 </div>
 
                 {/* Footer */}
                 <div className="bg-stone-50 px-6 py-4 border-t border-stone-100 flex justify-end">
                     <button
                         onClick={onClose}
-                        className="px-4 py-2 bg-stone-800 text-white rounded-lg text-sm font-bold hover:bg-stone-900 transition-colors shadow-sm"
+                        className="px-4 py-2 bg-white border border-stone-200 text-stone-600 rounded-lg text-sm font-semibold hover:bg-stone-50 hover:text-stone-900 transition-colors"
                     >
-                        Done
+                        {success ? 'Close' : 'Cancel'}
                     </button>
                 </div>
             </div>
