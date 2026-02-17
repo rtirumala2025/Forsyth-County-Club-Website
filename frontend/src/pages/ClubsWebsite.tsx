@@ -204,9 +204,6 @@ const ClubsWebsite = () => {
         profile_id: profile.id,
         user_id: user.id, // Critical fix for data consistency
         club_id: club.id,
-        club_name: club.name,
-        school_name: selectedSchool,
-        student_name: profile.full_name,
         status: 'PENDING_PARENT',
       });
 
@@ -769,9 +766,9 @@ const ClubsWebsite = () => {
 
       </div>
 
-      {/* Toast Notification */}
-      {joinMessage && (
-        <div className="fixed top-6 right-6 z-50 animate-[slideIn_0.3s_ease-out]">
+      {/* Toast Notification - Rendered via Portal for Overlay */}
+      {joinMessage && createPortal(
+        <div className="fixed top-6 right-6 z-[100] animate-[slideIn_0.3s_ease-out]">
           <div
             onClick={() => setJoinMessage(null)}
             className={`flex items-start gap-3 p-4 rounded-md shadow-hard-lg border cursor-pointer transition-all hover:translate-y-px hover:shadow-hard-sm bg-white ${joinMessage.type === 'success'
@@ -796,7 +793,8 @@ const ClubsWebsite = () => {
             </div>
             <X size={14} className="text-stone-300 ml-2" />
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div >
   );
