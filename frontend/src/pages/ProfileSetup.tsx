@@ -242,7 +242,7 @@ const ProfileSetup = () => {
                                         id="full_name"
                                         value={form.full_name}
                                         onChange={handleChange}
-                                        className="focus:ring-fcs-blue focus:border-fcs-blue block w-full pl-10 sm:text-sm border-stone-300 rounded-md py-2.5"
+                                        className="focus:ring-fcs-blue focus:border-fcs-blue block w-full pl-10 sm:text-sm border-stone-300 rounded-md py-2.5 text-stone-900"
                                         placeholder="John Doe"
                                     />
                                 </div>
@@ -262,7 +262,7 @@ const ProfileSetup = () => {
                                         name="grade"
                                         value={form.grade}
                                         onChange={handleChange}
-                                        className="focus:ring-fcs-blue focus:border-fcs-blue block w-full pl-10 sm:text-sm border-stone-300 rounded-md py-2.5 bg-white"
+                                        className="focus:ring-fcs-blue focus:border-fcs-blue block w-full pl-10 sm:text-sm border-stone-300 rounded-md py-2.5 bg-white text-stone-900"
                                     >
                                         <option value="">Select...</option>
                                         {GRADES.map((g) => (
@@ -289,7 +289,7 @@ const ProfileSetup = () => {
                                         id="student_id"
                                         value={form.student_id}
                                         onChange={handleChange}
-                                        className="focus:ring-fcs-blue focus:border-fcs-blue block w-full pl-10 sm:text-sm border-stone-300 rounded-md py-2.5"
+                                        className="focus:ring-fcs-blue focus:border-fcs-blue block w-full pl-10 sm:text-sm border-stone-300 rounded-md py-2.5 text-stone-900"
                                         placeholder="123456"
                                     />
                                 </div>
@@ -310,7 +310,7 @@ const ProfileSetup = () => {
                                         id="emergency_contact"
                                         value={form.emergency_contact}
                                         onChange={handleChange}
-                                        className="focus:ring-fcs-blue focus:border-fcs-blue block w-full pl-10 sm:text-sm border-stone-300 rounded-md py-2.5"
+                                        className="focus:ring-fcs-blue focus:border-fcs-blue block w-full pl-10 sm:text-sm border-stone-300 rounded-md py-2.5 text-stone-900"
                                         placeholder="(555) 123-4567"
                                     />
                                 </div>
@@ -331,7 +331,7 @@ const ProfileSetup = () => {
                                         id="parent_email"
                                         value={form.parent_email}
                                         onChange={handleChange}
-                                        className="focus:ring-fcs-blue focus:border-fcs-blue block w-full pl-10 sm:text-sm border-stone-300 rounded-md py-2.5"
+                                        className="focus:ring-fcs-blue focus:border-fcs-blue block w-full pl-10 sm:text-sm border-stone-300 rounded-md py-2.5 text-stone-900"
                                         placeholder="parent@example.com"
                                     />
                                     <p className="mt-1 text-xs text-stone-500">

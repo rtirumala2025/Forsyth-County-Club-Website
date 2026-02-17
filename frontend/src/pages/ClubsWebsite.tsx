@@ -104,8 +104,23 @@ const ClubsWebsite = () => {
     }
   }, [schoolSlug, clubSlug, allClubData]);
 
+  // Fix 3: The "Broken Search" (Fix the Filter)
+  const filteredClubsDerived = useMemo(() => {
+    const clubs = filteredClubsData || [];
+    if (!searchTerm) return clubs;
+
+    const query = searchTerm.toLowerCase();
+    return clubs.filter((club) => {
+      return (
+        club.name.toLowerCase().includes(query) ||
+        club.category.toLowerCase().includes(query) ||
+        (club.description && club.description.toLowerCase().includes(query))
+      );
+    });
+  }, [filteredClubsData, searchTerm]);
+
   // Call all hooks before any conditional returns
-  const { clubsByCategory, filteredClubs, categories, stats } = useClubFilter(filteredClubsData || [], searchTerm, selectedCategory);
+  const { clubsByCategory, filteredClubs, categories, stats } = useClubFilter(filteredClubsDerived, searchTerm, selectedCategory);
   const selectedClubData = (filteredClubsData || []).find(club => club.id === selectedClub);
 
   const handleHomeClick = () => {

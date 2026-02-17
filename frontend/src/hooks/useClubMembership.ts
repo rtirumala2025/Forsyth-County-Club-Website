@@ -15,7 +15,7 @@ export const useClubMembership = () => {
             if (!user) return [];
             const { data, error } = await supabase
                 .from('signatures')
-                .select('*, id, club_id, user_id, status, parent_email, created_at')
+                .select('*, id, club_id, user_id, status, created_at')
                 .eq('user_id', user.id);
 
             if (error) throw error;

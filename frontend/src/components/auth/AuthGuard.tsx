@@ -27,23 +27,17 @@ const AuthGuard = ({ children, requiredRole = null, fallback = null }: {
 
         if (currentUser) {
           // 2. Check Profile Existence
-          const { data, error: profileError } = await supabase
+          // 2. Check Profile Existence (Fix 4: Robust Check)
+          const { data: profile } = await supabase
             .from('profiles')
             .select('id')
             .eq('firebase_uid', currentUser.id)
             .maybeSingle();
 
-          if (profileError) {
-            console.error("AuthGuard profile check error:", profileError);
-            // In case of error (e.g. network), we might want to fail safe or block. 
-            // For now, let's assume no profile to be safe and force check again or let error boundary catch.
-            // But to prevent blocking valid users on network blip, we might retry.
-            // Here we just set hasProfile false to force setup if strictly needed, or maybe handle error.
-            // Simplest: treat error as "no profile found" for safety? Or throw?
-            // Let's set user but keep hasProfile null if error? No, let's set hasProfile false.
-            if (mounted) setHasProfile(false);
+          if (!profile && location.pathname !== '/profile-setup') {
+            setHasProfile(false);
           } else {
-            if (mounted) setHasProfile(!!data);
+            setHasProfile(!!profile);
           }
         }
 
@@ -59,6 +53,8 @@ const AuthGuard = ({ children, requiredRole = null, fallback = null }: {
         }
       }
     };
+
+
 
     checkAuthAndProfile();
 
