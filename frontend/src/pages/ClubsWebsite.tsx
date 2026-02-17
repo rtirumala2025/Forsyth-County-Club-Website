@@ -9,6 +9,8 @@ import { useClubFilter } from '../hooks/useClubFilter';
 import { useSupabaseClubs } from '../hooks/useSupabaseClubs';
 import type { ClubRecord } from '../hooks/useSupabaseClubs';
 import { ClubCard } from '../components/club/ClubCard';
+import { PermissionModal } from '../components/club/PermissionModal';
+import { useQueryClient } from '@tanstack/react-query';
 
 const ClubsWebsite = () => {
   // ── Supabase data feed ──────────────────────────────────────
@@ -45,6 +47,10 @@ const ClubsWebsite = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const { schoolSlug, clubSlug } = useParams();
+  const queryClient = useQueryClient();
+
+  const [showPermissionModal, setShowPermissionModal] = useState(false);
+  const [currentSignatureId, setCurrentSignatureId] = useState<string>('');
 
   const availableSchools = useMemo(
     () => allClubData?.map(school => school.school) || [],
@@ -200,19 +206,35 @@ const ClubsWebsite = () => {
       }
 
       // 4. Insert signature
-      const { error: insertError } = await supabase.from('signatures').insert({
-        profile_id: profile.id,
+      const { data: insertedSig, error: insertError } = await supabase.from('signatures').insert({
         user_id: user.id, // Critical fix for data consistency
         club_id: club.id,
         status: 'PENDING_PARENT',
-      });
+      })
+        .select('id')
+        .single();
 
       if (insertError) throw insertError;
 
+      if (insertedSig) {
+        setCurrentSignatureId(insertedSig.id);
+        setShowPermissionModal(true);
+      }
+
       setJoinMessage({
         type: 'success',
-        text: `Application submitted for ${club.name}! Your parent will receive a verification link.`,
+        text: 'Application started! Please share the verification link with your parent.',
       });
+
+      // Invalidate queries to update UI
+      queryClient.invalidateQueries({ queryKey: ['user-signatures'] });
+      queryClient.invalidateQueries({ queryKey: ['signatures'] });
+
+      // Open Modal?
+      // Wait, passing context to modal needs signature ID
+      // The insert call above returns error, but does not select data?
+      // I need to select ID from the insert!
+
     } catch (err: any) {
       console.error('Join club error:', err);
       setJoinMessage({ type: 'error', text: err.message || 'Failed to submit application.' });
@@ -796,6 +818,11 @@ const ClubsWebsite = () => {
         </div>,
         document.body
       )}
+      <PermissionModal
+        isOpen={showPermissionModal}
+        onClose={() => setShowPermissionModal(false)}
+        signatureId={currentSignatureId}
+      />
     </div >
   );
 };

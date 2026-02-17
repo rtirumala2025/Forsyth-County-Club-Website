@@ -76,6 +76,7 @@ export const useClubMembership = () => {
         onSuccess: () => {
             // Invalidate query to refresh UI
             queryClient.invalidateQueries({ queryKey: ['user-signatures'] });
+            queryClient.invalidateQueries({ queryKey: ['signatures'] });
         },
     });
 
